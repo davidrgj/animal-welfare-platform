@@ -1,37 +1,63 @@
 import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
-import { IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs } from '@ionic/angular/standalone';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { IonIcon } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-shell',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs],
+  imports: [RouterLink, RouterLinkActive, RouterOutlet, IonIcon],
   template: `
-    <ion-tabs>
-      <ion-router-outlet></ion-router-outlet>
-      <ion-tab-bar slot="bottom">
-        <ion-tab-button tab="dashboard" routerLink="/app/dashboard" routerLinkActive="tab-selected">
+    <div class="shell">
+      <div class="shell-page">
+        <router-outlet></router-outlet>
+      </div>
+      <nav class="tab-bar">
+        <a routerLink="/app/dashboard" routerLinkActive="tab-selected">
           <ion-icon name="home-outline"></ion-icon>
-          <ion-label>Inicio</ion-label>
-        </ion-tab-button>
-        <ion-tab-button tab="animals" routerLink="/app/animals" routerLinkActive="tab-selected">
+          Inicio
+        </a>
+        <a routerLink="/app/animals" routerLinkActive="tab-selected">
           <ion-icon name="paw-outline"></ion-icon>
-          <ion-label>Animales</ion-label>
-        </ion-tab-button>
-        <ion-tab-button tab="farms" routerLink="/app/farms" routerLinkActive="tab-selected">
+          Animales
+        </a>
+        <a routerLink="/app/farms" routerLinkActive="tab-selected">
           <ion-icon name="leaf-outline"></ion-icon>
-          <ion-label>Predios</ion-label>
-        </ion-tab-button>
-        <ion-tab-button tab="simulation" routerLink="/app/simulation" routerLinkActive="tab-selected">
+          Predios
+        </a>
+        <a routerLink="/app/simulation" routerLinkActive="tab-selected">
           <ion-icon name="flask-outline"></ion-icon>
-          <ion-label>Simulación</ion-label>
-        </ion-tab-button>
-        <ion-tab-button tab="profile" routerLink="/app/profile" routerLinkActive="tab-selected">
+          Simulación
+        </a>
+        <a routerLink="/app/profile" routerLinkActive="tab-selected">
           <ion-icon name="person-outline"></ion-icon>
-          <ion-label>Cuenta</ion-label>
-        </ion-tab-button>
-      </ion-tab-bar>
-    </ion-tabs>
-  `
+          Cuenta
+        </a>
+      </nav>
+    </div>
+  `,
+  styles: [`
+    .shell { min-height: 100%; display: grid; grid-template-rows: 1fr auto; }
+    .shell-page { min-height: 0; }
+    .tab-bar {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      background: rgba(255, 250, 241, 0.94);
+      border-top: 1px solid var(--line);
+      padding: 8px 6px 12px;
+      position: sticky;
+      bottom: 0;
+      z-index: 8;
+    }
+    .tab-bar a {
+      display: grid;
+      justify-items: center;
+      gap: 4px;
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.72rem;
+    }
+    .tab-bar a.tab-selected { color: var(--pine); }
+    .tab-bar ion-icon { font-size: 1.25rem; }
+  `]
 })
 export class ShellPage {}

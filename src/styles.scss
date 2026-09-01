@@ -148,8 +148,8 @@ ion-textarea {
   overflow: hidden;
 }
 
-ion-tab-bar {
-  border-top: 1px solid var(--line);
+ion-content {
+  --background: transparent;
 }
 
 .hero-mark {
