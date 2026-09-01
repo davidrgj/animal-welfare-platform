@@ -8,64 +8,46 @@
 .auth-panel,
 .hero-card:not(.hero-ink) {
   position: relative;
-  background:
-    linear-gradient(180deg, rgba(255, 248, 236, 0.96), rgba(255, 248, 236, 0.78));
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(18px) saturate(1.18);
-}
-
-.glass-card::before,
-.kpi-tile::before,
-.panel::before,
-.farm-card::before,
-.hero-card::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.9), transparent);
-  pointer-events: none;
+  background: #ffffff;
+  border: none;
+  box-shadow: none;
 }
 
 .empty-state {
-  border-radius: var(--radius);
-  padding: 2.5rem 1.5rem 2.1rem;
+  border-radius: 12px;
+  padding: 2.2rem 1.4rem 1.8rem;
   text-align: center;
   display: grid;
   justify-items: center;
-  gap: 0.45rem;
+  gap: 0.35rem;
 }
 
 .empty-state-icon {
-  width: 76px;
-  height: 76px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
   display: grid;
   place-items: center;
-  margin-bottom: 0.7rem;
-  background:
-    radial-gradient(circle at 30% 25%, #fff8ec, transparent 55%),
-    color-mix(in srgb, var(--gold) 30%, var(--paper-strong));
-  color: var(--pine);
-  font-size: 1.9rem;
-  box-shadow: inset 0 0 0 1px var(--line), 0 12px 24px rgba(16, 38, 29, 0.1);
+  margin-bottom: 0.45rem;
+  background: #f2f2f7;
+  color: #8e8e93;
+  font-size: 1.7rem;
 }
 
 .empty-state-title {
   margin: 0;
-  font-family: var(--font-display);
-  font-size: 1.55rem;
-  font-style: italic;
-  color: var(--pine);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
 }
 
 .empty-state-hint {
   margin: 0;
   max-width: 34ch;
   color: var(--muted);
-  font-size: 0.9rem;
-  line-height: 1.5;
+  font-size: 0.94rem;
+  line-height: 1.45;
 }
 
 .skeleton-surface {
@@ -73,13 +55,13 @@
 }
 
 .skeleton-circle {
-  width: 42px;
-  height: 42px;
+  width: 40px;
+  height: 40px;
   --border-radius: 50%;
 }
 
 .skeleton-pill {
-  height: 14px;
+  height: 12px;
   width: 48%;
 }
 

@@ -11,18 +11,12 @@ import { AuthService } from '../core/auth.service';
   template: `
     <ion-content [fullscreen]="true">
       <div class="auth-screen">
-        <aside class="auth-aside">
-          <p class="auth-kicker">Ganadería 5.0</p>
-          <h1>El hato, leído con criterio ICA.</h1>
-          <p class="auth-aside-copy">Índice de las cinco libertades, estrés calórico y simulación de escenarios antes de mover dieta o instalaciones.</p>
-        </aside>
         <div class="auth-form-wrap">
           <img class="hero-mark" src="assets/mark.svg" alt="" />
-          <p class="page-kicker">Acceso</p>
           <h1 class="display auth-title">Bienestar ICA</h1>
-          <p class="page-lead">Monitoreo y simulación del bienestar animal en bovinos, caprinos y porcinos.</p>
+          <p class="page-lead">Monitoreo y simulación del bienestar animal.</p>
           <form class="auth-panel stack" (ngSubmit)="submit()">
-            <ion-list>
+            <ion-list [inset]="true">
               <ion-item>
                 <ion-input label="Correo electrónico" labelPlacement="stacked" type="email" [(ngModel)]="email" name="email" required></ion-input>
               </ion-item>

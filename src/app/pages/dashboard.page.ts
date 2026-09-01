@@ -22,7 +22,7 @@ import { EmptyStateComponent } from '../shared/empty-state.component';
         <section class="hero-card hero-ink">
           <p class="page-kicker">Panel de bienestar</p>
           <h1 class="display auth-title">Hola, {{ firstName }}</h1>
-          <p class="page-lead">Lectura ICA de predios, animales y riesgos sanitarios en un solo índice.</p>
+          <p class="page-lead">Predios, animales y riesgos ICA en un solo índice.</p>
         </section>
         @if (loading) {
           <div class="kpi-grid">

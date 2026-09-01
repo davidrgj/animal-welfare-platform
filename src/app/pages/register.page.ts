@@ -13,16 +13,11 @@ import { OPTIONS } from '../core/labels';
   template: `
     <ion-content [fullscreen]="true">
       <div class="auth-screen">
-        <aside class="auth-aside">
-          <p class="auth-kicker">Alta de usuario</p>
-          <h1>Productor, veterinario o administración del predio.</h1>
-          <p class="auth-aside-copy">Una cuenta para registrar hatos, evaluar las cinco libertades y proyectar escenarios ICA.</p>
-        </aside>
         <div class="auth-form-wrap">
-          <p class="page-kicker">Registro</p>
           <h1 class="display auth-title">Crear cuenta</h1>
+          <p class="page-lead">Productor, veterinario o administración del predio.</p>
           <form class="auth-panel stack" (ngSubmit)="submit()">
-            <ion-list>
+            <ion-list [inset]="true">
               <ion-item><ion-input label="Nombre completo" labelPlacement="stacked" [(ngModel)]="fullName" name="fullName" required></ion-input></ion-item>
               <ion-item><ion-input label="Correo electrónico" labelPlacement="stacked" type="email" [(ngModel)]="email" name="email" required></ion-input></ion-item>
               <ion-item><ion-input label="Contraseña" labelPlacement="stacked" type="password" [(ngModel)]="password" name="password" required></ion-input></ion-item>

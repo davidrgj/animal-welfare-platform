@@ -106,20 +106,22 @@ export class SimulationDetailPage implements AfterViewInit, OnDestroy {
           {
             label: 'Peso (kg)',
             data: this.snapshots.filter((_, index) => index % 7 === 0 || index === this.snapshots.length - 1).map((snapshot) => snapshot.weightKg),
-            borderColor: '#10261d',
-            backgroundColor: 'rgba(16,38,29,0.10)',
+            borderColor: '#007AFF',
+            backgroundColor: 'rgba(0,122,255,0.12)',
             tension: 0.35,
             fill: true,
-            pointRadius: 3,
+            pointRadius: 0,
+            pointHoverRadius: 4,
             yAxisID: 'y'
           },
           {
             label: 'IBA',
             data: this.snapshots.filter((_, index) => index % 7 === 0 || index === this.snapshots.length - 1).map((snapshot) => snapshot.welfareIndex),
-            borderColor: '#c45a28',
-            backgroundColor: 'rgba(196,90,40,0.08)',
+            borderColor: '#FF9500',
+            backgroundColor: 'rgba(255,149,0,0.08)',
             tension: 0.35,
-            pointRadius: 3,
+            pointRadius: 0,
+            pointHoverRadius: 4,
             yAxisID: 'y1'
           }
         ]
@@ -127,10 +129,10 @@ export class SimulationDetailPage implements AfterViewInit, OnDestroy {
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: { legend: { labels: { font: { family: 'Sora', size: 12 }, color: '#6b6256' } } },
+        plugins: { legend: { labels: { font: { family: 'Inter', size: 12 }, color: '#86868B' } } },
         scales: {
-          y: { position: 'left', ticks: { color: '#10261d', font: { family: 'Sora' } }, grid: { color: 'rgba(16,38,29,0.06)' } },
-          y1: { position: 'right', min: 0, max: 100, grid: { drawOnChartArea: false }, ticks: { color: '#c45a28', font: { family: 'Sora' } } }
+          y: { position: 'left', ticks: { color: '#86868B', font: { family: 'Inter' } }, grid: { color: 'rgba(60,60,67,0.08)' } },
+          y1: { position: 'right', min: 0, max: 100, grid: { drawOnChartArea: false }, ticks: { color: '#FF9500', font: { family: 'Inter' } } }
         }
       }
     });

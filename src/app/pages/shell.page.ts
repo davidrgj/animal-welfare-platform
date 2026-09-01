@@ -43,35 +43,28 @@ import { IonIcon } from '@ionic/angular/standalone';
     }
     .shell-page { min-height: 0; }
     .tab-bar {
-      position: relative;
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      margin: 0 14px calc(12px + env(safe-area-inset-bottom));
-      padding: 6px;
-      border-radius: 24px;
-      background: linear-gradient(180deg, #1a3a2c, #07140f);
-      border: 1px solid rgba(226, 181, 106, 0.22);
-      box-shadow: 0 18px 40px rgba(7, 20, 15, 0.4);
+      padding: 4px 0 calc(6px + env(safe-area-inset-bottom));
+      background: rgba(249, 249, 249, 0.86);
+      backdrop-filter: saturate(180%) blur(20px);
+      border-top: 0.5px solid rgba(60, 60, 67, 0.18);
       z-index: 8;
     }
     .tab-bar a {
       display: grid;
       justify-items: center;
-      gap: 4px;
+      gap: 2px;
       text-decoration: none;
-      color: #c3d0c0;
-      font-size: 0.68rem;
+      color: #8e8e93;
+      font-size: 10px;
       font-weight: 500;
-      padding: 9px 4px 8px;
-      border-radius: 18px;
+      padding: 6px 2px 4px;
     }
     .tab-bar a.tab-selected {
-      color: #10261d;
-      background: linear-gradient(180deg, #f0c57a, #d4a04e);
-      box-shadow: 0 8px 16px rgba(226, 181, 106, 0.32);
-      font-weight: 600;
+      color: #007aff;
     }
-    .tab-bar ion-icon { font-size: 1.22rem; }
+    .tab-bar ion-icon { font-size: 1.45rem; }
   `]
 })
 export class ShellPage {}

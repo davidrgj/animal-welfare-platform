@@ -15,7 +15,7 @@ addIcons({ addOutline, alertCircleOutline, analyticsOutline, calendarOutline, ca
 bootstrapApplication(AppComponent, {
   providers: [
     { provide: LOCALE_ID, useValue: 'es-CO' },
-    provideIonicAngular({ mode: 'md' }),
+    provideIonicAngular({ mode: 'ios' }),
     provideRouter(routes, withHashLocation())
   ]
 }).catch((error) => console.error(error));
