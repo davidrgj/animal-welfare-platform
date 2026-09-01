@@ -27,19 +27,16 @@ Alta, edición y borrado de predios y animales, nuevas evaluaciones con foto, al
 
 ## Conectar Supabase
 
-En el proyecto de Supabase (Settings > API) copia:
+La app ya apunta al proyecto `https://gkomojjjyydbdajpxyqw.supabase.co` con la clave anónima. La `service_role` no va en el frontend.
 
-- Project URL (`https://xxxx.supabase.co`)
-- anon public key
-
-No hace falta la `service_role`. Pégalas en `src/environments/environment.ts` y `environment.prod.ts`, o define `SUPABASE_URL` y `SUPABASE_ANON_KEY` en Vercel (el build las escribe antes de compilar).
-
-Luego, en el SQL editor, en este orden:
+Falta crear tablas y datos de demo en el [SQL editor](https://supabase.com/dashboard/project/gkomojjjyydbdajpxyqw/sql/new), en este orden:
 
 1. `supabase/schema.sql`
 2. `supabase/seed.sql`
 
-En Authentication > Providers > Email desactiva **Confirm email** para poder entrar con las cuentas de demo sin correo.
+En Authentication > Providers > Email desactiva **Confirm email** para poder registrar cuentas nuevas sin correo. Las cuentas de seed ya quedan confirmadas.
+
+En Vercel puedes definir `SUPABASE_URL` y `SUPABASE_ANON_KEY` (o `SUPABASE_PUBLISHABLE_KEY`); el build las escribe antes de compilar. Si no, usa las de `src/environments/environment.prod.ts`.
 
 ## Qué hace
 
