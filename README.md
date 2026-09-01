@@ -27,3 +27,9 @@ También `vet@farm.local` / `Vet123!` y `admin@farm.local` / `Admin123!`
 ## Stack
 
 PWA con Ionic y Angular. El puntaje está en `src/app/core/welfare-scoring.ts`. La simulación está en `src/app/core/simulation.ts`.
+
+## Publicar en Vercel
+
+El comando de compilación debe ser `npx ionic build` (o `npm run build`), no `ionic build` a secas: en Vercel el CLI de Ionic no está en el PATH a menos que se invoque con `npx` o un script de npm.
+
+`ionic build` en este proyecto llama a Angular y **tampoco genera `www`**. La carpeta que hay que publicar es `dist/app/browser`.
