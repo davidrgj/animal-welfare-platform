@@ -55,18 +55,34 @@ ion-button {
 }
 
 ion-button:not([fill="outline"]):not([fill="clear"]):not([color]) {
-  --background: linear-gradient(180deg, #1c3a2c, #10261d);
+  --background: #10261d;
   --background-hover: #07140f;
   --background-activated: #07140f;
   --color: var(--paper-strong);
 }
 
-ion-button[color="danger"] {
-  --background: linear-gradient(180deg, #c24757, #9d2436);
-  --background-hover: #7f1c2c;
-  --background-activated: #7f1c2c;
+ion-button:not([fill="outline"]):not([fill="clear"]):not([color])::part(native) {
+  background: #10261d;
+  color: var(--paper-strong);
+}
+
+ion-button.ion-color-danger {
+  --ion-color-base: #9d2436;
+  --ion-color-contrast: #fff8ec;
+  --background: #9d2436;
   --color: #fff8ec;
   --box-shadow: 0 12px 24px rgba(157, 36, 54, 0.22);
+}
+
+ion-button.ion-color-danger:not([fill="outline"]):not([fill="clear"])::part(native) {
+  background: #9d2436;
+  color: #fff8ec;
+}
+
+ion-button.ion-color-danger[fill="outline"]::part(native) {
+  background: transparent;
+  color: #9d2436;
+  box-shadow: none;
 }
 
 ion-button[fill="outline"] {
