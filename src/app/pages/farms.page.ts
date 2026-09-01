@@ -19,23 +19,32 @@ import { EmptyStateComponent } from '../shared/empty-state.component';
     </ion-header>
     <ion-content>
       <div class="page-body stack">
-        <p class="page-lead">Unidades productivas georreferenciadas, con RUV y fuente de agua.</p>
+        <p class="page-kicker">Unidades productivas</p>
+        <p class="page-lead">Predios georreferenciados, con RUV y fuente de agua.</p>
         @if (farms.length === 0) {
           <app-empty-state icon="leaf-outline" title="Sin predios" hint="Registra la primera finca para empezar el inventario animal." />
         } @else {
           @for (farm of farms; track farm.id) {
             <a class="farm-card" [routerLink]="['/app/farms', farm.id]">
-              <h2 class="display" style="margin:0 0 6px;font-size:1.3rem">{{ farm.name }}</h2>
-              <p class="muted">{{ farm.municipality }}, {{ farm.department }} · {{ farm.hectares }} ha</p>
-              <p class="muted">RUV {{ farm.vaccinationRegistry }} · {{ water[farm.waterSource] }}</p>
-              <p class="muted">GPS {{ farm.latitude }}, {{ farm.longitude }}</p>
+              <p class="page-kicker">{{ farm.municipality }}, {{ farm.department }}</p>
+              <h2 class="display panel-title">{{ farm.name }}</h2>
+              <div class="stat-pair">
+                <div>
+                  <span>Extensión</span>
+                  <strong>{{ farm.hectares }} ha</strong>
+                </div>
+                <div>
+                  <span>Agua</span>
+                  <strong>{{ water[farm.waterSource] }}</strong>
+                </div>
+              </div>
+              <p class="muted">RUV {{ farm.vaccinationRegistry }} · GPS {{ farm.latitude }}, {{ farm.longitude }}</p>
             </a>
           }
         }
       </div>
     </ion-content>
-  `,
-  styles: [`.farm-card { display: block; text-decoration: none; color: inherit; }`]
+  `
 })
 export class FarmsPage implements OnInit {
   farms: Farm[] = [];

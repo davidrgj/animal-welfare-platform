@@ -20,6 +20,7 @@ import { todayIso } from '../core/crypto';
     </ion-header>
     <ion-content>
       <form class="page-body stack" (ngSubmit)="save()">
+        <p class="page-kicker">Ficha individual</p>
         <ion-list class="panel">
           <ion-item>
             <ion-select label="Predio" labelPlacement="stacked" [(ngModel)]="farmId" name="farm" required>

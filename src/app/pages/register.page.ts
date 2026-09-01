@@ -11,33 +11,39 @@ import { OPTIONS } from '../core/labels';
   standalone: true,
   imports: [FormsModule, RouterLink, IonButton, IonContent, IonInput, IonItem, IonList, IonSelect, IonSelectOption],
   template: `
-    <ion-content>
-      <div class="page-body auth-layout">
-        <p class="page-kicker">Registro</p>
-        <h1 class="display">Crear cuenta</h1>
-        <form class="auth-panel glass-card stack" (ngSubmit)="submit()">
-          <ion-list>
-            <ion-item><ion-input label="Nombre completo" labelPlacement="stacked" [(ngModel)]="fullName" name="fullName" required></ion-input></ion-item>
-            <ion-item><ion-input label="Correo electrónico" labelPlacement="stacked" type="email" [(ngModel)]="email" name="email" required></ion-input></ion-item>
-            <ion-item><ion-input label="Contraseña" labelPlacement="stacked" type="password" [(ngModel)]="password" name="password" required></ion-input></ion-item>
-            <ion-item><ion-input label="Cédula o tarjeta profesional" labelPlacement="stacked" [(ngModel)]="documentId" name="documentId" required></ion-input></ion-item>
-            <ion-item><ion-input label="Teléfono" labelPlacement="stacked" [(ngModel)]="phone" name="phone"></ion-input></ion-item>
-            <ion-item>
-              <ion-select label="Rol" labelPlacement="stacked" [(ngModel)]="role" name="role">
-                @for (option of roles; track option[0]) {
-                  <ion-select-option [value]="option[0]">{{ option[1] }}</ion-select-option>
-                }
-              </ion-select>
-            </ion-item>
-          </ion-list>
-          @if (error) { <p class="error-text">{{ error }}</p> }
-          <ion-button expand="block" type="submit">Registrarme</ion-button>
-          <a routerLink="/login">Ya tengo cuenta</a>
-        </form>
+    <ion-content [fullscreen]="true">
+      <div class="auth-screen">
+        <aside class="auth-aside">
+          <p class="auth-kicker">Alta de usuario</p>
+          <h1>Productor, veterinario o administración del predio.</h1>
+          <p class="auth-aside-copy">Una cuenta para registrar hatos, evaluar las cinco libertades y proyectar escenarios ICA.</p>
+        </aside>
+        <div class="auth-form-wrap">
+          <p class="page-kicker">Registro</p>
+          <h1 class="display auth-title">Crear cuenta</h1>
+          <form class="auth-panel stack" (ngSubmit)="submit()">
+            <ion-list>
+              <ion-item><ion-input label="Nombre completo" labelPlacement="stacked" [(ngModel)]="fullName" name="fullName" required></ion-input></ion-item>
+              <ion-item><ion-input label="Correo electrónico" labelPlacement="stacked" type="email" [(ngModel)]="email" name="email" required></ion-input></ion-item>
+              <ion-item><ion-input label="Contraseña" labelPlacement="stacked" type="password" [(ngModel)]="password" name="password" required></ion-input></ion-item>
+              <ion-item><ion-input label="Cédula o tarjeta profesional" labelPlacement="stacked" [(ngModel)]="documentId" name="documentId" required></ion-input></ion-item>
+              <ion-item><ion-input label="Teléfono" labelPlacement="stacked" [(ngModel)]="phone" name="phone"></ion-input></ion-item>
+              <ion-item>
+                <ion-select label="Rol" labelPlacement="stacked" [(ngModel)]="role" name="role">
+                  @for (option of roles; track option[0]) {
+                    <ion-select-option [value]="option[0]">{{ option[1] }}</ion-select-option>
+                  }
+                </ion-select>
+              </ion-item>
+            </ion-list>
+            @if (error) { <p class="error-text">{{ error }}</p> }
+            <ion-button expand="block" type="submit">Registrarme</ion-button>
+            <a class="auth-link" routerLink="/login">Ya tengo cuenta</a>
+          </form>
+        </div>
       </div>
     </ion-content>
-  `,
-  styles: [`.auth-layout { max-width: 480px; padding-top: 32px; } .auth-layout h1 { margin: 0 0 12px; }`]
+  `
 })
 export class RegisterPage {
   fullName = '';

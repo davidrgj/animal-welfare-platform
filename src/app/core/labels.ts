@@ -161,6 +161,16 @@ export const ALERT_HINT: Record<string, string> = {
   LOW_WELFARE_INDEX: 'El índice compuesto quedó por debajo de 60.'
 };
 
+export function speciesMark(species: Species): string {
+  return `species-mark species-mark-${species.toLowerCase()}`;
+}
+
+export function ibaFill(level: ComplianceLevel | null | undefined): string {
+  if (level === 'NON_COMPLIANT') return 'iba-fill iba-fill-bad';
+  if (level === 'ATTENTION') return 'iba-fill iba-fill-warn';
+  return 'iba-fill iba-fill-ok';
+}
+
 export function complianceClass(level: ComplianceLevel | null | undefined): string {
   if (level === 'COMPLIANT') return 'tag tag-ok';
   if (level === 'ATTENTION') return 'tag tag-warn';

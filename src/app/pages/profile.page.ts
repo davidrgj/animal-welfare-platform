@@ -17,12 +17,20 @@ import { ROLE_LABEL } from '../core/labels';
     </ion-header>
     <ion-content>
       <div class="page-body stack">
-        <section class="panel">
+        <section class="hero-card hero-ink">
           <p class="page-kicker">{{ role[user.role] }}</p>
-          <h1 class="display" style="margin:0">{{ user.fullName }}</h1>
+          <h1 class="display auth-title">{{ user.fullName }}</h1>
           <p class="muted">{{ user.email }}</p>
-          <p class="muted">Documento {{ user.documentId }}</p>
-          <p class="muted">Alta {{ user.createdAt | date:'d MMM, y hh:mm a' }}</p>
+          <div class="stat-pair">
+            <div>
+              <span>Documento</span>
+              <strong>{{ user.documentId }}</strong>
+            </div>
+            <div>
+              <span>Alta</span>
+              <strong>{{ user.createdAt | date:'d MMM, y' }}</strong>
+            </div>
+          </div>
         </section>
         <ion-button expand="block" fill="outline" routerLink="/app/reports">Reportes de predio</ion-button>
         <ion-button expand="block" color="danger" (click)="auth.logout()">Cerrar sesión</ion-button>

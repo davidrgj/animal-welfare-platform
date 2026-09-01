@@ -22,8 +22,10 @@ import { todayIso } from '../core/crypto';
     </ion-header>
     <ion-content>
       <div class="page-body stack">
+        <p class="page-kicker">Escenarios</p>
         <p class="page-lead">Proyecta peso, etapa y cumplimiento ICA antes de cambiar dieta o ambiente.</p>
         <form class="panel stack" (ngSubmit)="run()">
+          <h2 class="panel-title">Nuevo escenario</h2>
           <ion-list>
             <ion-item><ion-input label="Nombre del escenario" labelPlacement="stacked" [(ngModel)]="name" name="name" required></ion-input></ion-item>
             <ion-item>
@@ -53,17 +55,20 @@ import { todayIso } from '../core/crypto';
           <app-empty-state icon="flask-outline" title="Sin escenarios" hint="Elige un animal y un estrés (sequía, calor, dieta) para proyectar el lote." />
         } @else {
           @for (run of runs; track run.id) {
-            <a class="animal-row" [routerLink]="['/app/simulation', run.id]">
-              <strong>{{ run.name }}</strong>
-              <p class="muted" style="margin:4px 0 0">{{ feedLabel[run.feedType] }} · {{ scenarioLabel[run.scenario] }} · {{ run.horizonDays }} días</p>
-              <p class="muted" style="margin:0">{{ run.createdAt | date:'d MMM, y hh:mm a' }} · peso final {{ run.finalWeightKg }} kg</p>
+            <a class="animal-row list-card" [routerLink]="['/app/simulation', run.id]">
+              <span class="species-mark species-mark-sim">S</span>
+              <div class="list-card-copy">
+                <strong>{{ run.name }}</strong>
+                <p class="muted">{{ feedLabel[run.feedType] }} · {{ scenarioLabel[run.scenario] }} · {{ run.horizonDays }} días</p>
+                <p class="muted">{{ run.createdAt | date:'d MMM, y hh:mm a' }}</p>
+              </div>
+              <span class="tag">{{ run.finalWeightKg }} kg</span>
             </a>
           }
         }
       </div>
     </ion-content>
   `,
-  styles: [`.animal-row { display: block; text-decoration: none; color: inherit; }`]
 })
 export class SimulationPage implements OnInit {
   animals: Animal[] = [];

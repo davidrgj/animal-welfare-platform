@@ -11,8 +11,8 @@ import { IonIcon } from '@ionic/angular/standalone';
       <div class="shell-page">
         <router-outlet></router-outlet>
       </div>
-      <nav class="tab-bar">
-        <a routerLink="/app/dashboard" routerLinkActive="tab-selected">
+      <nav class="tab-bar" aria-label="Secciones">
+        <a routerLink="/app/dashboard" routerLinkActive="tab-selected" [routerLinkActiveOptions]="{exact: true}">
           <ion-icon name="home-outline"></ion-icon>
           Inicio
         </a>
@@ -36,16 +36,22 @@ import { IonIcon } from '@ionic/angular/standalone';
     </div>
   `,
   styles: [`
-    .shell { min-height: 100%; display: grid; grid-template-rows: 1fr auto; }
+    .shell {
+      min-height: 100%;
+      display: grid;
+      grid-template-rows: 1fr auto;
+    }
     .shell-page { min-height: 0; }
     .tab-bar {
+      position: relative;
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      background: rgba(255, 250, 241, 0.94);
-      border-top: 1px solid var(--line);
-      padding: 8px 6px 12px;
-      position: sticky;
-      bottom: 0;
+      margin: 0 14px calc(12px + env(safe-area-inset-bottom));
+      padding: 6px;
+      border-radius: 24px;
+      background: linear-gradient(180deg, #1a3a2c, #07140f);
+      border: 1px solid rgba(226, 181, 106, 0.22);
+      box-shadow: 0 18px 40px rgba(7, 20, 15, 0.4);
       z-index: 8;
     }
     .tab-bar a {
@@ -53,11 +59,19 @@ import { IonIcon } from '@ionic/angular/standalone';
       justify-items: center;
       gap: 4px;
       text-decoration: none;
-      color: var(--muted);
-      font-size: 0.72rem;
+      color: #c3d0c0;
+      font-size: 0.68rem;
+      font-weight: 500;
+      padding: 9px 4px 8px;
+      border-radius: 18px;
     }
-    .tab-bar a.tab-selected { color: var(--pine); }
-    .tab-bar ion-icon { font-size: 1.25rem; }
+    .tab-bar a.tab-selected {
+      color: #10261d;
+      background: linear-gradient(180deg, #f0c57a, #d4a04e);
+      box-shadow: 0 8px 16px rgba(226, 181, 106, 0.32);
+      font-weight: 600;
+    }
+    .tab-bar ion-icon { font-size: 1.22rem; }
   `]
 })
 export class ShellPage {}

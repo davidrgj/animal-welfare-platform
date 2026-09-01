@@ -2,11 +2,10 @@ import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { IonButton, IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
-import { Animal, Farm, WelfareRecord } from '../core/models';
-import { COMPLIANCE_LABEL, DOMAIN_LABEL, FINDING_LABEL, HEAT_LABEL, PURPOSE_LABEL, SPECIES_LABEL, complianceClass } from '../core/labels';
+import { Animal, ComplianceFinding, Farm, WelfareRecord } from '../core/models';
+import { COMPLIANCE_LABEL, DOMAIN_LABEL, FINDING_LABEL, HEAT_LABEL, PURPOSE_LABEL, SPECIES_LABEL, complianceClass, ibaFill, speciesMark } from '../core/labels';
 import { StoreService } from '../core/store.service';
 import { EmptyStateComponent } from '../shared/empty-state.component';
-import { ComplianceFinding } from '../core/models';
 
 @Component({
   selector: 'app-animal-detail',
@@ -21,32 +20,55 @@ import { ComplianceFinding } from '../core/models';
     <ion-content>
       @if (animal && farm) {
         <div class="page-body stack">
-          <section class="panel">
-            <p class="page-kicker">{{ species[animal.species] }}</p>
-            <h1 class="display" style="margin:0">{{ animal.tagId }}</h1>
-            <p class="muted">{{ animal.breed }} · {{ purpose[animal.purpose] }} · {{ animal.currentWeightKg }} kg</p>
-            <p class="muted">{{ farm.name }} · nacido {{ animal.birthDate | date:'d MMM, y' }}</p>
-            <div class="row" style="margin-top:12px">
+          <section class="hero-card">
+            <div class="spread">
+              <div>
+                <p class="page-kicker">{{ species[animal.species] }}</p>
+                <h1 class="display auth-title">{{ animal.tagId }}</h1>
+              </div>
+              <span [class]="speciesMark(animal.species) + ' species-mark-lg'">{{ species[animal.species].charAt(0) }}</span>
+            </div>
+            <p class="muted">{{ animal.breed }} · {{ purpose[animal.purpose] }} · {{ farm.name }}</p>
+            <div class="stat-pair">
+              <div>
+                <span>Peso actual</span>
+                <strong>{{ animal.currentWeightKg }} kg</strong>
+              </div>
+              <div>
+                <span>Nacimiento</span>
+                <strong>{{ animal.birthDate | date:'d MMM, y' }}</strong>
+              </div>
+            </div>
+            <div class="row action-row">
               <ion-button routerLink="edit">Editar ficha</ion-button>
               <ion-button fill="outline" [routerLink]="['/app/animals', animal.id, 'welfare']">Nueva evaluación</ion-button>
             </div>
           </section>
           <section class="panel">
-            <h2 class="display" style="margin:0 0 8px;font-size:1.2rem">Historial de bienestar</h2>
+            <h2 class="panel-title">Historial de bienestar</h2>
             @if (records.length === 0) {
               <app-empty-state icon="clipboard-outline" title="Sin evaluaciones" hint="Captura las cinco libertades para calcular el índice ICA." />
             } @else {
               @for (record of records; track record.id) {
-                <article class="animal-row">
+                <article class="animal-row record-card">
                   <div class="spread">
-                    <strong>IBA {{ record.welfareIndex }}</strong>
+                    <strong class="display panel-title">IBA {{ record.welfareIndex }}</strong>
                     <span [class]="complianceClass(record.complianceLevel)">{{ compliance[record.complianceLevel] }}</span>
                   </div>
+                  <div class="iba-track">
+                    <span [class]="ibaFill(record.complianceLevel)" [style.width.%]="record.welfareIndex"></span>
+                  </div>
                   <p class="muted">{{ record.recordedAt | date:'d MMM, y hh:mm a' }} · THI {{ record.temperatureHumidityIndex }} · {{ heat[store.heatFor(animal, record)] }}</p>
-                  <p class="muted">Nutrición {{ record.nutritionScore }} · Entorno {{ record.environmentScore }} · Salud {{ record.healthScore }}</p>
-                  @for (finding of findings.get(record.id) || []; track finding.id) {
-                    <span class="tag">{{ domains[finding.domain] }}: {{ findingLabel[finding.code] }}</span>
-                  }
+                  <div class="domain-meter"><span>Nutrición</span><div class="iba-track"><span class="iba-fill" [style.width.%]="record.nutritionScore"></span></div><b>{{ record.nutritionScore }}</b></div>
+                  <div class="domain-meter"><span>Entorno</span><div class="iba-track"><span class="iba-fill" [style.width.%]="record.environmentScore"></span></div><b>{{ record.environmentScore }}</b></div>
+                  <div class="domain-meter"><span>Salud</span><div class="iba-track"><span class="iba-fill" [style.width.%]="record.healthScore"></span></div><b>{{ record.healthScore }}</b></div>
+                  <div class="domain-meter"><span>Conducta</span><div class="iba-track"><span class="iba-fill" [style.width.%]="record.behaviorScore"></span></div><b>{{ record.behaviorScore }}</b></div>
+                  <div class="domain-meter"><span>Mental</span><div class="iba-track"><span class="iba-fill" [style.width.%]="record.mentalScore"></span></div><b>{{ record.mentalScore }}</b></div>
+                  <div class="finding-wrap">
+                    @for (finding of findings.get(record.id) || []; track finding.id) {
+                      <span class="tag">{{ domains[finding.domain] }}: {{ findingLabel[finding.code] }}</span>
+                    }
+                  </div>
                 </article>
               }
             }
@@ -69,6 +91,8 @@ export class AnimalDetailPage implements OnInit {
   readonly domains = DOMAIN_LABEL;
   readonly findingLabel = FINDING_LABEL;
   readonly complianceClass = complianceClass;
+  readonly speciesMark = speciesMark;
+  readonly ibaFill = ibaFill;
 
   constructor(readonly store: StoreService, private readonly route: ActivatedRoute, private readonly router: Router) {}
 

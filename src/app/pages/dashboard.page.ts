@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { IonButton, IonContent, IonHeader, IonSkeletonText, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { AuthService } from '../core/auth.service';
-import { ALERT_HINT, COMPLIANCE_LABEL, FINDING_LABEL, HEAT_LABEL, SPECIES_LABEL, complianceClass } from '../core/labels';
+import { ALERT_HINT, COMPLIANCE_LABEL, FINDING_LABEL, HEAT_LABEL, SPECIES_LABEL, complianceClass, ibaFill, speciesMark } from '../core/labels';
 import { DashboardData, StoreService } from '../core/store.service';
 import { EmptyStateComponent } from '../shared/empty-state.component';
 
@@ -19,11 +19,11 @@ import { EmptyStateComponent } from '../shared/empty-state.component';
     </ion-header>
     <ion-content>
       <div class="page-body stack">
-        <div>
+        <section class="hero-card hero-ink">
           <p class="page-kicker">Panel de bienestar</p>
-          <h1 class="display" style="margin:0">Hola, {{ firstName }}</h1>
-          <p class="page-lead">Lectura ICA de predios, animales y riesgos sanitarios.</p>
-        </div>
+          <h1 class="display auth-title">Hola, {{ firstName }}</h1>
+          <p class="page-lead">Lectura ICA de predios, animales y riesgos sanitarios en un solo índice.</p>
+        </section>
         @if (loading) {
           <div class="kpi-grid">
             @for (tile of [1,2,3,4]; track tile) {
@@ -35,49 +35,58 @@ import { EmptyStateComponent } from '../shared/empty-state.component';
           </div>
         } @else if (data) {
           <div class="kpi-grid">
-            <article class="kpi-tile">
+            <article class="kpi-tile kpi-index">
               <p class="kpi-tile-label">Índice medio</p>
               <p class="kpi-tile-value">{{ data.averageWelfareIndex }}</p>
+              <div class="iba-track"><span class="iba-fill" [style.width.%]="data.averageWelfareIndex"></span></div>
             </article>
             <article class="kpi-tile">
               <p class="kpi-tile-label">Animales</p>
               <p class="kpi-tile-value">{{ data.animalCount }}</p>
+              <p class="kpi-tile-foot">{{ data.farmCount }} predios activos</p>
             </article>
-            <article class="kpi-tile">
+            <article class="kpi-tile kpi-alert">
               <p class="kpi-tile-label">Alertas abiertas</p>
               <p class="kpi-tile-value">{{ data.openAlertCount }}</p>
+              <p class="kpi-tile-foot">Sanidad, calor y densidad</p>
             </article>
-            <article class="kpi-tile">
+            <article class="kpi-tile kpi-bad">
               <p class="kpi-tile-label">No cumple ICA</p>
               <p class="kpi-tile-value">{{ data.nonCompliantCount }}</p>
+              <p class="kpi-tile-foot">Umbral IBA menor a 60</p>
             </article>
           </div>
           <section class="panel">
             <div class="spread">
-              <h2 class="display" style="margin:0;font-size:1.2rem">Riesgos activos</h2>
+              <h2 class="panel-title">Riesgos activos</h2>
               <ion-button fill="clear" routerLink="/app/animals">Ver inventario</ion-button>
             </div>
             @if (data.riskAnimals.length === 0) {
               <app-empty-state icon="checkmark-circle-outline" title="Sin incumplimientos" hint="Los animales evaluados están dentro del umbral ICA." />
             } @else {
               @for (item of data.riskAnimals; track item.animal.id) {
-                <a class="animal-row" [routerLink]="['/app/animals', item.animal.id]">
-                  <strong>{{ item.animal.tagId }}</strong>
-                  <span class="muted">{{ species[item.animal.species] }} · {{ item.farm.name }}</span>
-                  <span [class]="complianceClass(item.record.complianceLevel)">{{ compliance[item.record.complianceLevel] }} · IBA {{ item.record.welfareIndex }}</span>
-                  <span class="muted">{{ heat[store.heatFor(item.animal, item.record)] }}</span>
+                <a class="animal-row list-card" [routerLink]="['/app/animals', item.animal.id]">
+                  <span [class]="speciesMark(item.animal.species)">{{ species[item.animal.species].charAt(0) }}</span>
+                  <div class="list-card-copy">
+                    <strong>{{ item.animal.tagId }}</strong>
+                  <p class="muted">{{ species[item.animal.species] }} · {{ item.farm.name }} · {{ heat[store.heatFor(item.animal, item.record)] }}</p>
+                  <div class="iba-track">
+                      <span [class]="ibaFill(item.record.complianceLevel)" [style.width.%]="item.record.welfareIndex"></span>
+                    </div>
+                  </div>
+                  <span [class]="complianceClass(item.record.complianceLevel)">{{ compliance[item.record.complianceLevel] }} · {{ item.record.welfareIndex }}</span>
                 </a>
               }
             }
           </section>
           <section class="panel">
-            <h2 class="display" style="margin:0 0 8px;font-size:1.2rem">Alertas</h2>
+            <h2 class="panel-title">Alertas</h2>
             @if (data.recentAlerts.length === 0) {
               <app-empty-state icon="sunny-outline" title="Sin alertas abiertas" hint="Cuando un registro rompa un criterio ICA, aparecerá aquí." />
             } @else {
               @for (alert of data.recentAlerts; track alert.id) {
                 <article class="alert-card">
-                  <p style="margin:0"><strong>{{ finding[alert.code] || alert.code }}</strong></p>
+                  <strong>{{ finding[alert.code] || alert.code }}</strong>
                   <p class="muted">{{ hint[alert.code] }}</p>
                   <p class="muted">{{ alert.createdAt | date:'d MMM, y hh:mm a' }}</p>
                 </article>
@@ -87,10 +96,7 @@ import { EmptyStateComponent } from '../shared/empty-state.component';
         }
       </div>
     </ion-content>
-  `,
-  styles: [`
-    .animal-row { display: grid; gap: 4px; margin-top: 10px; text-decoration: none; color: inherit; }
-  `]
+  `
 })
 export class DashboardPage implements OnInit {
   loading = true;
@@ -102,6 +108,8 @@ export class DashboardPage implements OnInit {
   readonly finding = FINDING_LABEL;
   readonly hint = ALERT_HINT;
   readonly complianceClass = complianceClass;
+  readonly speciesMark = speciesMark;
+  readonly ibaFill = ibaFill;
 
   constructor(readonly store: StoreService, private readonly auth: AuthService) {}
 

@@ -19,6 +19,7 @@ import { nowIso } from '../core/crypto';
     </ion-header>
     <ion-content>
       <form class="page-body stack" (ngSubmit)="save()">
+        <p class="page-kicker">Cinco libertades</p>
         <p class="page-lead">Cinco libertades ICA para {{ animal?.tagId }}. El índice se calcula al guardar.</p>
         <ion-list class="panel">
           <ion-item><ion-input label="Condición corporal (1-5)" labelPlacement="stacked" type="number" min="1" max="5" [(ngModel)]="bodyConditionScore" name="bcs" required></ion-input></ion-item>

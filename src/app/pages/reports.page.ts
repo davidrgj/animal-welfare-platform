@@ -19,6 +19,7 @@ import { EmptyStateComponent } from '../shared/empty-state.component';
     </ion-header>
     <ion-content>
       <div class="page-body stack">
+        <p class="page-kicker">Cumplimiento</p>
         <p class="page-lead">Resumen imprimible de cumplimiento ICA por predio.</p>
         <ion-list class="panel">
           <ion-item>
@@ -28,20 +29,27 @@ import { EmptyStateComponent } from '../shared/empty-state.component';
           </ion-item>
         </ion-list>
         @if (farm) {
+          <section class="hero-card">
+            <p class="page-kicker">Reporte ICA</p>
+            <h1 class="display auth-title">{{ farm.name }}</h1>
+            <p class="muted">Generado {{ generatedAt | date:'d MMM, y hh:mm a' }}</p>
+            <div class="stat-pair">
+              <div><span>IBA medio</span><strong>{{ average }}</strong></div>
+              <div><span>Fuera de umbral</span><strong>{{ nonCompliant }}</strong></div>
+            </div>
+          </section>
           <section class="panel">
-            <h1 class="display" style="margin:0">{{ farm.name }}</h1>
-            <p class="muted">Generado {{ generatedAt | date:'d MMM, y hh:mm a' }} · IBA medio {{ average }}</p>
-            <p class="muted">{{ animals.length }} animales · {{ nonCompliant }} fuera de cumplimiento</p>
+            <h2 class="panel-title">Inventario</h2>
             @if (animals.length === 0) {
               <app-empty-state icon="document-text-outline" title="Predio vacío" hint="No hay ejemplares para armar el reporte." />
             } @else {
               @for (animal of animals; track animal.id) {
-                <article class="animal-row">
+                <article class="animal-row record-card">
                   <div class="spread">
-                    <strong>{{ animal.tagId }}</strong>
+                    <strong class="display panel-title">{{ animal.tagId }}</strong>
                     <span [class]="complianceClass(latest.get(animal.id)?.complianceLevel)">{{ latest.get(animal.id) ? compliance[latest.get(animal.id)!.complianceLevel] : 'Sin evaluación' }}</span>
                   </div>
-                  <p class="muted" style="margin:4px 0 0">
+                  <p class="muted">
                     {{ species[animal.species] }} · {{ animal.currentWeightKg }} kg
                     @if (latest.get(animal.id); as record) { · IBA {{ record.welfareIndex }} · {{ record.recordedAt | date:'d MMM, y' }} }
                   </p>

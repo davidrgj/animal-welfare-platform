@@ -18,6 +18,7 @@ import { StoreService } from '../core/store.service';
     </ion-header>
     <ion-content>
       <form class="page-body stack" (ngSubmit)="save()">
+        <p class="page-kicker">Unidad productiva</p>
         <ion-list class="panel">
           <ion-item><ion-input label="Nombre del predio" labelPlacement="stacked" [(ngModel)]="name" name="name" required></ion-input></ion-item>
           <ion-item><ion-input label="Registro único de vacunación" labelPlacement="stacked" [(ngModel)]="vaccinationRegistry" name="ruv" required></ion-input></ion-item>

@@ -21,22 +21,35 @@ import { EmptyStateComponent } from '../shared/empty-state.component';
     <ion-content>
       @if (run) {
         <div class="page-body stack">
-          <section class="panel">
-            <p class="muted">{{ feed[run.feedType] }} · {{ scenario[run.scenario] }} · {{ run.horizonDays }} días</p>
-            <p>Peso final {{ run.finalWeightKg }} kg · IBA proyectado {{ run.finalWelfareIndex }}</p>
+          <section class="hero-card hero-ink">
+            <p class="page-kicker">{{ feed[run.feedType] }} · {{ scenario[run.scenario] }}</p>
+            <h1 class="display auth-title">{{ run.name }}</h1>
+            <div class="stat-pair">
+              <div>
+                <span>Peso final</span>
+                <strong>{{ run.finalWeightKg }} kg</strong>
+              </div>
+              <div>
+                <span>IBA proyectado</span>
+                <strong>{{ run.finalWelfareIndex }}</strong>
+              </div>
+            </div>
             <p class="muted">Peso objetivo: {{ run.estimatedTargetWeightDate ? (run.estimatedTargetWeightDate | date:'d MMM, y') : 'No alcanzado en el horizonte' }}</p>
             <p class="muted">Cumplimiento IBA ≥ 80: {{ run.estimatedComplianceDate ? (run.estimatedComplianceDate | date:'d MMM, y') : 'No alcanzado' }}</p>
+          </section>
+          <section class="panel">
+            <h2 class="panel-title">Trayectoria</h2>
             <div class="chart-frame"><canvas #chartCanvas></canvas></div>
           </section>
           <section class="panel">
-            <h2 class="display" style="margin:0 0 8px;font-size:1.2rem">Eventos discretos</h2>
+            <h2 class="panel-title">Eventos discretos</h2>
             @if (events.length === 0) {
               <app-empty-state icon="analytics-outline" title="Sin eventos" hint="Este escenario no disparó transiciones ni incidentes." />
             } @else {
               @for (event of events; track event.id) {
-                <article class="animal-row">
+                <article class="animal-row timeline-item">
                   <strong>{{ eventLabel[event.eventType] }}</strong>
-                  <p class="muted" style="margin:4px 0 0">
+                  <p class="muted">
                     {{ event.eventDate | date:'d MMM, y' }}
                     @if (event.fromStage && event.toStage && event.fromStage !== event.toStage) {
                       · {{ stage[event.fromStage] || event.fromStage }} → {{ stage[event.toStage] || event.toStage }}
@@ -93,16 +106,20 @@ export class SimulationDetailPage implements AfterViewInit, OnDestroy {
           {
             label: 'Peso (kg)',
             data: this.snapshots.filter((_, index) => index % 7 === 0 || index === this.snapshots.length - 1).map((snapshot) => snapshot.weightKg),
-            borderColor: '#14352A',
-            backgroundColor: 'rgba(20,53,42,0.12)',
-            tension: 0.3,
+            borderColor: '#10261d',
+            backgroundColor: 'rgba(16,38,29,0.10)',
+            tension: 0.35,
+            fill: true,
+            pointRadius: 3,
             yAxisID: 'y'
           },
           {
             label: 'IBA',
             data: this.snapshots.filter((_, index) => index % 7 === 0 || index === this.snapshots.length - 1).map((snapshot) => snapshot.welfareIndex),
-            borderColor: '#C45C26',
-            tension: 0.3,
+            borderColor: '#c45a28',
+            backgroundColor: 'rgba(196,90,40,0.08)',
+            tension: 0.35,
+            pointRadius: 3,
             yAxisID: 'y1'
           }
         ]
@@ -110,10 +127,10 @@ export class SimulationDetailPage implements AfterViewInit, OnDestroy {
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: { legend: { labels: { font: { family: 'Outfit' } } } },
+        plugins: { legend: { labels: { font: { family: 'Sora', size: 12 }, color: '#6b6256' } } },
         scales: {
-          y: { position: 'left', ticks: { color: '#14352A' } },
-          y1: { position: 'right', min: 0, max: 100, grid: { drawOnChartArea: false }, ticks: { color: '#C45C26' } }
+          y: { position: 'left', ticks: { color: '#10261d', font: { family: 'Sora' } }, grid: { color: 'rgba(16,38,29,0.06)' } },
+          y1: { position: 'right', min: 0, max: 100, grid: { drawOnChartArea: false }, ticks: { color: '#c45a28', font: { family: 'Sora' } } }
         }
       }
     });
