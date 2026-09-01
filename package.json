@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "ng serve --host 0.0.0.0 --port 4200",
-    "build": "ionic build --prod",
+    "build": "node scripts/write-env.cjs && ionic build --prod",
     "test": "ng test --no-watch --browsers=ChromeHeadless"
   },
   "dependencies": {
@@ -17,6 +17,7 @@
     "@angular/platform-browser-dynamic": "^19.2.4",
     "@angular/router": "^19.2.4",
     "@ionic/angular": "^8.5.2",
+    "@supabase/supabase-js": "^2.112.4",
     "chart.js": "^4.4.8",
     "dexie": "^4.0.11",
     "ionicons": "^7.4.0",

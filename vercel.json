@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npx ionic build --prod",
+  "buildCommand": "npm run build",
   "outputDirectory": "dist/app/browser",
   "framework": "angular"
 }

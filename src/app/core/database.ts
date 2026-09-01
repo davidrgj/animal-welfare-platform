@@ -1,6 +1,7 @@
 import Dexie, { Table } from 'dexie';
 import { AlertRow, Animal, ComplianceFinding, Farm, Profile, SimulationEvent, SimulationRun, SimulationSnapshot, WelfarePhoto, WelfareRecord } from './models';
 import { hashSecret, newId, nowIso } from './crypto';
+import { isCloud } from './supabase.client';
 import { scoreWelfare } from './welfare-scoring';
 
 export class AnimalWelfareDatabase extends Dexie {
@@ -35,6 +36,7 @@ export class AnimalWelfareDatabase extends Dexie {
 export const database = new AnimalWelfareDatabase();
 
 export async function ensureSeed(): Promise<void> {
+  if (isCloud()) return;
   if (await database.profiles.count()) return;
 
   const producerId = newId();

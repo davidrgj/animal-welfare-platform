@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { AlertRow, Animal, ComplianceFinding, Farm, SimulationEvent, SimulationRun, SimulationSnapshot, WelfarePhoto, WelfareRecord } from './models';
 import { AuthService } from './auth.service';
+import * as cloud from './cloud.repository';
 import { newId, nowIso } from './crypto';
 import { database, ensureSeed } from './database';
 import { canAccessFarm, runDiscreteEventSimulation, SimulationDraft, visibleAlerts, visibleAnimals, visibleFarms } from './simulation';
+import { isCloud } from './supabase.client';
 import { heatStressLevel, minimumSpaceM2, scoreWelfare } from './welfare-scoring';
 
 export interface DashboardData {
@@ -25,11 +27,12 @@ export class StoreService {
   async farms(): Promise<Farm[]> {
     const user = this.auth.requireUser();
     await ensureSeed();
-    return visibleFarms(user, await database.farms.toArray()).sort((left, right) => left.name.localeCompare(right.name));
+    const rows = isCloud() ? await cloud.listFarms() : await database.farms.toArray();
+    return visibleFarms(user, rows).sort((left, right) => left.name.localeCompare(right.name));
   }
 
   async farm(id: string): Promise<Farm> {
-    const farm = await database.farms.get(id);
+    const farm = isCloud() ? await cloud.getFarm(id) : await database.farms.get(id);
     if (!farm || !canAccessFarm(this.auth.requireUser(), farm)) throw new Error('Farm not found');
     return farm;
   }
@@ -39,16 +42,22 @@ export class StoreService {
     if (input.id) {
       const current = await this.farm(input.id);
       const farm = { ...current, ...input, id: current.id, ownerId: current.ownerId };
+      if (isCloud()) return cloud.upsertFarm(farm);
       await database.farms.put(farm);
       return farm;
     }
     const farm: Farm = { ...input, id: newId(), ownerId: user.id, createdAt: nowIso() };
+    if (isCloud()) return cloud.upsertFarm(farm);
     await database.farms.add(farm);
     return farm;
   }
 
   async deleteFarm(id: string): Promise<void> {
     await this.farm(id);
+    if (isCloud()) {
+      await cloud.removeFarm(id);
+      return;
+    }
     const animals = await database.animals.where('farmId').equals(id).toArray();
     for (const animal of animals) await this.deleteAnimal(animal.id);
     await database.alerts.where('farmId').equals(id).delete();
@@ -57,14 +66,16 @@ export class StoreService {
 
   async animals(farmId?: string): Promise<Animal[]> {
     const user = this.auth.requireUser();
-    const farms = await database.farms.toArray();
-    let animals = visibleAnimals(user, farms, await database.animals.toArray());
+    await ensureSeed();
+    const farms = isCloud() ? await cloud.listFarms() : await database.farms.toArray();
+    const rows = isCloud() ? await cloud.listAnimals() : await database.animals.toArray();
+    let animals = visibleAnimals(user, farms, rows);
     if (farmId) animals = animals.filter((animal) => animal.farmId === farmId);
     return animals.sort((left, right) => left.tagId.localeCompare(right.tagId));
   }
 
   async animal(id: string): Promise<Animal> {
-    const animal = await database.animals.get(id);
+    const animal = isCloud() ? await cloud.getAnimal(id) : await database.animals.get(id);
     if (!animal) throw new Error('Animal not found');
     await this.farm(animal.farmId);
     return animal;
@@ -72,7 +83,9 @@ export class StoreService {
 
   async saveAnimal(input: Omit<Animal, 'id' | 'createdAt'> & { id?: string }): Promise<Animal> {
     await this.farm(input.farmId);
-    const siblings = await database.animals.where('farmId').equals(input.farmId).toArray();
+    const siblings = isCloud()
+      ? (await cloud.listAnimals()).filter((animal) => animal.farmId === input.farmId)
+      : await database.animals.where('farmId').equals(input.farmId).toArray();
     if (siblings.some((animal) => animal.tagId === input.tagId.trim() && animal.id !== input.id)) {
       throw new Error('Tag already exists on this farm');
     }
@@ -89,12 +102,17 @@ export class StoreService {
       environmentalEnrichment: input.species === 'SWINE' ? Boolean(input.environmentalEnrichment) : null,
       createdAt: input.id ? (await this.animal(input.id)).createdAt : nowIso()
     };
+    if (isCloud()) return cloud.upsertAnimal(animal);
     await database.animals.put(animal);
     return animal;
   }
 
   async deleteAnimal(id: string): Promise<void> {
     const animal = await this.animal(id);
+    if (isCloud()) {
+      await cloud.removeAnimal(animal.id);
+      return;
+    }
     const records = await database.welfareRecords.where('animalId').equals(id).toArray();
     for (const record of records) {
       await database.complianceFindings.where('welfareRecordId').equals(record.id).delete();
@@ -113,22 +131,25 @@ export class StoreService {
 
   async recordsForAnimal(animalId: string): Promise<WelfareRecord[]> {
     await this.animal(animalId);
+    if (isCloud()) return cloud.listRecordsForAnimal(animalId);
     return (await database.welfareRecords.where('animalId').equals(animalId).toArray())
       .sort((left, right) => right.recordedAt.localeCompare(left.recordedAt));
   }
 
   async record(id: string): Promise<WelfareRecord> {
-    const record = await database.welfareRecords.get(id);
+    const record = isCloud() ? await cloud.getRecord(id) : await database.welfareRecords.get(id);
     if (!record) throw new Error('Welfare record not found');
     await this.animal(record.animalId);
     return record;
   }
 
   async findings(recordId: string): Promise<ComplianceFinding[]> {
+    if (isCloud()) return cloud.listFindings(recordId);
     return database.complianceFindings.where('welfareRecordId').equals(recordId).toArray();
   }
 
   async photos(recordId: string): Promise<WelfarePhoto[]> {
+    if (isCloud()) return cloud.listPhotos(recordId);
     return database.welfarePhotos.where('welfareRecordId').equals(recordId).toArray();
   }
 
@@ -149,14 +170,18 @@ export class StoreService {
       complianceLevel: scored.complianceLevel,
       temperatureHumidityIndex: scored.temperatureHumidityIndex
     };
-    await database.welfareRecords.add(record);
-    await database.complianceFindings.bulkAdd(scored.findings.map((finding) => ({
-      id: newId(),
-      welfareRecordId: record.id,
-      code: finding.code,
-      domain: finding.domain,
-      severity: finding.severity
-    })));
+    if (isCloud()) {
+      await cloud.insertRecord(record, scored.findings);
+    } else {
+      await database.welfareRecords.add(record);
+      await database.complianceFindings.bulkAdd(scored.findings.map((finding) => ({
+        id: newId(),
+        welfareRecordId: record.id,
+        code: finding.code,
+        domain: finding.domain,
+        severity: finding.severity
+      })));
+    }
     await this.refreshAlerts(animal, record, scored.heatStressLevel);
     return record;
   }
@@ -173,27 +198,34 @@ export class StoreService {
       objectUrl: URL.createObjectURL(file),
       createdAt: nowIso()
     };
+    if (isCloud()) return cloud.insertPhoto(photo, file, `${recordId}/${photo.id}`);
     await database.welfarePhotos.add(photo);
     return photo;
   }
 
   async alerts(): Promise<AlertRow[]> {
     const user = this.auth.requireUser();
-    return visibleAlerts(user, await database.farms.toArray(), await database.alerts.toArray())
-      .sort((left, right) => right.createdAt.localeCompare(left.createdAt));
+    await ensureSeed();
+    const farms = isCloud() ? await cloud.listFarms() : await database.farms.toArray();
+    const rows = isCloud() ? await cloud.listAlerts() : await database.alerts.toArray();
+    return visibleAlerts(user, farms, rows).sort((left, right) => right.createdAt.localeCompare(left.createdAt));
   }
 
   async acknowledge(alertId: string): Promise<void> {
-    const alert = await database.alerts.get(alertId);
+    const alert = isCloud() ? await cloud.getAlert(alertId) : await database.alerts.get(alertId);
     if (!alert) throw new Error('Alert not found');
     await this.farm(alert.farmId);
+    if (isCloud()) {
+      await cloud.acknowledgeAlert(alertId);
+      return;
+    }
     await database.alerts.update(alertId, { acknowledged: true });
   }
 
   async dashboard(): Promise<DashboardData> {
     const farms = await this.farms();
     const animals = await this.animals();
-    const records = await database.welfareRecords.toArray();
+    const records = isCloud() ? await cloud.listRecords() : await database.welfareRecords.toArray();
     const latest = new Map<string, WelfareRecord>();
     for (const record of [...records].sort((left, right) => right.recordedAt.localeCompare(left.recordedAt))) {
       if (!latest.has(record.animalId)) latest.set(record.animalId, record);
@@ -237,15 +269,17 @@ export class StoreService {
   async simulations(): Promise<SimulationRun[]> {
     const animals = await this.animals();
     const ids = new Set(animals.map((animal) => animal.id));
-    return (await database.simulationRuns.toArray())
-      .filter((run) => ids.has(run.animalId))
-      .sort((left, right) => right.createdAt.localeCompare(left.createdAt));
+    const runs = isCloud() ? await cloud.listRuns() : await database.simulationRuns.toArray();
+    return runs.filter((run) => ids.has(run.animalId)).sort((left, right) => right.createdAt.localeCompare(left.createdAt));
   }
 
   async simulation(id: string): Promise<{ run: SimulationRun; snapshots: SimulationSnapshot[]; events: SimulationEvent[] }> {
-    const run = await database.simulationRuns.get(id);
+    const run = isCloud() ? await cloud.getRun(id) : await database.simulationRuns.get(id);
     if (!run) throw new Error('Simulation not found');
     await this.farm(run.farmId);
+    if (isCloud()) {
+      return { run, snapshots: await cloud.listSnapshots(id), events: await cloud.listEvents(id) };
+    }
     return {
       run,
       snapshots: (await database.simulationSnapshots.where('simulationRunId').equals(id).toArray()).sort((left, right) => left.dayIndex - right.dayIndex),
@@ -259,9 +293,15 @@ export class StoreService {
     const records = await this.recordsForAnimal(animal.id);
     const result = runDiscreteEventSimulation(animal, farm, this.auth.requireUser(), records[0]?.welfareIndex ?? 75, draft);
     const run: SimulationRun = { ...result.run, id: newId(), createdAt: nowIso() };
+    const snapshots = result.snapshots.map((snapshot) => ({ ...snapshot, id: newId(), simulationRunId: run.id }));
+    const events = result.events.map((event) => ({ ...event, id: newId(), simulationRunId: run.id }));
+    if (isCloud()) {
+      await cloud.insertSimulation(run, snapshots, events);
+      return run;
+    }
     await database.simulationRuns.add(run);
-    await database.simulationSnapshots.bulkAdd(result.snapshots.map((snapshot) => ({ ...snapshot, id: newId(), simulationRunId: run.id })));
-    await database.simulationEvents.bulkAdd(result.events.map((event) => ({ ...event, id: newId(), simulationRunId: run.id })));
+    await database.simulationSnapshots.bulkAdd(snapshots);
+    await database.simulationEvents.bulkAdd(events);
     return run;
   }
 
@@ -281,10 +321,11 @@ export class StoreService {
   }
 
   private async upsertAlert(animal: Animal, code: string, shouldExist: boolean, severity: AlertRow['severity']): Promise<void> {
-    const open = (await database.alerts.where('animalId').equals(animal.id).toArray())
-      .find((alert) => alert.code === code && !alert.acknowledged);
+    const open = isCloud()
+      ? (await cloud.openAlertsForAnimal(animal.id)).find((alert) => alert.code === code)
+      : (await database.alerts.where('animalId').equals(animal.id).toArray()).find((alert) => alert.code === code && !alert.acknowledged);
     if (shouldExist && !open) {
-      await database.alerts.add({
+      const alert: AlertRow = {
         id: newId(),
         farmId: animal.farmId,
         animalId: animal.id,
@@ -292,7 +333,12 @@ export class StoreService {
         code,
         acknowledged: false,
         createdAt: nowIso()
-      });
+      };
+      if (isCloud()) {
+        await cloud.insertAlert(alert);
+        return;
+      }
+      await database.alerts.add(alert);
     }
   }
 }

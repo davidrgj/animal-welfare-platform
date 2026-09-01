@@ -22,7 +22,7 @@ export interface Profile {
   id: string;
   fullName: string;
   email: string;
-  passwordHash: string;
+  passwordHash?: string;
   documentId: string;
   phone: string;
   role: UserRole;
