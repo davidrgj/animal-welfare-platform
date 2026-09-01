@@ -65,7 +65,10 @@ export class RegisterPage {
       });
       await this.router.navigateByUrl('/app/dashboard');
     } catch (error) {
-      this.error = error instanceof Error && error.message.includes('already') ? 'Ese correo ya está registrado.' : 'No se pudo crear la cuenta.';
+      const message = error instanceof Error ? error.message : '';
+      if (message.toLowerCase().includes('already')) this.error = 'Ese correo ya está registrado.';
+      else if (message.toLowerCase().includes('confirm')) this.error = 'Desactiva confirmar correo en Authentication o revisa tu bandeja.';
+      else this.error = 'No se pudo crear la cuenta.';
     }
   }
 }
