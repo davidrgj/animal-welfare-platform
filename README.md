@@ -27,3 +27,7 @@ También `vet@farm.local` / `Vet123!` y `admin@farm.local` / `Admin123!`
 ## Stack
 
 PWA con Ionic y Angular. El puntaje está en `src/app/core/welfare-scoring.ts`. La simulación está en `src/app/core/simulation.ts`.
+
+## Publicar en Vercel
+
+`ng build` no genera `www` (eso era Ionic/Cordova). El builder de Angular 19 deja el sitio estático en `dist/app/browser`. El archivo `vercel.json` apunta ahí; no hace falta configurar un Output Directory llamado `www`.
