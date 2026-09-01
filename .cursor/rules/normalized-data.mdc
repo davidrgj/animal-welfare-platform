@@ -1,0 +1,37 @@
+---
+description: Forbids dirty code — normalized data model, no junk JSON or sloppy shortcuts
+alwaysApply: true
+---
+
+# Do not write dirty code
+
+Simplicity ≠ sloppy shortcuts. Code must be clean, normalized, and aligned with the project. **Forbidden** to solve with “whatever compiles”.
+
+## Data model (mandatory)
+
+- Entities with **several items / options / relations** → **tables and FKs**, not a `json`/`text` column storing the whole tree.
+- Parent → children → grandchildren when it applies (e.g. form → fields → options).
+- JSON in the DB only if the project **already** uses it for that case **and** the data is opaque, not queryable or relational.
+
+| Incorrect | Correct |
+|---|---|
+| `fields` JSON column with name, type, options[] | `forms` + `form_fields` + `form_field_options` |
+| Stuff lists, catalogs or trees into a blob | Rows, `sort_order`, `is_required`, cascades |
+| “Faster to prototype this way” | Production-usable design from the first commit |
+
+## Code (mandatory)
+
+- Follow patterns **already present** in the module (controller, model, list/form, transactions, validations).
+- Do not invent odd schemas, cryptic names, or mix responsibilities “for convenience”.
+- Do not leave obvious debt (enable/disable by blindly sending the whole object, mutating list DTOs, half validations).
+- If you doubt blob vs tables: **tables**. Always.
+
+## Before touching the DB or a new CRUD
+
+1. Is this queried, edited per item, or reused? → tables.
+2. Is there a sibling module with children/sync? → copy that pattern.
+3. Am I stuffing a nested array into a single column? → **stop and normalize**.
+
+## If the user asks for clean / well done
+
+Do not offer the dirty shortcut. Implement the correct design the first time.

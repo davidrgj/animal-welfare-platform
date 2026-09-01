@@ -1,0 +1,41 @@
+---
+description: Visible date/time format in UI (es-CO)
+alwaysApply: true
+---
+
+# Date format in UI
+
+Mandatory. Present and future.
+
+## Standard format (absolute)
+
+For dates/times **shown** to the user (not form inputs):
+
+`d MMM, y hh:mm a`
+
+Example: `9 jun, 2026 11:00 p. m.`
+
+```ts
+this.datePipe.transform(value, 'd MMM, y hh:mm a')
+// or in template:
+{{ value | date:'d MMM, y hh:mm a' }}
+```
+
+Date only: `d MMM, y` → `9 jun, 2026`
+Time only: `hh:mm a` → `11:00 p. m.`
+
+## Forbidden in visible text
+
+- `dd/MM/yyyy`, `dd/MM/yyyy HH:mm`
+- `yyyy-MM-dd HH:mm` in UI (allowed in APIs/controls)
+- Native `datetime-local` display as a reading format
+
+## Form inputs
+
+- Editable date: `app-floating-date-picker` (corporate calendar)
+- Editable time: `ion-input type="time"`
+- Do not invent a `datetime-local` when the sibling module already uses separate date + time
+
+## Relative
+
+If the module already uses “Hace X min/h”, keep it; when switching to absolute, use the format above.

@@ -1,0 +1,38 @@
+---
+description: Natural English CSS class names, no BEM __
+alwaysApply: true
+---
+
+# CSS class names
+
+Mandatory. Class names must look human-written, not generated.
+
+## Rules
+
+- Write class names in **simple natural English** (kebab-case).
+- **Never** use BEM element separators (`__`). Prefer `panel-header`, not `panel__header`.
+- Do not over-engineer names. Keep them short and obvious.
+- Modifiers with a hyphenated suffix are fine: `home-panel-animated`, `alert-card-unread`.
+- Match nearby naming in the file before inventing a new pattern.
+
+## Examples
+
+| Incorrect | Correct |
+|---|---|
+| `home-panel__header` | `home-panel-header` |
+| `alert-card__meta` | `alert-card-meta` |
+| `table-header-row__title-col` | `table-header-title` |
+
+## In SCSS
+
+Do not nest with `&__child`. Use a flat name or `&-child` (no `__` in the output):
+
+```scss
+// Incorrect
+.home-panel {
+  &__header { ... }
+}
+
+// Correct
+.home-panel-header { ... }
+```

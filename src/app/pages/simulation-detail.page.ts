@@ -1,0 +1,121 @@
+import { DatePipe } from '@angular/common';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { Chart } from 'chart.js/auto';
+import { EVENT_LABEL, FEED_LABEL, SCENARIO_LABEL, STAGE_LABEL } from '../core/labels';
+import { SimulationEvent, SimulationRun, SimulationSnapshot } from '../core/models';
+import { StoreService } from '../core/store.service';
+import { EmptyStateComponent } from '../shared/empty-state.component';
+
+@Component({
+  selector: 'app-simulation-detail',
+  standalone: true,
+  imports: [DatePipe, IonContent, IonHeader, IonTitle, IonToolbar, EmptyStateComponent],
+  template: `
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>{{ run?.name || 'Escenario' }}</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      @if (run) {
+        <div class="page-body stack">
+          <section class="panel">
+            <p class="muted">{{ feed[run.feedType] }} · {{ scenario[run.scenario] }} · {{ run.horizonDays }} días</p>
+            <p>Peso final {{ run.finalWeightKg }} kg · IBA proyectado {{ run.finalWelfareIndex }}</p>
+            <p class="muted">Peso objetivo: {{ run.estimatedTargetWeightDate ? (run.estimatedTargetWeightDate | date:'d MMM, y') : 'No alcanzado en el horizonte' }}</p>
+            <p class="muted">Cumplimiento IBA ≥ 80: {{ run.estimatedComplianceDate ? (run.estimatedComplianceDate | date:'d MMM, y') : 'No alcanzado' }}</p>
+            <div class="chart-frame"><canvas #chartCanvas></canvas></div>
+          </section>
+          <section class="panel">
+            <h2 class="display" style="margin:0 0 8px;font-size:1.2rem">Eventos discretos</h2>
+            @if (events.length === 0) {
+              <app-empty-state icon="analytics-outline" title="Sin eventos" hint="Este escenario no disparó transiciones ni incidentes." />
+            } @else {
+              @for (event of events; track event.id) {
+                <article class="animal-row">
+                  <strong>{{ eventLabel[event.eventType] }}</strong>
+                  <p class="muted" style="margin:4px 0 0">
+                    {{ event.eventDate | date:'d MMM, y' }}
+                    @if (event.fromStage && event.toStage && event.fromStage !== event.toStage) {
+                      · {{ stage[event.fromStage] || event.fromStage }} → {{ stage[event.toStage] || event.toStage }}
+                    }
+                  </p>
+                </article>
+              }
+            }
+          </section>
+        </div>
+      }
+    </ion-content>
+  `
+})
+export class SimulationDetailPage implements AfterViewInit, OnDestroy {
+  @ViewChild('chartCanvas') chartCanvas?: ElementRef<HTMLCanvasElement>;
+  run: SimulationRun | null = null;
+  snapshots: SimulationSnapshot[] = [];
+  events: SimulationEvent[] = [];
+  chart: Chart | null = null;
+  readonly feed = FEED_LABEL;
+  readonly scenario = SCENARIO_LABEL;
+  readonly eventLabel = EVENT_LABEL;
+  readonly stage = STAGE_LABEL;
+
+  constructor(
+    private readonly store: StoreService,
+    private readonly route: ActivatedRoute,
+    private readonly changeDetector: ChangeDetectorRef
+  ) {}
+
+  async ngAfterViewInit(): Promise<void> {
+    const id = this.route.snapshot.paramMap.get('id') ?? '';
+    const detail = await this.store.simulation(id);
+    this.run = detail.run;
+    this.snapshots = detail.snapshots;
+    this.events = detail.events;
+    this.changeDetector.detectChanges();
+    this.draw();
+  }
+
+  ngOnDestroy(): void {
+    this.chart?.destroy();
+  }
+
+  private draw(): void {
+    const canvas = this.chartCanvas?.nativeElement;
+    if (!canvas || this.snapshots.length === 0) return;
+    this.chart = new Chart(canvas, {
+      type: 'line',
+      data: {
+        labels: this.snapshots.filter((_, index) => index % 7 === 0 || index === this.snapshots.length - 1).map((snapshot) => snapshot.simulatedDate.slice(5)),
+        datasets: [
+          {
+            label: 'Peso (kg)',
+            data: this.snapshots.filter((_, index) => index % 7 === 0 || index === this.snapshots.length - 1).map((snapshot) => snapshot.weightKg),
+            borderColor: '#14352A',
+            backgroundColor: 'rgba(20,53,42,0.12)',
+            tension: 0.3,
+            yAxisID: 'y'
+          },
+          {
+            label: 'IBA',
+            data: this.snapshots.filter((_, index) => index % 7 === 0 || index === this.snapshots.length - 1).map((snapshot) => snapshot.welfareIndex),
+            borderColor: '#C45C26',
+            tension: 0.3,
+            yAxisID: 'y1'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { labels: { font: { family: 'Outfit' } } } },
+        scales: {
+          y: { position: 'left', ticks: { color: '#14352A' } },
+          y1: { position: 'right', min: 0, max: 100, grid: { drawOnChartArea: false }, ticks: { color: '#C45C26' } }
+        }
+      }
+    });
+  }
+}

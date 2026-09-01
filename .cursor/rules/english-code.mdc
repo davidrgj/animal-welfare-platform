@@ -1,0 +1,12 @@
+---
+description: All source code in English; UI copy in Spanish
+alwaysApply: true
+---
+
+# Source code language
+
+Mandatory. All source code must be in **English**: identifiers, file names, packages, comments, commit-oriented technical terms, enum values, CSS classes, and API field names.
+
+Do not use Spanish or Spanglish in code.
+
+User-visible UI copy stays in **Spanish**, sentence case, as defined in the UI copy rule.

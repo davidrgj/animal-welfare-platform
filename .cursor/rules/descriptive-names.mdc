@@ -1,0 +1,10 @@
+---
+description: Descriptive names and minimal comments in code
+alwaysApply: true
+---
+
+# Code style
+
+- Use **full, clear names** for variables, methods, classes, and files (`incomingFreightPoints`, `originTownRecord`, `freightTransporterIdentifiers`). Avoid cryptic abbreviations (`p`, `d`, `a`, `b`, `tmp`) except very local loop indexes where context is obvious.
+- **Comments**: do not saturate the code with inline comments. Document only what is **non-obvious** or **complex** (business rules, tradeoffs, external API limits). Do not comment every basic function.
+- All source code (identifiers, comments, file names, packages) must be in **English**. No Spanish or Spanglish in code. User-visible UI copy stays in Spanish, sentence case.

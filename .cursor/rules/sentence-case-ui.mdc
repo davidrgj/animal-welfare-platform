@@ -1,0 +1,31 @@
+---
+description: User-visible copy in sentence case, never Title Case
+alwaysApply: true
+---
+
+# UI in Spanish: sentence case, not Title Case
+
+In **labels**, **modal titles**, **buttons**, **table columns**, **breadcrumbs**, **notifications**, **placeholders**, and any user-visible text, use **sentence case** (only the first word capitalized).
+
+## Avoid
+
+- Title Case: `Registrar Plantilla`, `Vista Previa del Correo`, `Notificaciones Activas`, `Correo Electrónico`, `Acciones Automáticas`.
+
+## Prefer
+
+- Sentence case: `Registrar plantilla`, `Vista previa del correo`, `Notificaciones activas`, `Correo electrónico`, `Acciones automáticas`.
+
+## Exceptions (keep capitals)
+
+- Brands and acronyms: WhatsApp, ETA, SMS, HTML, API, GPS, ICA, etc.
+- Proper product or company names when they apply.
+
+## Examples
+
+| Incorrect | Correct |
+|------------|----------|
+| Registrar Plantilla | Registrar plantilla |
+| Vista Previa del WhatsApp | Vista previa de WhatsApp |
+| Nombre Plantilla | Nombre de plantilla |
+| Escalar con Supervisor | Escalar con supervisor |
+| Tipo de Impacto | Tipo de impacto |
