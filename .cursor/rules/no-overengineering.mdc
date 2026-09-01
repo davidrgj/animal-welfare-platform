@@ -1,0 +1,48 @@
+---
+description: Do not over-engineer — evaluate if an extra service, file or layer is needed before creating it
+alwaysApply: true
+---
+
+# Simplicity: do not exaggerate layers or files
+
+In **any** task (backend, frontend, integrations, refactors), prefer the **minimum readable** change. Do not split by default.
+
+## Before creating something new, ask
+
+1. Does this belong in the **controller**, the **component**, or the **class that already exists** as a private method or a clear block?
+2. Is the logic reused across **several modules or entrypoints**? If not, do not extract.
+3. Would the new file have **fewer than ~40–50 useful lines**? It probably is not needed.
+4. Am I creating `*Service`, `*Resolver`, `*Mapper`, `*Calculator`, `*Handler` for each step of a flow? Unify into one class per **broad domain** (risk, route, tracking, billing, etc.).
+
+## Prefer
+
+- **One place** where the full flow can be read (controller + model, or one service per domain, not five).
+- **`private` methods** inside the class that already handles the use case.
+- **Extend** existing code in the same module before adding folders or layers.
+- **SOLID with common sense**: a broad responsibility is fine; 10-line micro-classes are not.
+
+## Avoid unless explicitly requested
+
+- Services that only wrap a model call or three lines of calculation.
+- Single-use utils in a single component (leave the logic in the component).
+- Tests that only repeat the obvious from the framework.
+- Abstractions “just in case” for cases that do not exist today.
+- Documentation or comments that repeat what the code already says.
+
+## When a separate file or service does make sense
+
+- External integration (HTTP, queue, Lambda, third parties) with non-trivial logic.
+- The same block used from **several** controllers, jobs, or packages.
+- A large serializer/transform that would dirty the controller (>100 lines of repeated mapping).
+- A small but shared and stable DTO/value object.
+
+## Frontend (Angular)
+
+- Calculations and state of **one screen** → component methods.
+- Shared util only if **several** screens already use it or you will use it in at least two confirmed places.
+
+## Backend
+
+- CRUD and simple rules → controller + model (or the project’s existing equivalent).
+- Business rule of a single module → one service per domain, not a chain of resolvers.
+- Do not create extra service folders by inertia: if it fits in the controller **and** stays clear, leave it there.

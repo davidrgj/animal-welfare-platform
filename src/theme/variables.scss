@@ -1,0 +1,47 @@
+:root {
+  --ink: #1d1d1f;
+  --muted: #86868b;
+  --paper: #f5f5f7;
+  --paper-strong: #ffffff;
+  --pine: #1d1d1f;
+  --accent: #007aff;
+  --ok: #34c759;
+  --warn: #ff9500;
+  --danger: #ff3b30;
+  --line: rgba(60, 60, 67, 0.12);
+  --line-strong: rgba(60, 60, 67, 0.18);
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-deep: 0 8px 24px rgba(0, 0, 0, 0.06);
+  --radius: 12px;
+  --font-display: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+
+  --ion-font-family: var(--font-body);
+  --ion-background-color: var(--paper);
+  --ion-text-color: var(--ink);
+  --ion-toolbar-background: rgba(249, 249, 249, 0.94);
+  --ion-toolbar-color: var(--ink);
+  --ion-item-background: #ffffff;
+  --ion-color-primary: #007aff;
+  --ion-color-primary-rgb: 0, 122, 255;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #0062cc;
+  --ion-color-primary-tint: #1a86ff;
+  --ion-color-danger: #ff3b30;
+  --ion-color-danger-rgb: 255, 59, 48;
+  --ion-color-danger-contrast: #ffffff;
+  --ion-color-danger-contrast-rgb: 255, 255, 255;
+  --ion-color-danger-shade: #e6352b;
+  --ion-color-danger-tint: #ff4f45;
+
+  --skeleton-fill: rgba(120, 120, 128, 0.16);
+  --skeleton-surface-from: rgba(255, 255, 255, 0.9);
+  --skeleton-surface-to: rgba(120, 120, 128, 0.1);
+}
+
+ion-skeleton-text {
+  --background: var(--skeleton-fill);
+  --background-rgb: 120, 120, 128;
+  --border-radius: 8px;
+}

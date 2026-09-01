@@ -1,0 +1,71 @@
+.glass-card,
+.kpi-tile,
+.panel,
+.alert-card,
+.animal-row,
+.farm-card,
+.empty-state,
+.auth-panel,
+.hero-card:not(.hero-ink) {
+  position: relative;
+  background: #ffffff;
+  border: none;
+  box-shadow: none;
+}
+
+.empty-state {
+  border-radius: 12px;
+  padding: 2.2rem 1.4rem 1.8rem;
+  text-align: center;
+  display: grid;
+  justify-items: center;
+  gap: 0.35rem;
+}
+
+.empty-state-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  margin-bottom: 0.45rem;
+  background: #f2f2f7;
+  color: #8e8e93;
+  font-size: 1.7rem;
+}
+
+.empty-state-title {
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.empty-state-hint {
+  margin: 0;
+  max-width: 34ch;
+  color: var(--muted);
+  font-size: 0.94rem;
+  line-height: 1.45;
+}
+
+.skeleton-surface {
+  background: linear-gradient(90deg, var(--skeleton-surface-from), var(--skeleton-surface-to));
+}
+
+.skeleton-circle {
+  width: 40px;
+  height: 40px;
+  --border-radius: 50%;
+}
+
+.skeleton-pill {
+  height: 12px;
+  width: 48%;
+}
+
+.skeleton-block {
+  height: 88px;
+  width: 100%;
+}

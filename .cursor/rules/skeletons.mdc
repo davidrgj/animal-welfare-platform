@@ -1,0 +1,33 @@
+---
+description: Skeletons and visual loading unified in the global theme
+alwaysApply: true
+---
+
+# Skeletons and visual loading
+
+Mandatory. Never invent a one-off skeleton look per screen.
+
+## Source of truth
+
+- Contrast and fill: CSS vars `--skeleton-fill`, `--skeleton-surface-*` in `variables.scss`
+- Base styles: `ion-skeleton-text`, `.skeleton-surface`, `.skeleton-circle`, `.skeleton-pill`, `.skeleton-block` in `glassmorphism.scss`
+
+## Rules
+
+- Prefer the global utilities. Local SCSS may set **only** width/height/layout.
+- Do **not** redefine `--background`, border-radius, or glass fill for skeletons in a component.
+- If Angular encapsulation blocks a global surface class on a local card (e.g. `.kpi-tile`), reuse the **same CSS variables**, not a new palette.
+- Spinners (`ion-spinner`) are not a substitute for content placeholders when the layout already has cards/tiles/tables.
+
+## Examples
+
+```html
+<!-- Correct -->
+<div class="kpi-tile skeleton-surface">
+  <ion-skeleton-text animated class="skeleton-circle"></ion-skeleton-text>
+  <ion-skeleton-text animated></ion-skeleton-text>
+</div>
+
+<!-- Incorrect: local fill / random radius -->
+ion-skeleton-text { --background: rgba(255,255,255,.05); border-radius: 10px; }
+```

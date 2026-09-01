@@ -1,0 +1,39 @@
+---
+description: Imports on a single line (no breaks inside {})
+alwaysApply: true
+---
+
+# Imports on a single line
+
+Mandatory. Present and future.
+
+## Rule
+
+`import` statements with braces (`{ ... }`) are **always** on a single line. Do not split the symbol list across several lines.
+
+```ts
+// Incorrect
+import {
+	albumsOutline,
+	bookmarksOutline,
+	checkmarkOutline,
+} from 'ionicons/icons';
+
+// Correct
+import { albumsOutline, bookmarksOutline, checkmarkOutline } from 'ionicons/icons';
+```
+
+## Applies to
+
+- `import { ... } from '...'`
+- `import type { ... } from '...'`
+- Any list of bindings between `{ }` in an import
+
+## Does not apply to
+
+- One `import` per module remains a separate statement (do not merge imports from different paths).
+- Re-exports or code that is not an `import`.
+
+## When editing
+
+If you find or generate a multiline import, collapse it to one line before finishing.

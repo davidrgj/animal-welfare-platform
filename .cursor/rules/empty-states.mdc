@@ -1,0 +1,52 @@
+---
+description: Empty states — card with icon, title and hint (no loose text)
+alwaysApply: true
+---
+
+# Empty states / no data
+
+Mandatory. Present and future.
+
+When a section has no data, is pending, or does not apply, **do not** show only a paragraph in an empty gap.
+
+## Required pattern
+
+Use the shared empty state from `glassmorphism.scss`:
+
+```html
+<div class="empty-state">
+  <div class="empty-state-icon">
+    <ion-icon name="clipboard-outline" aria-hidden="true"></ion-icon>
+  </div>
+  <p class="empty-state-title">Short title</p>
+  <p class="empty-state-hint">One line that explains what is missing or what will happen.</p>
+</div>
+```
+
+Visual reference: `trip-empty-state` (same look: circular icon, title, hint).
+
+## Rules
+
+- Title in sentence case, short.
+- Brief hint; no long paragraphs.
+- Existing project icon (`ionicons`), matching the context.
+- Do not invent a different empty state per screen (other colors, odd cards, spinners as a substitute).
+- If the block already has a section header, the empty state goes in the body; do not repeat the same title twice unless needed.
+
+## Incorrect
+
+```html
+<p class="algo-hint">Esta novedad no tiene plantilla de campos configurada.</p>
+```
+
+## Correct
+
+```html
+<div class="empty-state">
+  <div class="empty-state-icon">
+    <ion-icon name="clipboard-outline" aria-hidden="true"></ion-icon>
+  </div>
+  <p class="empty-state-title">Sin plantilla de gestión</p>
+  <p class="empty-state-hint">Esta novedad no tiene plantilla de campos configurada.</p>
+</div>
+```
