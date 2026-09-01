@@ -1,0 +1,23 @@
+---
+description: Commits must be authored only by David Ramirez, never Cursor
+alwaysApply: true
+---
+
+# Git authorship
+
+Mandatory. Every commit in this repository must be **David Ramirez** only.
+
+## Identity
+
+- Name: `David Ramirez`
+- Email: `rxgdavid@gmail.com`
+
+Set `user.name` and `user.email` to those values before committing. Pass the same identity as `GIT_AUTHOR_*` and `GIT_COMMITTER_*` if the environment defaults to something else.
+
+## Never
+
+- Author or committer `Cursor`, `Cursor Agent`, or `cursoragent@cursor.com`
+- `Co-authored-by: Cursor` or any Cursor co-author trailer
+- A Cursor author with the user as co-author (or the reverse)
+
+If a hook or wrapper injects a Cursor trailer, strip it before the commit is created (or amend immediately so HEAD has no Cursor attribution).
