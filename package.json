@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "ng serve --host 0.0.0.0 --port 4200",
-    "build": "ng build --configuration=production",
+    "build": "ionic build --prod",
     "test": "ng test --no-watch --browsers=ChromeHeadless"
   },
   "dependencies": {
@@ -28,6 +28,7 @@
     "@angular-devkit/build-angular": "^19.2.5",
     "@angular/cli": "^19.2.5",
     "@angular/compiler-cli": "^19.2.4",
+    "@ionic/cli": "^7.2.1",
     "typescript": "~5.7.3"
   }
 }

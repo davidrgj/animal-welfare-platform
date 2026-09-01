@@ -30,4 +30,6 @@ PWA con Ionic y Angular. El puntaje está en `src/app/core/welfare-scoring.ts`. 
 
 ## Publicar en Vercel
 
-`ng build` no genera `www` (eso era Ionic/Cordova). El builder de Angular 19 deja el sitio estático en `dist/app/browser`. El archivo `vercel.json` apunta ahí; no hace falta configurar un Output Directory llamado `www`.
+El comando de compilación debe ser `npx ionic build` (o `npm run build`), no `ionic build` a secas: en Vercel el CLI de Ionic no está en el PATH a menos que se invoque con `npx` o un script de npm.
+
+`ionic build` en este proyecto llama a Angular y **tampoco genera `www`**. La carpeta que hay que publicar es `dist/app/browser`.
