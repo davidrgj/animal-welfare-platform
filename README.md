@@ -1,29 +1,29 @@
-# Animal welfare platform
+# Plataforma de bienestar animal
 
-Prototype for monitoring and simulating livestock welfare (cattle, goats, swine) against ICA five-freedom rules.
+Prototipo para monitorear y simular el bienestar de bovinos, caprinos y porcinos según las cinco libertades del ICA.
 
-There is **no custom backend**. The ICA index, heat-stress model and discrete-event simulation run in the browser. Data is stored in IndexedDB (same tables as `supabase/schema.sql` if you later attach Postgres).
+No hay backend propio. El índice ICA, el modelo de estrés calórico y la simulación de eventos discretos corren en el navegador. Los datos se guardan en IndexedDB (las mismas tablas que `supabase/schema.sql` si más adelante se conecta Postgres).
 
-## Run
+## Cómo ejecutarlo
 
 ```bash
 npm install
 npm start
 ```
 
-Open http://localhost:4200
+Abre http://localhost:4200
 
-Demo user: `producer@farm.local` / `Producer123!`  
-Also `vet@farm.local` / `Vet123!` and `admin@farm.local` / `Admin123!`
+Usuario de demostración: `producer@farm.local` / `Producer123!`  
+También `vet@farm.local` / `Vet123!` y `admin@farm.local` / `Admin123!`
 
-## What it does
+## Qué hace
 
-- Farm and animal inventory, with species-specific fields
-- Welfare assessment (nutrition, environment, health, behaviour, handling)
-- Weighted **welfare index**, ICA traffic light, THI heat-stress class
-- Discrete-event simulation of diet and climate scenarios
-- Alerts and printable farm reports
+- Inventario de predios y animales, con campos por especie
+- Evaluación de bienestar (nutrición, entorno, salud, conducta y manejo)
+- Índice de bienestar ponderado, semáforo ICA y clase de estrés calórico (THI)
+- Simulación de eventos discretos para dieta y clima
+- Alertas y reportes imprimibles por predio
 
 ## Stack
 
-Ionic + Angular PWA. Scoring lives in `src/app/core/welfare-scoring.ts`. Simulation lives in `src/app/core/simulation.ts`.
+PWA con Ionic y Angular. El puntaje está en `src/app/core/welfare-scoring.ts`. La simulación está en `src/app/core/simulation.ts`.
