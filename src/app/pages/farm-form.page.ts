@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { IonButton, IonContent, IonHeader, IonInput, IonItem, IonList, IonSelect, IonSelectOption, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonInput, IonItem, IonList, IonSelect, IonSelectOption, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { OPTIONS } from '../core/labels';
 import { WaterSource } from '../core/models';
 import { StoreService } from '../core/store.service';
@@ -9,16 +9,20 @@ import { StoreService } from '../core/store.service';
 @Component({
   selector: 'app-farm-form',
   standalone: true,
-  imports: [FormsModule, IonButton, IonContent, IonHeader, IonInput, IonItem, IonList, IonSelect, IonSelectOption, IonTitle, IonToolbar],
+  imports: [FormsModule, IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonInput, IonItem, IonList, IonSelect, IonSelectOption, IonTitle, IonToolbar],
   template: `
     <ion-header>
       <ion-toolbar>
-        <ion-title>{{ farmId ? 'Editar predio' : 'Nueva finca' }}</ion-title>
+        <ion-buttons slot="start">
+          <ion-back-button defaultHref="/app/farms" text="Atrás"></ion-back-button>
+        </ion-buttons>
+        <ion-title>{{ farmId ? 'Editar predio' : 'Nuevo predio' }}</ion-title>
       </ion-toolbar>
     </ion-header>
     <ion-content>
       <form class="page-body stack" (ngSubmit)="save()">
-        <p class="page-kicker">Unidad productiva</p>
+        <p class="page-kicker">Paso 1</p>
+        <p class="page-lead">Datos del predio. Luego podrás dar de alta animales aquí.</p>
         <ion-list class="panel">
           <ion-item><ion-input label="Nombre del predio" labelPlacement="stacked" [(ngModel)]="name" name="name" required></ion-input></ion-item>
           <ion-item><ion-input label="Registro único de vacunación" labelPlacement="stacked" [(ngModel)]="vaccinationRegistry" name="ruv" required></ion-input></ion-item>
@@ -35,10 +39,12 @@ import { StoreService } from '../core/store.service';
           <ion-item><ion-input label="Municipio" labelPlacement="stacked" [(ngModel)]="municipality" name="muni"></ion-input></ion-item>
         </ion-list>
         @if (error) { <p class="error-text">{{ error }}</p> }
-        <ion-button expand="block" type="submit">Guardar predio</ion-button>
-        @if (farmId) {
-          <ion-button expand="block" fill="outline" color="danger" type="button" (click)="remove()">Eliminar predio</ion-button>
-        }
+        <div class="form-actions">
+          <ion-button expand="block" type="submit">Guardar predio</ion-button>
+          @if (farmId) {
+            <ion-button expand="block" fill="outline" color="danger" type="button" (click)="remove()">Eliminar predio</ion-button>
+          }
+        </div>
       </form>
     </ion-content>
   `

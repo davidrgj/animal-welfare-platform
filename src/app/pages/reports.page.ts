@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { IonButton, IonContent, IonHeader, IonItem, IonList, IonSelect, IonSelectOption, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonItem, IonList, IonSelect, IonSelectOption, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { Animal, Farm, WelfareRecord } from '../core/models';
 import { COMPLIANCE_LABEL, SPECIES_LABEL, complianceClass } from '../core/labels';
 import { StoreService } from '../core/store.service';
@@ -10,17 +10,20 @@ import { EmptyStateComponent } from '../shared/empty-state.component';
 @Component({
   selector: 'app-reports',
   standalone: true,
-  imports: [DatePipe, FormsModule, IonButton, IonContent, IonHeader, IonItem, IonList, IonSelect, IonSelectOption, IonTitle, IonToolbar, EmptyStateComponent],
+  imports: [DatePipe, FormsModule, IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonItem, IonList, IonSelect, IonSelectOption, IonTitle, IonToolbar, EmptyStateComponent],
   template: `
     <ion-header>
       <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-back-button defaultHref="/app/profile" text="Atrás"></ion-back-button>
+        </ion-buttons>
         <ion-title>Reportes</ion-title>
       </ion-toolbar>
     </ion-header>
     <ion-content>
       <div class="page-body stack">
-        <p class="page-kicker">Cumplimiento</p>
-        <p class="page-lead">Resumen imprimible de cumplimiento ICA por predio.</p>
+        <p class="page-kicker">Cierre del ciclo</p>
+        <p class="page-lead">Elige un predio y revisa el IBA de sus animales. Puedes imprimir esta página.</p>
         <ion-list class="panel">
           <ion-item>
             <ion-select label="Predio" labelPlacement="stacked" [(ngModel)]="farmId" (ionChange)="load()">

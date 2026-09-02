@@ -22,8 +22,8 @@ import { todayIso } from '../core/crypto';
     </ion-header>
     <ion-content>
       <div class="page-body stack">
-        <p class="page-kicker">Escenarios</p>
-        <p class="page-lead">Proyecta peso, etapa y cumplimiento ICA antes de cambiar dieta o ambiente.</p>
+        <p class="page-kicker">Después de evaluar</p>
+        <p class="page-lead">Con un animal ya evaluado, proyecta qué pasa si cambia la dieta o el clima.</p>
         <form class="panel stack" (ngSubmit)="run()">
           <h2 class="panel-title">Nuevo escenario</h2>
           <ion-list>
@@ -49,7 +49,9 @@ import { todayIso } from '../core/crypto';
           </ion-list>
           <app-floating-date-picker label="Fecha de inicio" [(value)]="startDate" />
           @if (error) { <p class="error-text">{{ error }}</p> }
-          <ion-button expand="block" type="submit" [disabled]="!animalId">Correr simulación</ion-button>
+          <div class="form-actions">
+            <ion-button expand="block" type="submit" [disabled]="!animalId">Correr simulación</ion-button>
+          </div>
         </form>
         @if (runs.length === 0) {
           <app-empty-state icon="flask-outline" title="Sin escenarios" hint="Elige un animal y un estrés (sequía, calor, dieta) para proyectar el lote." />

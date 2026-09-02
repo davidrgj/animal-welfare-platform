@@ -15,7 +15,7 @@ import { OPTIONS } from '../core/labels';
       <div class="auth-screen">
         <div class="auth-form-wrap">
           <h1 class="display auth-title">Crear cuenta</h1>
-          <p class="page-lead">Productor, veterinario o administración del predio.</p>
+          <p class="page-lead">Crea una cuenta para registrar predios, animales y evaluaciones ICA.</p>
           <form class="auth-panel stack" (ngSubmit)="submit()">
             <ion-list [inset]="true">
               <ion-item><ion-input label="Nombre completo" labelPlacement="stacked" [(ngModel)]="fullName" name="fullName" required></ion-input></ion-item>

@@ -1,28 +1,28 @@
 import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { IonIcon } from '@ionic/angular/standalone';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { IonIcon, IonRouterOutlet } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-shell',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, RouterOutlet, IonIcon],
+  imports: [RouterLink, RouterLinkActive, IonIcon, IonRouterOutlet],
   template: `
     <div class="shell">
       <div class="shell-page">
-        <router-outlet></router-outlet>
+        <ion-router-outlet></ion-router-outlet>
       </div>
       <nav class="tab-bar" aria-label="Secciones">
         <a routerLink="/app/dashboard" routerLinkActive="tab-selected" [routerLinkActiveOptions]="{exact: true}">
           <ion-icon name="home-outline"></ion-icon>
           Inicio
         </a>
-        <a routerLink="/app/animals" routerLinkActive="tab-selected">
-          <ion-icon name="paw-outline"></ion-icon>
-          Animales
-        </a>
         <a routerLink="/app/farms" routerLinkActive="tab-selected">
           <ion-icon name="leaf-outline"></ion-icon>
           Predios
+        </a>
+        <a routerLink="/app/animals" routerLinkActive="tab-selected">
+          <ion-icon name="paw-outline"></ion-icon>
+          Animales
         </a>
         <a routerLink="/app/simulation" routerLinkActive="tab-selected">
           <ion-icon name="flask-outline"></ion-icon>
@@ -36,17 +36,23 @@ import { IonIcon } from '@ionic/angular/standalone';
     </div>
   `,
   styles: [`
+    :host { display: block; height: 100%; }
     .shell {
-      min-height: 100%;
-      display: grid;
-      grid-template-rows: 1fr auto;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
     }
-    .shell-page { min-height: 0; }
+    .shell-page {
+      flex: 1;
+      min-height: 0;
+      position: relative;
+    }
     .tab-bar {
+      flex: none;
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      padding: 4px 0 calc(6px + env(safe-area-inset-bottom));
-      background: rgba(249, 249, 249, 0.86);
+      padding: 6px 0 calc(8px + env(safe-area-inset-bottom));
+      background: rgba(249, 249, 249, 0.94);
       backdrop-filter: saturate(180%) blur(20px);
       border-top: 0.5px solid rgba(60, 60, 67, 0.18);
       z-index: 8;

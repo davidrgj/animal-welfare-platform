@@ -14,15 +14,15 @@ import { EmptyStateComponent } from '../shared/empty-state.component';
     <ion-header>
       <ion-toolbar>
         <ion-title>Predios</ion-title>
-        <ion-button slot="end" fill="clear" routerLink="/app/farms/new">Nueva finca</ion-button>
+        <ion-button slot="end" fill="clear" routerLink="/app/farms/new">Nuevo predio</ion-button>
       </ion-toolbar>
     </ion-header>
     <ion-content>
       <div class="page-body stack">
-        <p class="page-kicker">Unidades productivas</p>
-        <p class="page-lead">Predios georreferenciados, con RUV y fuente de agua.</p>
+        <p class="page-kicker">Paso 1</p>
+        <p class="page-lead">Aquí viven los animales. Abre un predio para editarlo o crea uno nuevo. Después pasa a Animales.</p>
         @if (farms.length === 0) {
-          <app-empty-state icon="leaf-outline" title="Sin predios" hint="Registra la primera finca para empezar el inventario animal." />
+          <app-empty-state icon="leaf-outline" title="Sin predios" hint="Registra el primer predio para empezar el inventario animal." />
         } @else {
           @for (farm of farms; track farm.id) {
             <a class="farm-card" [routerLink]="['/app/farms', farm.id]">
