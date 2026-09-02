@@ -19,7 +19,32 @@ app-root {
 
 ion-content {
   --background: transparent;
-  --padding-bottom: 12px;
+  --padding-bottom: 16px;
+}
+
+.shell-page ion-router-outlet,
+.shell-page .ion-page {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+}
+
+.shell-page .ion-page {
+  display: flex;
+  flex-direction: column;
+}
+
+.shell-page ion-header {
+  flex: none;
+}
+
+.shell-page ion-content {
+  position: relative !important;
+  top: auto !important;
+  bottom: auto !important;
+  flex: 1 1 auto;
+  height: auto !important;
+  min-height: 0;
 }
 
 ion-header {
@@ -137,7 +162,7 @@ ion-toggle {
 }
 
 .page-body {
-  padding: 16px 20px 32px;
+  padding: 16px 20px 40px;
   max-width: 980px;
   margin: 0 auto;
 }

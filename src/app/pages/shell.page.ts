@@ -16,13 +16,13 @@ import { IonIcon, IonRouterOutlet } from '@ionic/angular/standalone';
           <ion-icon name="home-outline"></ion-icon>
           Inicio
         </a>
-        <a routerLink="/app/animals" routerLinkActive="tab-selected">
-          <ion-icon name="paw-outline"></ion-icon>
-          Animales
-        </a>
         <a routerLink="/app/farms" routerLinkActive="tab-selected">
           <ion-icon name="leaf-outline"></ion-icon>
           Predios
+        </a>
+        <a routerLink="/app/animals" routerLinkActive="tab-selected">
+          <ion-icon name="paw-outline"></ion-icon>
+          Animales
         </a>
         <a routerLink="/app/simulation" routerLinkActive="tab-selected">
           <ion-icon name="flask-outline"></ion-icon>

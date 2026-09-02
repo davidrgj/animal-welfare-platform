@@ -16,7 +16,7 @@ import { StoreService } from '../core/store.service';
         <ion-buttons slot="start">
           <ion-back-button defaultHref="/app/farms" text="Atrás"></ion-back-button>
         </ion-buttons>
-        <ion-title>{{ farmId ? 'Editar predio' : 'Nueva finca' }}</ion-title>
+        <ion-title>{{ farmId ? 'Editar predio' : 'Nuevo predio' }}</ion-title>
       </ion-toolbar>
     </ion-header>
     <ion-content>

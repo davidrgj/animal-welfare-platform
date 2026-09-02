@@ -14,7 +14,7 @@ import { EmptyStateComponent } from '../shared/empty-state.component';
     <ion-header>
       <ion-toolbar>
         <ion-title>Predios</ion-title>
-        <ion-button slot="end" fill="clear" routerLink="/app/farms/new">Nueva finca</ion-button>
+        <ion-button slot="end" fill="clear" routerLink="/app/farms/new">Nuevo predio</ion-button>
       </ion-toolbar>
     </ion-header>
     <ion-content>
