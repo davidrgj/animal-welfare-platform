@@ -32,7 +32,7 @@ import { EmptyStateComponent } from '../shared/empty-state.component';
               <a routerLink="/app/farms">
                 <span class="flow-num">1</span>
                 <strong>Predio</strong>
-                <p>La finca, el agua y el registro de vacunación.</p>
+                <p>El predio, el agua y el registro de vacunación.</p>
               </a>
             </li>
             <li>

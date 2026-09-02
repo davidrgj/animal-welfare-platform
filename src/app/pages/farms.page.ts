@@ -22,7 +22,7 @@ import { EmptyStateComponent } from '../shared/empty-state.component';
         <p class="page-kicker">Paso 1</p>
         <p class="page-lead">Aquí viven los animales. Abre un predio para editarlo o crea uno nuevo. Después pasa a Animales.</p>
         @if (farms.length === 0) {
-          <app-empty-state icon="leaf-outline" title="Sin predios" hint="Registra la primera finca para empezar el inventario animal." />
+          <app-empty-state icon="leaf-outline" title="Sin predios" hint="Registra el primer predio para empezar el inventario animal." />
         } @else {
           @for (farm of farms; track farm.id) {
             <a class="farm-card" [routerLink]="['/app/farms', farm.id]">
