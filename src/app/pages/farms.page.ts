@@ -19,8 +19,8 @@ import { EmptyStateComponent } from '../shared/empty-state.component';
     </ion-header>
     <ion-content>
       <div class="page-body stack">
-        <p class="page-kicker">Unidades productivas</p>
-        <p class="page-lead">Predios georreferenciados, con RUV y fuente de agua.</p>
+        <p class="page-kicker">Paso 1</p>
+        <p class="page-lead">Aquí viven los animales. Abre un predio para editarlo o crea uno nuevo. Después pasa a Animales.</p>
         @if (farms.length === 0) {
           <app-empty-state icon="leaf-outline" title="Sin predios" hint="Registra la primera finca para empezar el inventario animal." />
         } @else {

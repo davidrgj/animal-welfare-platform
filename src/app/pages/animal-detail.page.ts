@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { IonButton, IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { Animal, ComplianceFinding, Farm, WelfareRecord } from '../core/models';
 import { COMPLIANCE_LABEL, DOMAIN_LABEL, FINDING_LABEL, HEAT_LABEL, PURPOSE_LABEL, SPECIES_LABEL, complianceClass, ibaFill, speciesMark } from '../core/labels';
 import { StoreService } from '../core/store.service';
@@ -10,10 +10,13 @@ import { EmptyStateComponent } from '../shared/empty-state.component';
 @Component({
   selector: 'app-animal-detail',
   standalone: true,
-  imports: [DatePipe, RouterLink, IonButton, IonContent, IonHeader, IonTitle, IonToolbar, EmptyStateComponent],
+  imports: [DatePipe, RouterLink, IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar, EmptyStateComponent],
   template: `
     <ion-header>
       <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-back-button defaultHref="/app/animals" text="Atrás"></ion-back-button>
+        </ion-buttons>
         <ion-title>{{ animal?.tagId || 'Animal' }}</ion-title>
       </ion-toolbar>
     </ion-header>
@@ -29,6 +32,7 @@ import { EmptyStateComponent } from '../shared/empty-state.component';
               <span [class]="speciesMark(animal.species) + ' species-mark-lg'">{{ species[animal.species].charAt(0) }}</span>
             </div>
             <p class="muted">{{ animal.breed }} · {{ purpose[animal.purpose] }} · {{ farm.name }}</p>
+            <p class="panel-lead">Registra una evaluación para actualizar el IBA y las alertas de Inicio.</p>
             <div class="stat-pair">
               <div>
                 <span>Peso actual</span>
@@ -46,6 +50,7 @@ import { EmptyStateComponent } from '../shared/empty-state.component';
           </section>
           <section class="panel">
             <h2 class="panel-title">Historial de bienestar</h2>
+            <p class="panel-lead">Cada evaluación suma un IBA. La más reciente es la que cuenta en Inicio.</p>
             @if (records.length === 0) {
               <app-empty-state icon="clipboard-outline" title="Sin evaluaciones" hint="Captura las cinco libertades para calcular el índice ICA." />
             } @else {

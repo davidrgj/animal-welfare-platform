@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { IonButton, IonContent, IonHeader, IonInput, IonItem, IonList, IonSelect, IonSelectOption, IonTextarea, IonTitle, IonToggle, IonToolbar } from '@ionic/angular/standalone';
+import { IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonInput, IonItem, IonList, IonSelect, IonSelectOption, IonTextarea, IonTitle, IonToggle, IonToolbar } from '@ionic/angular/standalone';
 import { Animal, BeddingStatus, HandlingQuality, LamenessScore, SocialInteraction } from '../core/models';
 import { OPTIONS } from '../core/labels';
 import { StoreService } from '../core/store.service';
@@ -10,17 +10,20 @@ import { nowIso } from '../core/crypto';
 @Component({
   selector: 'app-welfare-form',
   standalone: true,
-  imports: [FormsModule, IonButton, IonContent, IonHeader, IonInput, IonItem, IonList, IonSelect, IonSelectOption, IonTextarea, IonTitle, IonToggle, IonToolbar],
+  imports: [FormsModule, IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonInput, IonItem, IonList, IonSelect, IonSelectOption, IonTextarea, IonTitle, IonToggle, IonToolbar],
   template: `
     <ion-header>
       <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-back-button [defaultHref]="animal ? '/app/animals/' + animal.id : '/app/animals'" text="Atrás"></ion-back-button>
+        </ion-buttons>
         <ion-title>Evaluación de bienestar</ion-title>
       </ion-toolbar>
     </ion-header>
     <ion-content>
       <form class="page-body stack" (ngSubmit)="save()">
-        <p class="page-kicker">Cinco libertades</p>
-        <p class="page-lead">Cinco libertades ICA para {{ animal?.tagId }}. El índice se calcula al guardar.</p>
+        <p class="page-kicker">Paso 3</p>
+        <p class="page-lead">Cómo está {{ animal?.tagId }}. Al guardar se calcula el IBA y, si algo falla, sale aviso en Inicio.</p>
         <ion-list class="panel">
           <ion-item><ion-input label="Condición corporal (1-5)" labelPlacement="stacked" type="number" min="1" max="5" [(ngModel)]="bodyConditionScore" name="bcs" required></ion-input></ion-item>
           <ion-item><ion-input label="Tomas de agua al día" labelPlacement="stacked" type="number" min="0" [(ngModel)]="hydrationTimesPerDay" name="water" required></ion-input></ion-item>
@@ -52,10 +55,14 @@ import { nowIso } from '../core/crypto';
           </ion-item>
           <ion-item><ion-textarea label="Notas" labelPlacement="stacked" [(ngModel)]="notes" name="notes"></ion-textarea></ion-item>
         </ion-list>
-        <label class="field-label">Evidencia fotográfica</label>
-        <input class="field-box" type="file" accept="image/*" (change)="onFile($event)" />
+        <div class="panel">
+          <label class="field-label">Evidencia fotográfica</label>
+          <input class="field-box" type="file" accept="image/*" (change)="onFile($event)" />
+        </div>
         @if (error) { <p class="error-text">{{ error }}</p> }
-        <ion-button expand="block" type="submit">Calcular índice y guardar</ion-button>
+        <div class="form-actions">
+          <ion-button expand="block" type="submit">Calcular índice y guardar</ion-button>
+        </div>
       </form>
     </ion-content>
   `

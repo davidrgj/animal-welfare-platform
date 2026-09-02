@@ -19,8 +19,8 @@ import { EmptyStateComponent } from '../shared/empty-state.component';
     </ion-header>
     <ion-content>
       <div class="page-body stack">
-        <p class="page-kicker">Inventario</p>
-        <p class="page-lead">Inventario individual por especie, con el último índice de bienestar.</p>
+        <p class="page-kicker">Paso 2</p>
+        <p class="page-lead">Cada ejemplar. Ábrelo para ver el IBA o registrar una evaluación (paso 3).</p>
         @if (animals.length === 0) {
           <app-empty-state icon="paw-outline" title="Sin animales" hint="Da de alta un ejemplar en un predio para evaluar bienestar." />
         } @else {

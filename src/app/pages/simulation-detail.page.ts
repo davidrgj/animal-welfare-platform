@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { IonBackButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { Chart } from 'chart.js/auto';
 import { EVENT_LABEL, FEED_LABEL, SCENARIO_LABEL, STAGE_LABEL } from '../core/labels';
 import { SimulationEvent, SimulationRun, SimulationSnapshot } from '../core/models';
@@ -11,10 +11,13 @@ import { EmptyStateComponent } from '../shared/empty-state.component';
 @Component({
   selector: 'app-simulation-detail',
   standalone: true,
-  imports: [DatePipe, IonContent, IonHeader, IonTitle, IonToolbar, EmptyStateComponent],
+  imports: [DatePipe, IonBackButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar, EmptyStateComponent],
   template: `
     <ion-header>
       <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-back-button defaultHref="/app/simulation" text="Atrás"></ion-back-button>
+        </ion-buttons>
         <ion-title>{{ run?.name || 'Escenario' }}</ion-title>
       </ion-toolbar>
     </ion-header>

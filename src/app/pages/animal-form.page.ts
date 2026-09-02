@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { IonButton, IonContent, IonHeader, IonInput, IonItem, IonList, IonSelect, IonSelectOption, IonTitle, IonToolbar, IonToggle } from '@ionic/angular/standalone';
+import { IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonInput, IonItem, IonList, IonSelect, IonSelectOption, IonTitle, IonToggle, IonToolbar } from '@ionic/angular/standalone';
 import { OPTIONS } from '../core/labels';
 import { AnimalPurpose, Farm, HornType, ReproductiveStatus, Sex, Species, SwineStage } from '../core/models';
 import { StoreService } from '../core/store.service';
@@ -11,16 +11,20 @@ import { todayIso } from '../core/crypto';
 @Component({
   selector: 'app-animal-form',
   standalone: true,
-  imports: [FormsModule, IonButton, IonContent, IonHeader, IonInput, IonItem, IonList, IonSelect, IonSelectOption, IonTitle, IonToolbar, IonToggle, FloatingDatePickerComponent],
+  imports: [FormsModule, IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonInput, IonItem, IonList, IonSelect, IonSelectOption, IonTitle, IonToggle, IonToolbar, FloatingDatePickerComponent],
   template: `
     <ion-header>
       <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-back-button [defaultHref]="animalId ? '/app/animals/' + animalId : '/app/animals'" text="Atrás"></ion-back-button>
+        </ion-buttons>
         <ion-title>{{ animalId ? 'Editar animal' : 'Nuevo animal' }}</ion-title>
       </ion-toolbar>
     </ion-header>
     <ion-content>
       <form class="page-body stack" (ngSubmit)="save()">
-        <p class="page-kicker">Ficha individual</p>
+        <p class="page-kicker">Paso 2</p>
+        <p class="page-lead">Ficha del ejemplar. Después ábrelo y registra una evaluación.</p>
         <ion-list class="panel">
           <ion-item>
             <ion-select label="Predio" labelPlacement="stacked" [(ngModel)]="farmId" name="farm" required>
@@ -72,7 +76,9 @@ import { todayIso } from '../core/crypto';
           }
         </ion-list>
         @if (error) { <p class="error-text">{{ error }}</p> }
-        <ion-button expand="block" type="submit">Guardar animal</ion-button>
+        <div class="form-actions">
+          <ion-button expand="block" type="submit">Guardar animal</ion-button>
+        </div>
       </form>
     </ion-content>
   `
