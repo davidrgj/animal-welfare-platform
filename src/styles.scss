@@ -162,7 +162,7 @@ ion-toggle {
 }
 
 .page-body {
-  padding: 16px 20px 40px;
+  padding: 16px 20px 48px;
   max-width: 980px;
   margin: 0 auto;
 }
@@ -348,6 +348,7 @@ ion-toggle {
 
 .animal-row.list-card {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+  padding: 16px 28px 16px 16px;
 }
 
 .panel .animal-row,
@@ -360,7 +361,7 @@ ion-toggle {
 .panel .animal-row.list-card {
   box-shadow: none;
   border-radius: 0;
-  padding: 16px 4px;
+  padding: 18px 4px;
   border-bottom: 0.5px solid var(--line);
 }
 
@@ -373,8 +374,10 @@ ion-toggle {
 .panel > .spread + .animal-row,
 .panel > .panel-lead + .animal-row,
 .panel > .panel-title + .alert-card,
-.panel > .panel-lead + .alert-card {
-  margin-top: 8px;
+.panel > .panel-lead + .alert-card,
+.panel > .spread + .alert-card {
+  margin-top: 4px;
+  padding-top: 18px;
 }
 
 .list-card {

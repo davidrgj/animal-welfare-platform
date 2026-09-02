@@ -24,22 +24,24 @@ import { EmptyStateComponent } from '../shared/empty-state.component';
         @if (animals.length === 0) {
           <app-empty-state icon="paw-outline" title="Sin animales" hint="Da de alta un ejemplar en un predio para evaluar bienestar." />
         } @else {
-          @for (animal of animals; track animal.id) {
-            <a class="animal-row list-card" [routerLink]="['/app/animals', animal.id]">
-              <span [class]="speciesMark(animal.species)">{{ species[animal.species].charAt(0) }}</span>
-              <div class="list-card-copy">
-                <strong>{{ animal.tagId }}</strong>
-                <p class="muted">{{ species[animal.species] }} · {{ animal.breed }} · {{ farmName(animal.farmId) }}</p>
-                <p class="muted">{{ animal.currentWeightKg }} kg @if (latest.get(animal.id); as record) { · IBA {{ record.welfareIndex }} }</p>
-                @if (latest.get(animal.id); as record) {
-                  <div class="iba-track">
-                    <span [class]="ibaFill(record.complianceLevel)" [style.width.%]="record.welfareIndex"></span>
-                  </div>
-                }
-              </div>
-              <span [class]="complianceClass(latest.get(animal.id)?.complianceLevel)">{{ latest.get(animal.id) ? compliance[latest.get(animal.id)!.complianceLevel] : 'Sin evaluación' }}</span>
-            </a>
-          }
+          <div class="stack">
+            @for (animal of animals; track animal.id) {
+              <a class="animal-row list-card" [routerLink]="['/app/animals', animal.id]">
+                <span [class]="speciesMark(animal.species)">{{ species[animal.species].charAt(0) }}</span>
+                <div class="list-card-copy">
+                  <strong>{{ animal.tagId }}</strong>
+                  <p class="muted">{{ species[animal.species] }} · {{ animal.breed }} · {{ farmName(animal.farmId) }}</p>
+                  <p class="muted">{{ animal.currentWeightKg }} kg @if (latest.get(animal.id); as record) { · IBA {{ record.welfareIndex }} }</p>
+                  @if (latest.get(animal.id); as record) {
+                    <div class="iba-track">
+                      <span [class]="ibaFill(record.complianceLevel)" [style.width.%]="record.welfareIndex"></span>
+                    </div>
+                  }
+                </div>
+                <span [class]="complianceClass(latest.get(animal.id)?.complianceLevel)">{{ latest.get(animal.id) ? compliance[latest.get(animal.id)!.complianceLevel] : 'Sin evaluación' }}</span>
+              </a>
+            }
+          </div>
         }
       </div>
     </ion-content>
