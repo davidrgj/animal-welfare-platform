@@ -22,8 +22,8 @@ import { todayIso } from '../core/crypto';
     </ion-header>
     <ion-content>
       <div class="page-body stack">
-        <p class="page-kicker">Después de evaluar</p>
-        <p class="page-lead">Con un animal ya evaluado, proyecta qué pasa si cambia la dieta o el clima.</p>
+        <p class="page-kicker">Proyección</p>
+        <p class="page-lead">Peso, etapa y cumplimiento bajo dieta o estrés ambiental.</p>
         <form class="panel stack" (ngSubmit)="run()">
           <h2 class="panel-title">Nuevo escenario</h2>
           <ion-list>

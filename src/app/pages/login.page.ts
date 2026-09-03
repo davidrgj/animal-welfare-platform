@@ -14,7 +14,7 @@ import { AuthService } from '../core/auth.service';
         <div class="auth-form-wrap">
           <img class="hero-mark" src="assets/mark.svg" alt="" />
           <h1 class="display auth-title">Bienestar ICA</h1>
-          <p class="page-lead">Predio, animal y evaluación. El índice ICA te dice si cumplen.</p>
+          <p class="page-lead">Monitoreo ICA de bienestar animal.</p>
           <form class="auth-panel stack" (ngSubmit)="submit()">
             <ion-list [inset]="true">
               <ion-item>

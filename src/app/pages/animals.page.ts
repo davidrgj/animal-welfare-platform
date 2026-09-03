@@ -6,6 +6,8 @@ import { COMPLIANCE_LABEL, SPECIES_LABEL, complianceClass, ibaFill, speciesMark 
 import { StoreService } from '../core/store.service';
 import { EmptyStateComponent } from '../shared/empty-state.component';
 
+type AnimalFilter = 'ALL' | 'RISK' | 'OK' | 'OPEN';
+
 @Component({
   selector: 'app-animals',
   standalone: true,
@@ -14,18 +16,33 @@ import { EmptyStateComponent } from '../shared/empty-state.component';
     <ion-header>
       <ion-toolbar>
         <ion-title>Animales</ion-title>
-        <ion-button slot="end" fill="clear" routerLink="/app/animals/new">Nuevo animal</ion-button>
+        <ion-button slot="end" fill="clear" routerLink="/app/animals/new">Nuevo</ion-button>
       </ion-toolbar>
     </ion-header>
     <ion-content>
       <div class="page-body stack">
-        <p class="page-kicker">Paso 2</p>
-        <p class="page-lead">Cada ejemplar. Ábrelo para ver el IBA o registrar una evaluación (paso 3).</p>
+        <section class="hero-card hero-ink">
+          <p class="page-kicker">Inventario vivo</p>
+          <h1 class="display section-title">{{ animals.length }} ejemplares</h1>
+          <p class="status-meta">{{ riskCount }} en riesgo · {{ openCount }} sin IBA · {{ okCount }} en umbral</p>
+        </section>
+
+        @if (animals.length) {
+          <div class="filter-bar" role="tablist">
+            <button type="button" [class.active]="filter === 'ALL'" (click)="filter = 'ALL'">Todos</button>
+            <button type="button" [class.active]="filter === 'RISK'" (click)="filter = 'RISK'">Riesgo</button>
+            <button type="button" [class.active]="filter === 'OPEN'" (click)="filter = 'OPEN'">Sin IBA</button>
+            <button type="button" [class.active]="filter === 'OK'" (click)="filter = 'OK'">Cumple</button>
+          </div>
+        }
+
         @if (animals.length === 0) {
-          <app-empty-state icon="paw-outline" title="Sin animales" hint="Da de alta un ejemplar en un predio para evaluar bienestar." />
+          <app-empty-state icon="paw-outline" title="Sin animales" hint="Registra el primer ejemplar en un predio para empezar el monitoreo." />
+        } @else if (visible.length === 0) {
+          <app-empty-state icon="checkmark-circle-outline" title="Nada en este filtro" hint="Cambia el filtro o abre el inventario completo." />
         } @else {
           <div class="stack">
-            @for (animal of animals; track animal.id) {
+            @for (animal of visible; track animal.id) {
               <a class="animal-row list-card" [routerLink]="['/app/animals', animal.id]">
                 <span [class]="speciesMark(animal.species)">{{ species[animal.species].charAt(0) }}</span>
                 <div class="list-card-copy">
@@ -38,7 +55,7 @@ import { EmptyStateComponent } from '../shared/empty-state.component';
                     </div>
                   }
                 </div>
-                <span [class]="complianceClass(latest.get(animal.id)?.complianceLevel)">{{ latest.get(animal.id) ? compliance[latest.get(animal.id)!.complianceLevel] : 'Sin evaluación' }}</span>
+                <span [class]="complianceClass(latest.get(animal.id)?.complianceLevel)">{{ latest.get(animal.id) ? compliance[latest.get(animal.id)!.complianceLevel] : 'Sin IBA' }}</span>
               </a>
             }
           </div>
@@ -51,6 +68,7 @@ export class AnimalsPage implements OnInit {
   animals: Animal[] = [];
   farms: Farm[] = [];
   latest = new Map<string, WelfareRecord>();
+  filter: AnimalFilter = 'ALL';
   readonly species = SPECIES_LABEL;
   readonly compliance = COMPLIANCE_LABEL;
   readonly complianceClass = complianceClass;
@@ -59,13 +77,35 @@ export class AnimalsPage implements OnInit {
 
   constructor(private readonly store: StoreService) {}
 
+  get visible(): Animal[] {
+    return this.animals.filter((animal) => {
+      const level = this.latest.get(animal.id)?.complianceLevel;
+      if (this.filter === 'ALL') return true;
+      if (this.filter === 'OPEN') return !level;
+      if (this.filter === 'OK') return level === 'COMPLIANT';
+      return level === 'ATTENTION' || level === 'NON_COMPLIANT';
+    });
+  }
+
+  get riskCount(): number {
+    return this.animals.filter((animal) => {
+      const level = this.latest.get(animal.id)?.complianceLevel;
+      return level === 'ATTENTION' || level === 'NON_COMPLIANT';
+    }).length;
+  }
+
+  get openCount(): number {
+    return this.animals.filter((animal) => !this.latest.get(animal.id)).length;
+  }
+
+  get okCount(): number {
+    return this.animals.filter((animal) => this.latest.get(animal.id)?.complianceLevel === 'COMPLIANT').length;
+  }
+
   async ngOnInit(): Promise<void> {
     this.farms = await this.store.farms();
     this.animals = await this.store.animals();
-    for (const animal of this.animals) {
-      const records = await this.store.recordsForAnimal(animal.id);
-      if (records[0]) this.latest.set(animal.id, records[0]);
-    }
+    this.latest = await this.store.latestRecords();
   }
 
   farmName(farmId: string): string {

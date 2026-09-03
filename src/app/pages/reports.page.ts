@@ -22,8 +22,8 @@ import { EmptyStateComponent } from '../shared/empty-state.component';
     </ion-header>
     <ion-content>
       <div class="page-body stack">
-        <p class="page-kicker">Cierre del ciclo</p>
-        <p class="page-lead">Elige un predio y revisa el IBA de sus animales. Puedes imprimir esta página.</p>
+        <p class="page-kicker">Cumplimiento</p>
+        <p class="page-lead">IBA por predio, listo para imprimir.</p>
         <ion-list class="panel">
           <ion-item>
             <ion-select label="Predio" labelPlacement="stacked" [(ngModel)]="farmId" (ionChange)="load()">

@@ -4,105 +4,78 @@ import { RouterLink } from '@angular/router';
 import { IonButton, IonContent, IonHeader, IonSkeletonText, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { AuthService } from '../core/auth.service';
 import { ALERT_HINT, COMPLIANCE_LABEL, FINDING_LABEL, HEAT_LABEL, SPECIES_LABEL, complianceClass, ibaFill, severityClass, speciesMark } from '../core/labels';
+import { ComplianceLevel } from '../core/models';
 import { DashboardData, StoreService } from '../core/store.service';
 import { EmptyStateComponent } from '../shared/empty-state.component';
+import { IbaRingComponent } from '../shared/iba-ring.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [DatePipe, RouterLink, IonButton, IonContent, IonHeader, IonSkeletonText, IonTitle, IonToolbar, EmptyStateComponent],
+  imports: [DatePipe, RouterLink, IonButton, IonContent, IonHeader, IonSkeletonText, IonTitle, IonToolbar, EmptyStateComponent, IbaRingComponent],
   template: `
     <ion-header>
       <ion-toolbar>
-        <ion-title>Inicio</ion-title>
+        <ion-title>Estado ICA</ion-title>
       </ion-toolbar>
     </ion-header>
     <ion-content>
       <div class="page-body stack">
-        <section class="hero-card hero-ink">
-          <p class="page-kicker">Bienestar animal ICA</p>
-          <h1 class="display auth-title">Hola, {{ firstName }}</h1>
-          <p class="page-lead">Esta app mira si bovinos, caprinos y porcinos están bien. Primero el predio, luego el animal y al final una evaluación. De ahí sale el IBA, de 0 a 100.</p>
-        </section>
-        <section class="panel">
-          <h2 class="panel-title">Cómo se usa</h2>
-          <p class="panel-lead">Sigue este orden. 80 o más cumple; menos de 60 no cumple.</p>
-          <ol class="flow-steps">
-            <li>
-              <a routerLink="/app/farms">
-                <span class="flow-num">1</span>
-                <strong>Predio</strong>
-                <p>El predio, el agua y el registro de vacunación.</p>
-              </a>
-            </li>
-            <li>
-              <a routerLink="/app/animals">
-                <span class="flow-num">2</span>
-                <strong>Animal</strong>
-                <p>Chapa, especie y peso de cada ejemplar.</p>
-              </a>
-            </li>
-            <li>
-              <a routerLink="/app/animals">
-                <span class="flow-num">3</span>
-                <strong>Evaluación</strong>
-                <p>Comida, calor, salud y manejo. Ahí nace el índice.</p>
-              </a>
-            </li>
-          </ol>
-        </section>
         @if (loading) {
-          <section class="panel">
-            <h2 class="panel-title">Cómo van hoy</h2>
-            <div class="summary-grid">
-              @for (tile of [1,2,3,4]; track tile) {
-                <div class="kpi-tile skeleton-surface">
-                  <ion-skeleton-text animated class="skeleton-pill"></ion-skeleton-text>
-                  <ion-skeleton-text animated></ion-skeleton-text>
-                </div>
-              }
-            </div>
+          <section class="status-hero skeleton-surface">
+            <ion-skeleton-text animated class="skeleton-block"></ion-skeleton-text>
           </section>
         } @else if (data) {
-          <section class="panel">
-            <h2 class="panel-title">Cómo van hoy</h2>
-            <p class="panel-lead">Un vistazo a predios, animales y el índice medio de las últimas evaluaciones.</p>
-            <div class="summary-grid">
-              <article class="kpi-tile kpi-index">
-                <p class="kpi-tile-label">Índice medio</p>
-                <p class="kpi-tile-value">{{ data.averageWelfareIndex }}</p>
-                <div class="iba-track"><span class="iba-fill" [style.width.%]="data.averageWelfareIndex"></span></div>
-              </article>
-              <article class="kpi-tile">
-                <p class="kpi-tile-label">Animales</p>
-                <p class="kpi-tile-value">{{ data.animalCount }}</p>
-                <p class="kpi-tile-foot">{{ data.farmCount }} predios</p>
-              </article>
-              <article class="kpi-tile kpi-alert">
-                <p class="kpi-tile-label">Alertas abiertas</p>
-                <p class="kpi-tile-value">{{ data.openAlertCount }}</p>
-                <p class="kpi-tile-foot">Calor, vacunas, espacio</p>
-              </article>
-              <article class="kpi-tile kpi-bad">
-                <p class="kpi-tile-label">No cumple</p>
-                <p class="kpi-tile-value">{{ data.nonCompliantCount }}</p>
-                <p class="kpi-tile-foot">IBA por debajo de 60</p>
-              </article>
+          <section class="status-hero">
+            <div class="status-hero-main">
+              <app-iba-ring [value]="data.averageWelfareIndex" [level]="averageLevel" caption="IBA medio" [size]="156" />
+              <div class="status-hero-copy">
+                <p class="page-kicker">{{ firstName }}</p>
+                <h1 class="display status-title">{{ headline }}</h1>
+                <p class="status-meta">{{ data.evaluatedCount }} de {{ data.animalCount }} evaluados · {{ data.farmCount }} predios</p>
+                <div class="status-pills">
+                  <span class="tag tag-bad">{{ data.nonCompliantCount }} fuera</span>
+                  <span class="tag tag-warn">{{ data.attentionCount }} atención</span>
+                  @if (data.unevaluatedCount) {
+                    <span class="tag">{{ data.unevaluatedCount }} sin IBA</span>
+                  }
+                  <span class="tag">{{ data.openAlertCount }} alertas</span>
+                </div>
+              </div>
             </div>
+            @if (data.priorityAnimal; as priority) {
+              <a class="priority-action" [routerLink]="priority.record ? ['/app/animals', priority.animal.id] : ['/app/animals', priority.animal.id, 'welfare']">
+                <div>
+                  <p class="page-kicker">Prioridad</p>
+                  <strong>{{ priority.animal.tagId }}</strong>
+                  <p class="muted">
+                    {{ species[priority.animal.species] }} · {{ priority.farm.name }}
+                    @if (priority.record) { · IBA {{ priority.record.welfareIndex }} }
+                    @else { · sin evaluación }
+                  </p>
+                </div>
+                <span class="priority-cta">{{ priority.record ? 'Revisar' : 'Evaluar' }}</span>
+              </a>
+            }
           </section>
+
+          <div class="action-strip">
+            <a routerLink="/app/animals" class="action-chip">Inventario</a>
+            <a routerLink="/app/animals/new" class="action-chip">Alta animal</a>
+            <a routerLink="/app/simulation" class="action-chip">Simular</a>
+            <a routerLink="/app/reports" class="action-chip">Reporte</a>
+          </div>
+
           <section class="panel">
             <div class="spread">
-              <div>
-                <h2 class="panel-title">Hay que atender</h2>
-                <p class="panel-lead">Ejemplares que no cumplen. Ábrelos para ver la evaluación o registrar otra.</p>
-              </div>
-              <ion-button fill="clear" routerLink="/app/animals">Ver todos</ion-button>
+              <h2 class="panel-title">Cola de riesgo</h2>
+              <ion-button fill="clear" routerLink="/app/animals">Inventario</ion-button>
             </div>
             @if (data.riskAnimals.length === 0) {
-              <app-empty-state icon="checkmark-circle-outline" title="Sin incumplimientos" hint="Los animales evaluados están dentro del umbral ICA." />
+              <app-empty-state icon="checkmark-circle-outline" title="Sin animales en riesgo" hint="Los evaluados están en umbral de cumplimiento." />
             } @else {
               @for (item of data.riskAnimals; track item.animal.id) {
-                <a class="animal-row list-card" [routerLink]="['/app/animals', item.animal.id]">
+                <a class="animal-row list-card risk-row" [routerLink]="['/app/animals', item.animal.id]">
                   <span [class]="speciesMark(item.animal.species)">{{ species[item.animal.species].charAt(0) }}</span>
                   <div class="list-card-copy">
                     <strong>{{ item.animal.tagId }}</strong>
@@ -116,20 +89,28 @@ import { EmptyStateComponent } from '../shared/empty-state.component';
               }
             }
           </section>
+
           <section class="panel">
-            <h2 class="panel-title">Avisos abiertos</h2>
-            <p class="panel-lead">Salen de la última evaluación: calor, vacunas, espacio o un IBA bajo.</p>
+            <h2 class="panel-title">Alertas activas</h2>
             @if (data.recentAlerts.length === 0) {
-              <app-empty-state icon="sunny-outline" title="Sin alertas abiertas" hint="Cuando un registro rompa un criterio ICA, aparecerá aquí." />
+              <app-empty-state icon="sunny-outline" title="Sin alertas abiertas" hint="Las desviaciones de evaluación aparecen aquí." />
             } @else {
               @for (alert of data.recentAlerts; track alert.id) {
-                <article class="alert-card">
-                  <div class="spread">
-                    <strong>{{ finding[alert.code] || alert.code }}</strong>
-                    <span [class]="severityClass(alert.severity)">{{ alert.severity === 'CRITICAL' ? 'Crítico' : alert.severity === 'HIGH' ? 'Alto' : 'Medio' }}</span>
+                <article class="alert-card alert-row">
+                  <div class="alert-row-main">
+                    <div class="spread">
+                      <strong>{{ finding[alert.code] || alert.code }}</strong>
+                      <span [class]="severityClass(alert.severity)">{{ alert.severity === 'CRITICAL' ? 'Crítico' : alert.severity === 'HIGH' ? 'Alto' : 'Medio' }}</span>
+                    </div>
+                    <p class="muted">{{ hint[alert.code] }}</p>
+                    <p class="muted">{{ alert.createdAt | date:'d MMM, y hh:mm a' }}</p>
                   </div>
-                  <p class="muted">{{ hint[alert.code] }}</p>
-                  <p class="muted">{{ alert.createdAt | date:'d MMM, y hh:mm a' }}</p>
+                  <div class="alert-row-actions">
+                    @if (alert.animalId) {
+                      <a class="text-link" [routerLink]="['/app/animals', alert.animalId]">Ver animal</a>
+                    }
+                    <button type="button" class="text-link" (click)="dismiss(alert.id)">Marcar vista</button>
+                  </div>
                 </article>
               }
             }
@@ -155,8 +136,34 @@ export class DashboardPage implements OnInit {
 
   constructor(readonly store: StoreService, private readonly auth: AuthService) {}
 
+  get averageLevel(): ComplianceLevel | null {
+    if (!this.data || !this.data.evaluatedCount) return null;
+    if (this.data.averageWelfareIndex >= 80) return 'COMPLIANT';
+    if (this.data.averageWelfareIndex >= 60) return 'ATTENTION';
+    return 'NON_COMPLIANT';
+  }
+
+  get headline(): string {
+    if (!this.data) return '';
+    if (!this.data.animalCount) return 'Sin inventario activo';
+    if (this.data.nonCompliantCount) return `${this.data.nonCompliantCount} fuera de umbral`;
+    if (this.data.attentionCount) return `${this.data.attentionCount} requieren atención`;
+    if (this.data.unevaluatedCount) return `${this.data.unevaluatedCount} sin evaluación`;
+    if (this.data.openAlertCount) return `${this.data.openAlertCount} alertas abiertas`;
+    return 'Operación dentro de umbral';
+  }
+
   async ngOnInit(): Promise<void> {
     this.firstName = this.auth.requireUser().fullName.split(' ')[0];
+    await this.reload();
+  }
+
+  async dismiss(alertId: string): Promise<void> {
+    await this.store.acknowledge(alertId);
+    await this.reload();
+  }
+
+  private async reload(): Promise<void> {
     this.data = await this.store.dashboard();
     this.loading = false;
   }
