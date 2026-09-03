@@ -14,10 +14,14 @@ export interface DashboardData {
   animalCount: number;
   openAlertCount: number;
   nonCompliantCount: number;
+  attentionCount: number;
+  unevaluatedCount: number;
+  evaluatedCount: number;
   compliance: { level: WelfareRecord['complianceLevel']; count: number }[];
   species: { species: Animal['species']; count: number }[];
   recentAlerts: AlertRow[];
   riskAnimals: { animal: Animal; farm: Farm; record: WelfareRecord }[];
+  priorityAnimal: { animal: Animal; farm: Farm; record: WelfareRecord | null } | null;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -222,6 +226,18 @@ export class StoreService {
     await database.alerts.update(alertId, { acknowledged: true });
   }
 
+  async latestRecords(): Promise<Map<string, WelfareRecord>> {
+    const animals = await this.animals();
+    const ids = new Set(animals.map((animal) => animal.id));
+    const records = isCloud() ? await cloud.listRecords() : await database.welfareRecords.toArray();
+    const latest = new Map<string, WelfareRecord>();
+    for (const record of [...records].sort((left, right) => right.recordedAt.localeCompare(left.recordedAt))) {
+      if (!ids.has(record.animalId) || latest.has(record.animalId)) continue;
+      latest.set(record.animalId, record);
+    }
+    return latest;
+  }
+
   async dashboard(): Promise<DashboardData> {
     const farms = await this.farms();
     const animals = await this.animals();
@@ -233,21 +249,28 @@ export class StoreService {
     const complianceCount = { COMPLIANT: 0, ATTENTION: 0, NON_COMPLIANT: 0 };
     const speciesCount: Record<string, number> = {};
     const riskAnimals: DashboardData['riskAnimals'] = [];
+    let unevaluatedCount = 0;
     let indexSum = 0;
     let scored = 0;
+    let priorityAnimal: DashboardData['priorityAnimal'] = null;
     for (const animal of animals) {
       speciesCount[animal.species] = (speciesCount[animal.species] ?? 0) + 1;
+      const farm = farms.find((item) => item.id === animal.farmId);
       const record = latest.get(animal.id);
-      if (!record) continue;
+      if (!record) {
+        unevaluatedCount += 1;
+        if (!priorityAnimal && farm) priorityAnimal = { animal, farm, record: null };
+        continue;
+      }
       indexSum += record.welfareIndex;
       scored += 1;
       complianceCount[record.complianceLevel] += 1;
-      if (record.complianceLevel !== 'COMPLIANT') {
-        const farm = farms.find((item) => item.id === animal.farmId);
-        if (farm) riskAnimals.push({ animal, farm, record });
+      if (record.complianceLevel !== 'COMPLIANT' && farm) {
+        riskAnimals.push({ animal, farm, record });
       }
     }
     riskAnimals.sort((left, right) => left.record.welfareIndex - right.record.welfareIndex);
+    if (riskAnimals[0]) priorityAnimal = riskAnimals[0];
     const alerts = (await this.alerts()).filter((alert) => !alert.acknowledged);
     return {
       averageWelfareIndex: scored ? Math.round((indexSum / scored) * 10) / 10 : 0,
@@ -255,6 +278,9 @@ export class StoreService {
       animalCount: animals.length,
       openAlertCount: alerts.length,
       nonCompliantCount: complianceCount.NON_COMPLIANT,
+      attentionCount: complianceCount.ATTENTION,
+      unevaluatedCount,
+      evaluatedCount: scored,
       compliance: [
         { level: 'COMPLIANT', count: complianceCount.COMPLIANT },
         { level: 'ATTENTION', count: complianceCount.ATTENTION },
@@ -262,7 +288,8 @@ export class StoreService {
       ],
       species: Object.entries(speciesCount).map(([species, count]) => ({ species: species as Animal['species'], count })),
       recentAlerts: alerts.slice(0, 8),
-      riskAnimals: riskAnimals.slice(0, 8)
+      riskAnimals: riskAnimals.slice(0, 8),
+      priorityAnimal
     };
   }
 

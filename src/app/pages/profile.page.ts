@@ -21,7 +21,6 @@ import { ROLE_LABEL } from '../core/labels';
           <p class="page-kicker">{{ role[user.role] }}</p>
           <h1 class="display auth-title">{{ user.fullName }}</h1>
           <p class="page-lead">{{ user.email }}</p>
-          <p class="muted">Desde aquí sales o imprimes el cumplimiento de un predio.</p>
           <div class="stat-pair">
             <div>
               <span>Documento</span>

@@ -14,20 +14,28 @@ import { EmptyStateComponent } from '../shared/empty-state.component';
     <ion-header>
       <ion-toolbar>
         <ion-title>Predios</ion-title>
-        <ion-button slot="end" fill="clear" routerLink="/app/farms/new">Nuevo predio</ion-button>
+        <ion-button slot="end" fill="clear" routerLink="/app/farms/new">Nuevo</ion-button>
       </ion-toolbar>
     </ion-header>
     <ion-content>
       <div class="page-body stack">
-        <p class="page-kicker">Paso 1</p>
-        <p class="page-lead">Aquí viven los animales. Abre un predio para editarlo o crea uno nuevo. Después pasa a Animales.</p>
+        <section class="hero-card hero-ink">
+          <p class="page-kicker">Unidades productivas</p>
+          <h1 class="display section-title">{{ farms.length }} predios</h1>
+          <p class="status-meta">RUV, agua y georreferencia por lote</p>
+        </section>
         @if (farms.length === 0) {
-          <app-empty-state icon="leaf-outline" title="Sin predios" hint="Registra el primer predio para empezar el inventario animal." />
+          <app-empty-state icon="leaf-outline" title="Sin predios" hint="Crea el primer predio para vincular el inventario animal." />
         } @else {
           @for (farm of farms; track farm.id) {
-            <a class="farm-card" [routerLink]="['/app/farms', farm.id]">
-              <p class="page-kicker">{{ farm.municipality }}, {{ farm.department }}</p>
-              <h2 class="display panel-title">{{ farm.name }}</h2>
+            <a class="farm-card farm-card-rich" [routerLink]="['/app/farms', farm.id]">
+              <div class="spread">
+                <div>
+                  <p class="page-kicker">{{ farm.municipality }}, {{ farm.department }}</p>
+                  <h2 class="display panel-title">{{ farm.name }}</h2>
+                </div>
+                <span class="species-mark species-mark-sim">{{ farm.name.charAt(0) }}</span>
+              </div>
               <div class="stat-pair">
                 <div>
                   <span>Extensión</span>
@@ -38,7 +46,7 @@ import { EmptyStateComponent } from '../shared/empty-state.component';
                   <strong>{{ water[farm.waterSource] }}</strong>
                 </div>
               </div>
-              <p class="muted">RUV {{ farm.vaccinationRegistry }} · GPS {{ farm.latitude }}, {{ farm.longitude }}</p>
+              <p class="muted">RUV {{ farm.vaccinationRegistry }} · {{ farm.latitude }}, {{ farm.longitude }}</p>
             </a>
           }
         }

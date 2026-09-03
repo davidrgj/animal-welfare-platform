@@ -22,8 +22,8 @@ import { nowIso } from '../core/crypto';
     </ion-header>
     <ion-content>
       <form class="page-body stack" (ngSubmit)="save()">
-        <p class="page-kicker">Paso 3</p>
-        <p class="page-lead">Cómo está {{ animal?.tagId }}. Al guardar se calcula el IBA y, si algo falla, sale aviso en Inicio.</p>
+        <p class="page-kicker">Evaluación ICA</p>
+        <p class="page-lead">{{ animal?.tagId }} · cinco libertades. El IBA se calcula al guardar.</p>
         <ion-list class="panel">
           <ion-item><ion-input label="Condición corporal (1-5)" labelPlacement="stacked" type="number" min="1" max="5" [(ngModel)]="bodyConditionScore" name="bcs" required></ion-input></ion-item>
           <ion-item><ion-input label="Tomas de agua al día" labelPlacement="stacked" type="number" min="0" [(ngModel)]="hydrationTimesPerDay" name="water" required></ion-input></ion-item>

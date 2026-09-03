@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
-import { IonIcon, IonRouterOutlet } from '@ionic/angular/standalone';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { IonIcon } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-shell',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, IonIcon, IonRouterOutlet],
+  imports: [RouterLink, RouterLinkActive, RouterOutlet, IonIcon],
   template: `
     <div class="shell">
       <div class="shell-page">
-        <ion-router-outlet></ion-router-outlet>
+        <router-outlet></router-outlet>
       </div>
       <nav class="tab-bar" aria-label="Secciones">
         <a routerLink="/app/dashboard" routerLinkActive="tab-selected" [routerLinkActiveOptions]="{exact: true}">
@@ -41,11 +41,15 @@ import { IonIcon, IonRouterOutlet } from '@ionic/angular/standalone';
       height: 100%;
       display: flex;
       flex-direction: column;
+      background: transparent;
     }
     .shell-page {
       flex: 1;
       min-height: 0;
       position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
     }
     .tab-bar {
       flex: none;
@@ -55,7 +59,7 @@ import { IonIcon, IonRouterOutlet } from '@ionic/angular/standalone';
       background: rgba(249, 249, 249, 0.94);
       backdrop-filter: saturate(180%) blur(20px);
       border-top: 0.5px solid rgba(60, 60, 67, 0.18);
-      z-index: 8;
+      z-index: 20;
     }
     .tab-bar a {
       display: grid;
@@ -67,9 +71,7 @@ import { IonIcon, IonRouterOutlet } from '@ionic/angular/standalone';
       font-weight: 500;
       padding: 6px 2px 4px;
     }
-    .tab-bar a.tab-selected {
-      color: #007aff;
-    }
+    .tab-bar a.tab-selected { color: #007aff; }
     .tab-bar ion-icon { font-size: 1.45rem; }
   `]
 })

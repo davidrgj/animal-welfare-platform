@@ -23,8 +23,8 @@ import { todayIso } from '../core/crypto';
     </ion-header>
     <ion-content>
       <form class="page-body stack" (ngSubmit)="save()">
-        <p class="page-kicker">Paso 2</p>
-        <p class="page-lead">Ficha del ejemplar. Después ábrelo y registra una evaluación.</p>
+        <p class="page-kicker">Ficha</p>
+        <p class="page-lead">Identificación, especie y parámetros productivos.</p>
         <ion-list class="panel">
           <ion-item>
             <ion-select label="Predio" labelPlacement="stacked" [(ngModel)]="farmId" name="farm" required>
