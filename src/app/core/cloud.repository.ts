@@ -265,6 +265,74 @@ export async function loadProfile(id: string): Promise<Profile> {
   return asProfile(data as Record<string, unknown>);
 }
 
+export async function listProfiles(): Promise<Profile[]> {
+  const { data, error } = await supabase().from('profiles').select('*').order('full_name');
+  fail(error);
+  return (data ?? []).map((row) => asProfile(row as Record<string, unknown>));
+}
+
+export async function updateProfile(profile: Profile): Promise<Profile> {
+  const { data, error } = await supabase().from('profiles').update({
+    full_name: profile.fullName,
+    document_id: profile.documentId,
+    phone: profile.phone,
+    role: profile.role
+  }).eq('id', profile.id).select('*').maybeSingle();
+  fail(error);
+  if (!data) {
+    throw new Error(
+      'Profile update blocked by RLS. Run supabase/admin-policies.sql in the Supabase SQL editor.'
+    );
+  }
+  return asProfile(data as Record<string, unknown>);
+}
+
+export async function createAuthUser(input: {
+  fullName: string;
+  email: string;
+  password: string;
+  documentId: string;
+  phone: string;
+  role: UserRole;
+}): Promise<Profile> {
+  const { data: sessionData } = await supabase().auth.getSession();
+  const adminSession = sessionData.session;
+  if (!adminSession) throw new Error('Authentication required');
+
+  const { data, error } = await supabase().auth.signUp({
+    email: input.email,
+    password: input.password,
+    options: {
+      data: {
+        full_name: input.fullName,
+        document_id: input.documentId,
+        phone: input.phone,
+        role: input.role
+      }
+    }
+  });
+  if (error) throw new Error(error.message);
+  if (!data.user) throw new Error('User was not created');
+
+  const { error: restoreError } = await supabase().auth.setSession({
+    access_token: adminSession.access_token,
+    refresh_token: adminSession.refresh_token
+  });
+  fail(restoreError);
+
+  const created = await loadProfile(data.user.id);
+  if (created.role !== input.role || created.fullName !== input.fullName) {
+    return updateProfile({
+      ...created,
+      fullName: input.fullName,
+      documentId: input.documentId,
+      phone: input.phone,
+      role: input.role
+    });
+  }
+  return created;
+}
+
 export async function listFarms(): Promise<Farm[]> {
   const { data, error } = await supabase().from('farms').select('*').order('name');
   fail(error);

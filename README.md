@@ -34,7 +34,11 @@ Falta crear tablas y datos de demo en el [SQL editor](https://supabase.com/dashb
 1. `supabase/schema.sql`
 2. `supabase/seed.sql`
 
+Si el esquema ya estaba aplicado antes del CRUD de usuarios, ejecuta también `supabase/admin-policies.sql`.
+
 En Authentication > Providers > Email desactiva **Confirm email** para poder registrar cuentas nuevas sin correo. Las cuentas de seed ya quedan confirmadas.
+
+Administración de usuarios y roles: entra como `admin@farm.local` / `Admin123!` → **Cuenta** → **Usuarios y roles**.
 
 En Vercel puedes definir `SUPABASE_URL` y `SUPABASE_ANON_KEY` (o `SUPABASE_PUBLISHABLE_KEY`); el build las escribe antes de compilar. Si no, usa las de `src/environments/environment.prod.ts`.
 
@@ -45,6 +49,7 @@ En Vercel puedes definir `SUPABASE_URL` y `SUPABASE_ANON_KEY` (o `SUPABASE_PUBLI
 - Índice de bienestar ponderado, semáforo ICA y clase de estrés calórico (THI)
 - Simulación de eventos discretos para dieta y clima
 - Alertas y reportes imprimibles por predio
+- Administración de usuarios y roles (solo administrador)
 
 ## Stack
 

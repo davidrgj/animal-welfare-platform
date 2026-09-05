@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard, guestGuard } from './core/auth.guard';
+import { adminGuard, authGuard, guestGuard } from './core/auth.guard';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'login' },
@@ -22,6 +22,9 @@ export const routes: Routes = [
       { path: 'simulation', loadComponent: () => import('./pages/simulation.page').then((module) => module.SimulationPage) },
       { path: 'simulation/:id', loadComponent: () => import('./pages/simulation-detail.page').then((module) => module.SimulationDetailPage) },
       { path: 'reports', loadComponent: () => import('./pages/reports.page').then((module) => module.ReportsPage) },
+      { path: 'users', canActivate: [adminGuard], loadComponent: () => import('./pages/users.page').then((module) => module.UsersPage) },
+      { path: 'users/new', canActivate: [adminGuard], loadComponent: () => import('./pages/user-form.page').then((module) => module.UserFormPage) },
+      { path: 'users/:id', canActivate: [adminGuard], loadComponent: () => import('./pages/user-form.page').then((module) => module.UserFormPage) },
       { path: 'profile', loadComponent: () => import('./pages/profile.page').then((module) => module.ProfilePage) },
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' }
     ]

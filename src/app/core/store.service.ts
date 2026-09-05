@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { AlertRow, Animal, ComplianceFinding, Farm, SimulationEvent, SimulationRun, SimulationSnapshot, WelfarePhoto, WelfareRecord } from './models';
+import { AlertRow, Animal, ComplianceFinding, Farm, Profile, SimulationEvent, SimulationRun, SimulationSnapshot, UserRole, WelfarePhoto, WelfareRecord } from './models';
 import { AuthService } from './auth.service';
 import * as cloud from './cloud.repository';
-import { newId, nowIso } from './crypto';
+import { hashSecret, newId, nowIso } from './crypto';
 import { database, ensureSeed } from './database';
 import { canAccessFarm, runDiscreteEventSimulation, SimulationDraft, visibleAlerts, visibleAnimals, visibleFarms } from './simulation';
 import { isCloud } from './supabase.client';
@@ -338,6 +338,108 @@ export class StoreService {
 
   spaceMinimum(animal: Animal) {
     return minimumSpaceM2(animal.species, animal.swineStage);
+  }
+
+  private requireAdmin(): Profile {
+    const user = this.auth.requireUser();
+    if (user.role !== 'ADMINISTRATOR') throw new Error('Administrator required');
+    return user;
+  }
+
+  async users(): Promise<Profile[]> {
+    this.requireAdmin();
+    await ensureSeed();
+    if (isCloud()) return cloud.listProfiles();
+    return (await database.profiles.toArray()).sort((left, right) => left.fullName.localeCompare(right.fullName));
+  }
+
+  async user(id: string): Promise<Profile> {
+    this.requireAdmin();
+    if (isCloud()) return cloud.loadProfile(id);
+    const profile = await database.profiles.get(id);
+    if (!profile) throw new Error('User not found');
+    return profile;
+  }
+
+  async saveUser(input: {
+    id?: string;
+    fullName: string;
+    email: string;
+    password?: string;
+    documentId: string;
+    phone: string;
+    role: UserRole;
+  }): Promise<Profile> {
+    const admin = this.requireAdmin();
+    const fullName = input.fullName.trim();
+    const email = input.email.trim().toLowerCase();
+    const documentId = input.documentId.trim();
+    const phone = input.phone.trim();
+    if (!fullName || !email || !documentId) throw new Error('Missing required fields');
+
+    if (input.id) {
+      const current = await this.user(input.id);
+      if (current.id === admin.id && input.role !== 'ADMINISTRATOR') {
+        const admins = (await this.users()).filter((profile) => profile.role === 'ADMINISTRATOR');
+        if (admins.length <= 1) throw new Error('Cannot remove the last administrator');
+      }
+      const next: Profile = {
+        ...current,
+        fullName,
+        documentId,
+        phone,
+        role: input.role
+      };
+      if (isCloud()) {
+        const saved = await cloud.updateProfile(next);
+        if (saved.id === admin.id) this.auth.currentUser = saved;
+        return saved;
+      }
+      if (input.password?.trim()) next.passwordHash = await hashSecret(input.password.trim());
+      await database.profiles.put(next);
+      if (next.id === admin.id) this.auth.currentUser = next;
+      return next;
+    }
+
+    if (!input.password?.trim() || input.password.trim().length < 6) {
+      throw new Error('Password must be at least 6 characters');
+    }
+    if (isCloud()) {
+      return cloud.createAuthUser({
+        fullName,
+        email,
+        password: input.password.trim(),
+        documentId,
+        phone,
+        role: input.role
+      });
+    }
+    const existing = (await database.profiles.toArray()).find((profile) => profile.email.toLowerCase() === email);
+    if (existing) throw new Error('Email is already registered');
+    const profile: Profile = {
+      id: newId(),
+      fullName,
+      email,
+      passwordHash: await hashSecret(input.password.trim()),
+      documentId,
+      phone,
+      role: input.role,
+      createdAt: nowIso()
+    };
+    await database.profiles.add(profile);
+    return profile;
+  }
+
+  async deleteUser(id: string): Promise<void> {
+    const admin = this.requireAdmin();
+    if (id === admin.id) throw new Error('Cannot delete your own account');
+    const target = await this.user(id);
+    if (target.role === 'ADMINISTRATOR') {
+      const admins = (await this.users()).filter((profile) => profile.role === 'ADMINISTRATOR');
+      if (admins.length <= 1) throw new Error('Cannot remove the last administrator');
+    }
+    if (isCloud()) throw new Error('Cloud delete requires the Supabase dashboard');
+    await database.profiles.delete(id);
   }
 
   private async refreshAlerts(animal: Animal, record: WelfareRecord, heat: ReturnType<typeof heatStressLevel>): Promise<void> {

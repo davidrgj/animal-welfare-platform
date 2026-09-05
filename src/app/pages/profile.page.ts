@@ -33,6 +33,9 @@ import { ROLE_LABEL } from '../core/labels';
           </div>
         </section>
         <ion-button expand="block" fill="outline" routerLink="/app/reports">Reportes de predio</ion-button>
+        @if (user.role === 'ADMINISTRATOR') {
+          <ion-button expand="block" fill="outline" routerLink="/app/users">Usuarios y roles</ion-button>
+        }
         <ion-button expand="block" color="danger" (click)="auth.logout()">Cerrar sesión</ion-button>
       </div>
     </ion-content>
