@@ -48,7 +48,7 @@ export class RegisterPage {
   phone = '';
   role: UserRole = 'PRODUCER';
   error = '';
-  readonly roles = OPTIONS.role;
+  readonly roles = OPTIONS.role.filter(([value]) => value !== 'ADMINISTRATOR');
 
   constructor(private readonly auth: AuthService, private readonly router: Router) {}
 
