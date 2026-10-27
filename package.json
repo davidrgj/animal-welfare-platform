@@ -5,7 +5,9 @@
   "scripts": {
     "start": "ng serve --host 0.0.0.0 --port 4200",
     "build": "node scripts/write-env.cjs && ionic build --prod",
-    "test": "ng test --no-watch --browsers=ChromeHeadless"
+    "test": "npx tsx --test tests/unit/domain.test.ts && pytest tests/unit tests/acceptance -q",
+    "test:e2e": "playwright test --config tests/e2e/playwright.config.ts",
+    "test:all": "python3 tests/run_suite.py"
   },
   "dependencies": {
     "@angular/animations": "^19.2.4",
@@ -30,6 +32,8 @@
     "@angular/cli": "^19.2.5",
     "@angular/compiler-cli": "^19.2.4",
     "@ionic/cli": "^7.2.1",
+    "@playwright/test": "^1.64.1",
+    "tsx": "^4.23.15",
     "typescript": "~5.7.3"
   }
 }

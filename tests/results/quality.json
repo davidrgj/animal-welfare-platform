@@ -1,0 +1,80 @@
+{
+  "files": 39,
+  "lines_of_code": 5043,
+  "comment_lines": 1,
+  "todo_fixme": 0,
+  "duplicated_blocks": 22,
+  "average_cyclomatic": 8.13,
+  "maintainability_index": 95.8,
+  "hottest_files": [
+    {
+      "file": "src/app/core/store.service.ts",
+      "complexity": 61
+    },
+    {
+      "file": "src/app/core/welfare-scoring.ts",
+      "complexity": 46
+    },
+    {
+      "file": "src/app/pages/dashboard.page.ts",
+      "complexity": 20
+    },
+    {
+      "file": "src/app/pages/user-form.page.ts",
+      "complexity": 16
+    },
+    {
+      "file": "src/app/core/cloud.repository.ts",
+      "complexity": 15
+    },
+    {
+      "file": "src/app/pages/animal-form.page.ts",
+      "complexity": 14
+    },
+    {
+      "file": "src/app/core/auth.service.ts",
+      "complexity": 13
+    },
+    {
+      "file": "src/app/pages/animal-detail.page.ts",
+      "complexity": 11
+    }
+  ],
+  "largest_files": [
+    {
+      "file": "src/styles.scss",
+      "lines": 844
+    },
+    {
+      "file": "src/app/core/cloud.repository.ts",
+      "lines": 574
+    },
+    {
+      "file": "src/app/core/store.service.ts",
+      "lines": 474
+    },
+    {
+      "file": "src/app/core/labels.ts",
+      "lines": 202
+    },
+    {
+      "file": "src/app/core/welfare-scoring.ts",
+      "lines": 191
+    },
+    {
+      "file": "src/app/core/simulation.ts",
+      "lines": 171
+    },
+    {
+      "file": "src/app/pages/dashboard.page.ts",
+      "lines": 171
+    },
+    {
+      "file": "src/app/pages/animal-form.page.ts",
+      "lines": 161
+    }
+  ],
+  "bugs_heuristic": 0,
+  "vulnerabilities_heuristic": 0,
+  "rating": "A"
+}

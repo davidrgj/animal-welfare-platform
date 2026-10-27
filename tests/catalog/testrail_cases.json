@@ -1,0 +1,80 @@
+{
+  "project": "Plataforma de bienestar animal",
+  "suite": "Pruebas de software y métricas de calidad",
+  "sections": [
+    {
+      "name": "Autenticación",
+      "cases": [
+        { "id": "TC-AUTH-01", "title": "Login con credenciales válidas", "type": "E2E", "priority": "critical", "tool": "Playwright" },
+        { "id": "TC-AUTH-02", "title": "Login con contraseña inválida", "type": "E2E", "priority": "critical", "tool": "Playwright" },
+        { "id": "TC-AUTH-03", "title": "Guard redirige /app/dashboard sin sesión", "type": "E2E", "priority": "high", "tool": "Playwright" },
+        { "id": "TC-AUTH-04", "title": "Cerrar sesión vuelve al login", "type": "E2E", "priority": "high", "tool": "Playwright" },
+        { "id": "TC-AUTH-05", "title": "Página de registro oculta el rol administrador", "type": "E2E", "priority": "medium", "tool": "Playwright" },
+        { "id": "TC-AUTH-06", "title": "Guest guard envía sesión activa al tablero", "type": "E2E", "priority": "medium", "tool": "Playwright" }
+      ]
+    },
+    {
+      "name": "Índice ICA y cinco libertades",
+      "cases": [
+        { "id": "TC-ICA-01", "title": "THI a 30 °C y 80% RH ≈ 82.9", "type": "Unit", "priority": "critical", "tool": "pytest / node:test" },
+        { "id": "TC-ICA-02", "title": "Semáforo IBA 80 / 60", "type": "Unit", "priority": "critical", "tool": "pytest" },
+        { "id": "TC-ICA-03", "title": "Umbrales de estrés calórico porcino vs rumiante", "type": "Unit", "priority": "high", "tool": "pytest" },
+        { "id": "TC-ICA-04", "title": "Espacio mínimo por especie y etapa porcina", "type": "Unit", "priority": "high", "tool": "pytest" },
+        { "id": "TC-ICA-05", "title": "Hallazgos de calor, cojera y vacuna vencida", "type": "Unit", "priority": "high", "tool": "node:test" },
+        { "id": "TC-ICA-06", "title": "Tope de conducta sin enriquecimiento porcino", "type": "Unit", "priority": "medium", "tool": "node:test" }
+      ]
+    },
+    {
+      "name": "Simulación",
+      "cases": [
+        { "id": "TC-SIM-01", "title": "Un snapshot por día de horizonte", "type": "Unit", "priority": "high", "tool": "node:test" },
+        { "id": "TC-SIM-02", "title": "Resultado determinista con la misma semilla", "type": "Unit", "priority": "high", "tool": "node:test" },
+        { "id": "TC-SIM-03", "title": "Mejora de instalaciones supera restricción de alimento", "type": "Unit", "priority": "medium", "tool": "node:test" }
+      ]
+    },
+    {
+      "name": "Inventario y navegación",
+      "cases": [
+        { "id": "TC-NAV-01", "title": "Tab bar: predios, animales, simulación, cuenta", "type": "E2E", "priority": "high", "tool": "Playwright" },
+        { "id": "TC-NAV-02", "title": "Formulario de predio en sentence case", "type": "E2E", "priority": "medium", "tool": "Playwright" },
+        { "id": "TC-NAV-03", "title": "Campos condicionales de porcino", "type": "E2E", "priority": "medium", "tool": "Playwright" },
+        { "id": "TC-NAV-04", "title": "Reportes desde cuenta", "type": "E2E", "priority": "medium", "tool": "Playwright" },
+        { "id": "TC-NAV-05", "title": "Usuarios solo para administrador", "type": "E2E", "priority": "high", "tool": "Playwright" }
+      ]
+    },
+    {
+      "name": "API REST Supabase",
+      "cases": [
+        { "id": "TC-API-01", "title": "Home HTTP 200", "type": "API", "priority": "high", "tool": "Postman / pytest" },
+        { "id": "TC-API-02", "title": "Password grant inválido 400/401", "type": "API", "priority": "critical", "tool": "pytest" },
+        { "id": "TC-API-03", "title": "Password grant válido entrega JWT", "type": "API", "priority": "critical", "tool": "pytest" },
+        { "id": "TC-API-04", "title": "RLS: anon no lista predios ni perfiles", "type": "API", "priority": "critical", "tool": "pytest" },
+        { "id": "TC-API-05", "title": "Perfil autenticado coincide con el correo", "type": "API", "priority": "high", "tool": "pytest" },
+        { "id": "TC-API-06", "title": "Insert anónimo de predio denegado", "type": "API", "priority": "high", "tool": "pytest" }
+      ]
+    },
+    {
+      "name": "Rendimiento",
+      "cases": [
+        { "id": "TC-PERF-01", "title": "20 usuarios concurrentes en el home", "type": "Performance", "priority": "medium", "tool": "JMeter-equivalent" },
+        { "id": "TC-PERF-02", "title": "Auth < 3 s", "type": "Performance", "priority": "medium", "tool": "pytest" }
+      ]
+    },
+    {
+      "name": "Seguridad",
+      "cases": [
+        { "id": "TC-SEC-01", "title": "HTTPS y certificado TLS", "type": "Security", "priority": "critical", "tool": "OWASP-inspired" },
+        { "id": "TC-SEC-02", "title": "Cabeceras de seguridad", "type": "Security", "priority": "medium", "tool": "OWASP ZAP-style" },
+        { "id": "TC-SEC-03", "title": "El bundle no incluye service_role", "type": "Security", "priority": "critical", "tool": "pytest" },
+        { "id": "TC-SEC-04", "title": "Admin Auth API bloqueada al anon key", "type": "Security", "priority": "high", "tool": "pytest" }
+      ]
+    },
+    {
+      "name": "Visibilidad por rol",
+      "cases": [
+        { "id": "TC-ACL-01", "title": "Productor solo ve predios propios", "type": "Unit", "priority": "high", "tool": "pytest / node:test" },
+        { "id": "TC-ACL-02", "title": "Veterinario y administrador ven todos los predios", "type": "Unit", "priority": "high", "tool": "pytest" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Informe de pruebas de software — Bienestar ICA</title>
+  <style>
+    :root { --ink: #1a1a1a; --muted: #5c5c5c; --line: #d8d8d8; --ok: #0f7b3c; --bad: #b42318; --warn: #9a6700; }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); font: 15px/1.5 "Calibri", "Segoe UI", sans-serif; background: #fff; }
+    main { max-width: 820px; margin: 0 auto; padding: 48px 32px 80px; }
+    h1 { font-size: 28px; line-height: 1.2; margin: 0 0 8px; }
+    h2 { font-size: 20px; margin: 36px 0 12px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+    h3 { font-size: 16px; margin: 22px 0 8px; }
+    p, li { color: var(--ink); }
+    .muted { color: var(--muted); }
+    .cover { text-align: center; padding: 48px 0 32px; }
+    .cover p { margin: 6px 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 12px 0 20px; }
+    th, td { border: 1px solid var(--line); padding: 7px 8px; text-align: left; vertical-align: top; }
+    th { background: #f4f4f4; }
+    .ok { color: var(--ok); font-weight: 600; }
+    .bad { color: var(--bad); font-weight: 600; }
+    .warn { color: var(--warn); font-weight: 600; }
+    figure { margin: 16px 0 28px; }
+    figure img { width: 100%; border: 1px solid var(--line); }
+    figcaption { font-size: 12px; color: var(--muted); text-align: center; margin-top: 6px; }
+    code { font-family: ui-monospace, monospace; font-size: 12px; background: #f6f6f6; padding: 1px 4px; }
+    @media print {
+      main { padding: 0; max-width: none; }
+      figure { break-inside: avoid; }
+      h2 { break-after: avoid; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header class="cover">
+    <p class="muted">Pruebas de software y métricas de calidad</p>
+    <h1>Informe de ejecución de pruebas</h1>
+    <p>Plataforma de bienestar animal — Bienestar ICA</p>
+    <p class="muted">https://animal-welfare-platform-vepq.vercel.app</p>
+    <p>27 oct, 2026 (America/Bogota) · David Ramirez · rxgdavid@gmail.com (administrador)</p>
+  </header>
+
+  <h2>1. Introducción</h2>
+  <p>Bienestar ICA es una PWA (Ionic + Angular) para monitorear y simular el bienestar de bovinos, caprinos y porcinos según las cinco libertades y el semáforo ICA. El IBA, el THI y la simulación de eventos discretos corren en el cliente. La persistencia de producción está en Supabase y el frontend se publica en Vercel.</p>
+  <p>Esta campaña se ejecutó de verdad contra la URL desplegada y contra el código, no es un plan teórico. Cubre unitarias, aceptación, E2E, API, rendimiento, seguridad, calidad de código y CI, según el documento de clase.</p>
+
+  <h2>2. Objetivos</h2>
+  <ul>
+    <li>Verificar las fórmulas ICA (THI, semáforo 80/60, espacio mínimo, estrés calórico) con un oráculo independiente.</li>
+    <li>Ejercitar el flujo real en Vercel: login, tablero, predios, animales, simulación, reportes, usuarios y cierre de sesión.</li>
+    <li>Comprobar el contrato REST de Supabase (JWT, RLS, códigos HTTP).</li>
+    <li>Medir el frontend bajo 20 usuarios concurrentes.</li>
+    <li>Revisar controles OWASP sin payloads ofensivos.</li>
+    <li>Dejar métricas tipo SonarQube y la suite en GitHub Actions.</li>
+  </ul>
+
+  <h2>3. Alcance</h2>
+  <p><strong>Incluido:</strong> autenticación, inventario, evaluación ICA, simulación, reportes, usuarios, API, TLS/cabeceras y calidad estática.</p>
+  <p><strong>No incluido:</strong> apps nativas, carga destructiva sobre Postgres, fuzzing/exploits, WCAG formal. No se crearon cuentas nuevas ni se borró inventario.</p>
+
+  <h2>4. Equivalencia con las herramientas del curso</h2>
+  <table>
+    <thead>
+      <tr><th>Tipo</th><th>Curso</th><th>Usado aquí</th><th>Resultado</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Unitarias Java</td><td>JUnit</td><td>node:test sobre TypeScript real</td><td class="ok">11/11</td></tr>
+      <tr><td>Unitarias Python</td><td>pytest</td><td>pytest + oráculo ICA</td><td class="ok">20/20</td></tr>
+      <tr><td>Funcionales / E2E</td><td>Selenium / Playwright / Cypress</td><td>Playwright Chromium vs Vercel y local</td><td>13/14 prod · logout OK local</td></tr>
+      <tr><td>API</td><td>Postman</td><td>Colección + pytest/requests</td><td class="ok">10/10</td></tr>
+      <tr><td>Rendimiento</td><td>Apache JMeter</td><td>20 hilos × 3 hits</td><td class="ok">2/2</td></tr>
+      <tr><td>Aceptación</td><td>Cucumber</td><td>Gherkin en español + pytest</td><td class="ok">3/3</td></tr>
+      <tr><td>Seguridad</td><td>OWASP ZAP</td><td>TLS, HSTS, RLS, bundle, admin API</td><td class="ok">6/6 + hallazgos</td></tr>
+      <tr><td>Calidad</td><td>SonarQube</td><td>Complejidad, duplicación, MI</td><td class="ok">Rating A</td></tr>
+      <tr><td>Gestión</td><td>TestRail</td><td><code>tests/catalog/testrail_cases.json</code></td><td>41 casos</td></tr>
+      <tr><td>CI</td><td>Jenkins / GitHub Actions</td><td><code>.github/workflows/ci.yml</code></td><td>Configurado</td></tr>
+    </tbody>
+  </table>
+
+  <h2>5. Entorno</h2>
+  <table>
+    <tbody>
+      <tr><th>Frontend</th><td>https://animal-welfare-platform-vepq.vercel.app</td></tr>
+      <tr><th>Backend</th><td>https://gkomojjjyydbdajpxyqw.supabase.co</td></tr>
+      <tr><th>Usuario</th><td>rxgdavid@gmail.com · rol administrador</td></tr>
+      <tr><th>Datos</th><td>3 predios, 6 animales, 4 usuarios</td></tr>
+      <tr><th>Local</th><td>http://localhost:4200 para verificar el arreglo de logout</td></tr>
+      <tr><th>Fecha</th><td>27 oct, 2026, America/Bogota</td></tr>
+    </tbody>
+  </table>
+
+  <h2>6. Estrategia</h2>
+  <p>Pirámide clásica: oráculo unitario de las cinco libertades, Gherkin sobre esas reglas, E2E de los caminos de un administrador, API para el contrato con Postgres, y una pasada corta de carga + seguridad sobre el despliegue real. Los formularios de alta se abrieron sin pulsar Guardar.</p>
+
+  <h2>7. Resultados por nivel</h2>
+  <h3>7.1 Unitarias</h3>
+  <p>THI(30 °C, 80 % RH) = 82.92 (NRC). Semáforo IBA 80/60. Porcino en emergencia con THI ≥ 84. Espacio mínimo 4.5 / 1.5 / 0.85 m². Simulación determinista, un snapshot por día. El smoke check viejo esperaba 81.3; se corrigió el oráculo.</p>
+  <h3>7.2 E2E Playwright (Vercel)</h3>
+  <table>
+    <thead><tr><th>Caso</th><th>Resultado</th></tr></thead>
+    <tbody>
+      <tr><td>Login sentence case</td><td class="ok">Pass</td></tr>
+      <tr><td>Password inválido</td><td class="ok">Pass</td></tr>
+      <tr><td>Login válido · IBA 81.4 · VACA-087 en 45.5</td><td class="ok">Pass</td></tr>
+      <tr><td>Guard sin sesión</td><td class="ok">Pass</td></tr>
+      <tr><td>Cerrar sesión</td><td><span class="bad">Fail en Vercel</span> · <span class="ok">Pass en local</span></td></tr>
+      <tr><td>Registro sin rol administrador</td><td class="ok">Pass</td></tr>
+      <tr><td>Tab bar, predios, porcino, reportes, usuarios, fechas</td><td class="ok">Pass</td></tr>
+    </tbody>
+  </table>
+  <h3>7.3 API, rendimiento y seguridad</h3>
+  <p>Anon no lista predios ni perfiles (RLS). Login inválido 400. JWT válido. 3 predios y 6 animales autenticados. 60 hits al home: media 35.9 ms, p95 53.4 ms, 0 % error. TLS + HSTS presentes. Admin API 403. Bundle sin <code>service_role</code>.</p>
+
+  <h2>8. Defectos</h2>
+  <table>
+    <thead><tr><th>ID</th><th>Sev.</th><th>Resumen</th><th>Estado</th></tr></thead>
+    <tbody>
+      <tr><td>DEF-01</td><td>Alta</td><td>Logout en producción restaura la sesión porque <code>signOut()</code> no se esperaba.</td><td>Corregido en código; falta deploy</td></tr>
+      <tr><td>DEF-02</td><td>Baja</td><td>ion-select muestra OK / Cancel en inglés.</td><td>Abierto</td></tr>
+      <tr><td>DEF-03</td><td>Media</td><td>Faltaban X-Frame-Options, nosniff y Referrer-Policy. CSP no se forzó para no romper Angular.</td><td>Headers en vercel.json; falta deploy</td></tr>
+      <tr><td>DEF-04</td><td>Baja</td><td>Bucket de fotos público por esquema.</td><td>Riesgo de diseño</td></tr>
+      <tr><td>DEF-05</td><td>Baja</td><td>Login publica credenciales demo.</td><td>Abierto (prototipo)</td></tr>
+    </tbody>
+  </table>
+
+  <h2>9. Métricas</h2>
+  <table>
+    <tbody>
+      <tr><th>Casos automatizados</th><td>66</td></tr>
+      <tr><th>Pasados</th><td>65 (el restante es DEF-01 en Vercel)</td></tr>
+      <tr><th>LOC / archivos</th><td>5 043 / 39</td></tr>
+      <tr><th>Mantenibilidad</th><td>95.8 · rating A</td></tr>
+      <tr><th>Complejidad media</th><td>8.13 (tope: store.service.ts = 61)</td></tr>
+      <tr><th>Error de carga</th><td>0 %</td></tr>
+    </tbody>
+  </table>
+
+  <h2>10. Conclusiones</h2>
+  <p>El IBA y el inventario coinciden entre código, oráculo y Vercel. RLS no filtra datos al anónimo. El único corte de flujo de usuario es el logout publicado; ya está corregido en esta rama. No hace falta Grok Bot: la campaña corrió contra la URL real y se revalidó en local. La contraseña no se versiona (<code>E2E_EMAIL</code> / <code>E2E_PASSWORD</code>).</p>
+  <p>Recomendado: desplegar el logout, añadir cabeceras de seguridad en <code>vercel.json</code>, traducir OK/Cancel, y cargar los secrets de E2E en GitHub Actions.</p>
+
+  <h2>11. Cómo reproducir</h2>
+  <p><code>npx tsx --test tests/unit/domain.test.ts && pytest tests/unit tests/acceptance tests/api tests/security tests/performance -q</code></p>
+  <p><code>E2E_EMAIL=… E2E_PASSWORD=… npx playwright test --config tests/e2e/playwright.config.ts</code></p>
+
+  <h2>Anexo. Evidencias</h2>
+  <figure>
+    <img src="evidence/01-login.png" alt="Login" />
+    <figcaption>Figura 1. Inicio de sesión.</figcaption>
+  </figure>
+  <figure>
+    <img src="evidence/02-login-error.png" alt="Login error" />
+    <figcaption>Figura 2. Credenciales inválidas.</figcaption>
+  </figure>
+  <figure>
+    <img src="evidence/03-dashboard.png" alt="Dashboard" />
+    <figcaption>Figura 3. Tablero Estado ICA, IBA 81.4.</figcaption>
+  </figure>
+  <figure>
+    <img src="evidence/18-farms-consistency.png" alt="Predios" />
+    <figcaption>Figura 4. Tres predios visibles para el administrador.</figcaption>
+  </figure>
+  <figure>
+    <img src="evidence/15-users-admin.png" alt="Usuarios" />
+    <figcaption>Figura 5. Usuarios y roles.</figcaption>
+  </figure>
+  <figure>
+    <img src="evidence/06-logout.png" alt="Logout local" />
+    <figcaption>Figura 6. Logout correcto en el build local, después del arreglo.</figcaption>
+  </figure>
+  <figure>
+    <img src="evidence/12-farm-form.png" alt="Nuevo predio" />
+    <figcaption>Figura 7. Nuevo predio.</figcaption>
+  </figure>
+  <figure>
+    <img src="evidence/10-simulation.png" alt="Simulación" />
+    <figcaption>Figura 8. Simulación.</figcaption>
+  </figure>
+  <figure>
+    <img src="evidence/14-reports.png" alt="Reportes" />
+    <figcaption>Figura 9. Reportes.</figcaption>
+  </figure>
+  <figure>
+    <img src="evidence/05-profile.png" alt="Cuenta" />
+    <figcaption>Figura 10. Cuenta del administrador de evaluación.</figcaption>
+  </figure>
+</main>
+</body>
+</html>

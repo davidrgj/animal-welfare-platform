@@ -1,0 +1,55 @@
+{
+  "info": {
+    "name": "Bienestar ICA API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://gkomojjjyydbdajpxyqw.supabase.co" },
+    { "key": "appUrl", "value": "https://animal-welfare-platform-vepq.vercel.app" },
+    { "key": "anonKey", "value": "{{anonKey}}" },
+    { "key": "accessToken", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "App shell",
+      "request": { "method": "GET", "url": "{{appUrl}}/" }
+    },
+    {
+      "name": "Auth password grant",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "apikey", "value": "{{anonKey}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"email\":\"{{email}}\",\"password\":\"{{password}}\"}"
+        },
+        "url": "{{baseUrl}}/auth/v1/token?grant_type=password"
+      }
+    },
+    {
+      "name": "List farms (authenticated)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "apikey", "value": "{{anonKey}}" },
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+        ],
+        "url": "{{baseUrl}}/rest/v1/farms?select=id,name,hectares"
+      }
+    },
+    {
+      "name": "List farms (anonymous)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "apikey", "value": "{{anonKey}}" },
+          { "key": "Authorization", "value": "Bearer {{anonKey}}" }
+        ],
+        "url": "{{baseUrl}}/rest/v1/farms?select=id,name"
+      }
+    }
+  ]
+}

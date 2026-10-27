@@ -99,11 +99,11 @@ export class AuthService {
     return user;
   }
 
-  logout(): void {
+  async logout(): Promise<void> {
     this.currentUser = null;
     localStorage.removeItem(SESSION_KEY);
-    if (isCloud()) void supabase().auth.signOut();
-    void this.router.navigateByUrl('/login');
+    if (isCloud()) await supabase().auth.signOut();
+    await this.router.navigateByUrl('/login');
   }
 
   private persist(user: Profile): void {

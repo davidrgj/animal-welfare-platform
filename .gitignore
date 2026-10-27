@@ -7,3 +7,8 @@ dist/
 uploads/
 .env
 .env.local
+playwright-report/
+test-results/
+docs/evidence/playwright-failures/
+**/__pycache__/
+*.pyc
