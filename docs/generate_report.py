@@ -127,7 +127,7 @@ def main() -> None:
         [
             ["Unitarias Java", "JUnit", "node:test sobre el código TypeScript real (welfare-scoring.ts, simulation.ts)", "11/11 OK"],
             ["Unitarias Python", "pytest", "pytest con oráculo independiente de las fórmulas ICA", "20/20 OK"],
-            ["Funcionales / E2E", "Selenium / Playwright / Cypress", "Playwright (Chromium) contra Vercel y local", "13/14 prod; logout OK en local"],
+            ["Funcionales / E2E", "Selenium / Playwright / Cypress", "Playwright (Chromium) contra Vercel y local", "14/14 prod"],
             ["API", "Postman", "Colección Postman + pytest/requests sobre Auth y REST", "10/10 OK"],
             ["Rendimiento", "Apache JMeter", "Carga concurrente (20 hilos × 3 hits) equivalente a un Thread Group", "2/2 OK"],
             ["Aceptación", "Cucumber", "Features Gherkin en español + pasos pytest", "3/3 OK"],
@@ -147,7 +147,7 @@ def main() -> None:
             ["Backend", "https://gkomojjjyydbdajpxyqw.supabase.co"],
             ["Usuario de evaluación", "rxgdavid@gmail.com (rol ADMINISTRATOR)"],
             ["Datos visibles", "3 predios (El Recuerdo, La Esperanza, Prueba), 6 animales, 4 usuarios"],
-            ["Local", "http://localhost:4200 (ng serve) para verificar el arreglo de logout"],
+            ["Local", "http://localhost:4200 (ng serve), usado en la primera verificación del arreglo"],
             ["Navegador E2E", "Playwright Chromium 156, viewport 1280×800"],
             ["Python / Node", "Python 3.12, Node 22, pytest 8.3, Playwright 1.64"],
             ["Fecha", "27 oct, 2026, zona America/Bogota"],
@@ -196,7 +196,7 @@ def main() -> None:
     para(doc, "Features en español en tests/acceptance/features/: login.feature, welfare.feature y simulation.feature. Los pasos se ejecutan con pytest (test_bdd.py). 3/3 pasaron: animal saludable con IBA ≥ 80 y COMPLIANT; THI porcino 85 → EMERGENCY; archivos Gherkin presentes como especificación viva.")
 
     heading(doc, "10. Pruebas funcionales / E2E (Playwright)", 1)
-    para(doc, "14 casos contra la URL de Vercel con la cuenta de administrador. 13 pasaron. El único fallo de producción es el cierre de sesión (DEF-01), reproducido dos veces y corregido en el código; verificado en local (1.4 s, pass).")
+    para(doc, "14 casos contra la URL de Vercel con la cuenta de administrador. En la primera pasada falló el cierre de sesión (DEF-01). Tras publicar await signOut y el bloqueo de restore(), los 14 casos pasaron en 13,6 s; EP-14 en 0,9 s.")
     add_table(
         doc,
         ["Caso", "Resultado en Vercel", "Notas"],
@@ -205,7 +205,7 @@ def main() -> None:
             ["Password inválido muestra «Correo o contraseña no válidos»", "Pass", "Permanece en /login"],
             ["Login válido abre Estado ICA", "Pass", "IBA medio 81.4; VACA-087 en riesgo"],
             ["Guard de /app/dashboard sin sesión", "Pass", "Redirect a login"],
-            ["Cerrar sesión", "Fail (prod) / Pass (local)", "DEF-01: race de signOut"],
+            ["Cerrar sesión", "Pass", "DEF-01 cerrado: await signOut + sessionCleared"],
             ["Registro oculta rol administrador", "Pass", "Productor y veterinario sí"],
             ["Guest guard con sesión activa", "Pass", "Login → dashboard"],
             ["Inventario predios vs tablero", "Pass", "3 predios: El Recuerdo, La Esperanza, Prueba"],
@@ -222,7 +222,7 @@ def main() -> None:
     picture(doc, "03-dashboard.png", "Figura 3. Tablero Estado ICA: IBA 81.4, 1 animal fuera de umbral (VACA-087).")
     picture(doc, "18-farms-consistency.png", "Figura 4. Inventario de predios coherente con el tablero.")
     picture(doc, "15-users-admin.png", "Figura 5. Administración de usuarios (4 cuentas).")
-    picture(doc, "06-logout.png", "Figura 6. Cierre de sesión correcto en el build local (tras el arreglo).")
+    picture(doc, "06-logout.png", "Figura 6. Cierre de sesión correcto en el build productivo de Vercel.")
 
     heading(doc, "11. Pruebas de API (Postman / REST)", 1)
     para(doc, "Colección en tests/api/animal-welfare.postman_collection.json. Ejecución con pytest+requests. 10/10 pasaron.")
@@ -270,7 +270,7 @@ def main() -> None:
             ["Admin Auth API con anon key", "Pass", "HTTP 403"],
             ["Secretos en el bundle", "Pass", "No hay service_role ni claves privadas"],
             ["A07 Identification — login inválido", "Pass", "API 400; UI mensaje en español"],
-            ["Cabeceras CSP / X-Frame-Options / nosniff", "Hallazgo", "DEF-03: CSP sigue ausente; X-Frame-Options, nosniff y Referrer-Policy quedan en vercel.json pendientes de deploy"],
+            ["Cabeceras CSP / X-Frame-Options / nosniff", "Pass parcial", "X-Frame-Options DENY, nosniff y Referrer-Policy en producción; CSP no se forzó"],
             ["Storage de fotos público", "Riesgo residual", "DEF-04: bucket welfare-photos es public en schema.sql"],
         ],
     )
@@ -301,14 +301,14 @@ def main() -> None:
         doc,
         ["ID", "Severidad", "Resumen", "Estado"],
         [
-            ["DEF-01", "Alta", "Cerrar sesión en producción vuelve al tablero: logout() no esperaba supabase.auth.signOut() y el guestGuard restauraba la sesión.", "Corregido en código; falta desplegar Vercel"],
-            ["DEF-02", "Baja", "El alert nativo de ion-select muestra OK / Cancel en inglés.", "Abierto (copy de Ionic)"],
-            ["DEF-03", "Media", "Faltaban X-Frame-Options, nosniff y Referrer-Policy. CSP no se forzó para no romper Angular.", "Headers añadidos en vercel.json; falta deploy"],
+            ["DEF-01", "Alta", "Cerrar sesión en producción volvía al tablero: logout() no esperaba supabase.auth.signOut() y el guestGuard restauraba la sesión.", "Corregido y verificado en producción (0,9 s)"],
+            ["DEF-02", "Baja", "El alert nativo de ion-select mostraba OK / Cancel en inglés.", "Corregido: Aceptar / Cancelar"],
+            ["DEF-03", "Media", "Faltaban X-Frame-Options, nosniff y Referrer-Policy. CSP no se forzó para no romper Angular.", "Headers desplegados; CSP no impuesto"],
             ["DEF-04", "Baja", "El bucket de evidencias fotográficas es público por esquema.", "Riesgo aceptado de diseño"],
             ["DEF-05", "Baja", "La pantalla de login publica las credenciales demo (producer@farm.local).", "Abierto; útil en prototipo, no en producción dura"],
         ],
     )
-    para(doc, "DEF-01 — evidencia: en Vercel, tras pulsar «Cerrar sesión», Playwright registró navegación a #/app/dashboard en lugar de #/login (timeout 25 s). Causa: signOut asíncrono sin await. Arreglo en AuthService.logout(): await supabase().auth.signOut() y después navigateByUrl('/login'). Rechequeo local: pass en 1.4 s (figura 6).")
+    para(doc, "DEF-01 — evidencia: en el build anterior, tras pulsar «Cerrar sesión», Playwright registraba navegación a #/app/dashboard (timeout 25 s). Causa: signOut asíncrono sin await. Arreglo: await supabase().auth.signOut(), flag sessionCleared para que restore() no rehidrate, y después navigateByUrl('/login'). Rechequeo en producción el 27 oct, 2026: pass en 0,9 s (figura 6).")
 
     heading(doc, "17. Métricas de calidad de la campaña", 1)
     add_table(
@@ -316,22 +316,22 @@ def main() -> None:
         ["Indicador", "Valor"],
         [
             ["Casos automatizados ejecutados (prod + unit + API + sec + perf + aceptación)", "66"],
-            ["Pasados", "65 (el 66.º es DEF-01 en Vercel; pasa en local)"],
-            ["Fallidos de producto en producción", "1 (logout)"],
-            ["Densidad de defectos abiertos", "4 residuales + 1 corregido pendiente de deploy"],
+            ["Pasados", "66/66"],
+            ["Fallidos de producto en producción", "0"],
+            ["Densidad de defectos abiertos", "2 residuales de prototipo (bucket público y credenciales demo)"],
             ["Cobertura funcional de pantallas", "Login, registro, tablero, predios, alta predio, animales, detalle, evaluación ICA, alta animal (porcino), reportes, usuarios, simulación y detalle, cuenta; login+tablero en 390×844"],
             ["Tasa de error de carga 60 hits", "0 %"],
             ["Rating estático", "A (MI 95.8)"],
             ["Tiempo de suite unitaria", "< 1 s"],
-            ["Tiempo E2E producción (14 casos, 1 worker)", "1.1 min + reintento del logout"],
+            ["Tiempo E2E producción (14 casos, 1 worker)", "13,6 s"],
         ],
     )
 
     heading(doc, "18. Conclusiones y recomendaciones", 1)
     para(doc, "La plataforma es usable en producción para un administrador: el IBA, el inventario y las reglas de las cinco libertades coinciden entre el código, el oráculo Python y lo que se ve en Vercel (IBA medio 81.4, VACA-087 en 45.5 con alerta de espacio mínimo ICA). RLS de Supabase no filtra datos al anónimo. El frontend estático es rápido.")
-    para(doc, "El defecto que sí corta un flujo de usuario es el cierre de sesión en el build publicado. Ya está corregido en esta rama; hay que desplegar Vercel para que TC-AUTH-04 quede verde en producción.")
-    para(doc, "Recomendaciones, en orden: 1) publicar el arreglo de logout y los headers de vercel.json; 2) valorar un CSP explícito cuando se pueda probar sin romper Ionic; 3) traducir OK/Cancel del ion-select o usar interface action-sheet; 4) quitar el hint de credenciales demo si el entorno deja de ser prototipo; 5) registrar E2E_EMAIL y E2E_PASSWORD como secrets de GitHub para correr Playwright en CI.")
-    para(doc, "No hace falta Grok Bot ni un entorno extra: la campaña se ejecutó contra la URL real y se revalidó el arreglo en local. La contraseña de evaluación no se versiona; se inyecta por E2E_EMAIL / E2E_PASSWORD.")
+    para(doc, "El defecto que cortaba un flujo de usuario (cierre de sesión) está publicado y verificado: EP-14 / TC-AUTH-04 pasa en https://animal-welfare-platform-vepq.vercel.app.")
+    para(doc, "Recomendaciones, en orden: 1) valorar un CSP explícito cuando se pueda probar sin romper Ionic; 2) quitar el hint de credenciales demo si el entorno deja de ser prototipo; 3) registrar E2E_EMAIL y E2E_PASSWORD como secrets de GitHub para correr Playwright en CI.")
+    para(doc, "No hace falta Grok Bot ni un entorno extra: la campaña se ejecutó contra la URL real y el arreglo de logout se revalidó en producción. La contraseña de evaluación no se versiona; se inyecta por E2E_EMAIL / E2E_PASSWORD.")
 
     heading(doc, "19. Cómo reproducir", 1)
     para(doc, "npm install && pip install -r tests/requirements.txt")

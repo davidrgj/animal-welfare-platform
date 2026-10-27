@@ -214,7 +214,7 @@ def main() -> None:
         "Figura 3. Tablero Estado ICA",
         "Figura 4. Inventario de predios",
         "Figura 5. Administración de usuarios y roles",
-        "Figura 6. Cierre de sesión correcto en el build local (poscorrección)",
+        "Figura 6. Cierre de sesión correcto en el build productivo de Vercel",
         "Figura 7. Módulo de simulación",
         "Figura 8. Reporte de predio",
     ]:
@@ -251,10 +251,10 @@ def main() -> None:
         [
             ["Unitarias", "JUnit / pytest", "node:test sobre TypeScript real y pytest como oráculo independiente del IBA", "31/31 satisfactorio"],
             ["Aceptación", "Cucumber", "Features Gherkin en español y pasos pytest", "3/3 satisfactorio"],
-            ["Funcionales / E2E", "Selenium, Playwright, Cypress", "Playwright (Chromium) contra Vercel y local", "13/14 en producción; el fallo se corrigió en código"],
+            ["Funcionales / E2E", "Selenium, Playwright, Cypress", "Playwright (Chromium) contra Vercel y local", "14/14 satisfactorio en producción"],
             ["API", "Postman", "Colección Postman y pytest/requests sobre Auth y REST de Supabase", "10/10 satisfactorio"],
             ["Rendimiento", "Apache JMeter", "Grupo de hilos equivalente (20 usuarios × 3 iteraciones)", "2/2; p95 = 53,4 ms"],
-            ["Seguridad", "OWASP ZAP", "Lista de verificación OWASP Top 10 (2021), sin payloads ofensivos", "Controles de acceso y TLS satisfactorios; cabeceras incompletas"],
+            ["Seguridad", "OWASP ZAP", "Lista de verificación OWASP Top 10 (2021), sin payloads ofensivos", "Controles de acceso, TLS y cabeceras anti-clickjacking satisfactorios; CSP no impuesto"],
             ["Calidad estática", "SonarQube", "Métricas de complejidad, duplicación y mantenibilidad", "Índice 95,8 (rating A)"],
             ["Gestión", "TestRail", "Catálogo JSON de 41 casos", "Trazado a RF y CU"],
             ["CI", "Jenkins / GitHub Actions", "Workflow en cada push/pull request", "Configurado"],
@@ -350,7 +350,7 @@ def main() -> None:
     heading(doc, "12.7 Pruebas funcionales y de extremo a extremo", 2)
     p(
         doc,
-        "Playwright automatizó 14 casos contra Vercel con un único trabajador, para no invalidar la sesión JWT al cerrar sesión en paralelo. Trece casos fueron satisfactorios. El único fallo de producción es el cierre de sesión (CU-11 / EP-14), tratado en la sección 12.14. La corrección se verificó en http://localhost:4200 en 1,4 s.",
+        "Playwright automatizó 14 casos contra Vercel con un único trabajador, para no invalidar la sesión JWT al cerrar sesión en paralelo. En la primera pasada, trece casos fueron satisfactorios y EP-14 falló por una carrera entre signOut y guestGuard. Tras desplegar el arreglo, la suite completa pasó en 13,6 s sobre https://animal-welfare-platform-vepq.vercel.app; el cierre de sesión quedó en 0,9 s.",
     )
     add_table(
         doc,
@@ -369,11 +369,11 @@ def main() -> None:
             ["EP-11", "Reporte de predio", "IBA medio e inventario", "Satisfactorio"],
             ["EP-12", "CRUD usuarios", "Listado de perfiles y roles", "Satisfactorio (4 usuarios)"],
             ["EP-13", "Bloqueo de /app/users", "adminGuard redirige si no es administrador", "Satisfactorio (la cuenta de evaluación sí es admin)"],
-            ["EP-14", "Cerrar sesión", "Vuelve a login; /app exige autenticación", "No satisfactorio en Vercel; satisfactorio en local tras el arreglo"],
+            ["EP-14", "Cerrar sesión", "Vuelve a login; /app exige autenticación", "Satisfactorio"],
         ],
         5,
         "Escenarios de prueba de aceptación del prototipo, actualizados con la campaña empírica",
-        "Elaboración propia (2026). Esta tabla corrige la versión preliminar que marcaba EP-14 como satisfactorio sin evidencia de cierre de sesión en la nube.",
+        "Elaboración propia (2026). EP-14 se reejecutó contra el build productivo después de publicar await signOut y el flag que evita restore() durante el cierre.",
     )
     picture(
         doc,
@@ -414,8 +414,8 @@ def main() -> None:
         doc,
         "06-logout.png",
         6,
-        "Cierre de sesión correcto en el build local, después de esperar signOut de Supabase",
-        "Elaboración propia (2026). En el build publicado el mismo flujo restauraba la sesión (véase sección 12.14).",
+        "Cierre de sesión correcto en el build productivo de Vercel",
+        "Elaboración propia (2026). Tras pulsar Cerrar sesión, la aplicación permanece en /#/login y muestra Entrar.",
     )
     picture(
         doc,
@@ -491,7 +491,7 @@ def main() -> None:
             ["API de administración de Auth con clave anónima", "Satisfactorio. HTTP 403"],
             ["Secretos en el bundle del cliente", "Satisfactorio. No hay service_role ni claves privadas"],
             ["A07 identificación: login inválido", "Satisfactorio. API 400; UI en español"],
-            ["Cabeceras CSP, X-Frame-Options, nosniff, Referrer-Policy", "Parcial. Se añadieron las tres últimas en vercel.json; CSP no se forzó para no romper Angular"],
+            ["Cabeceras CSP, X-Frame-Options, nosniff, Referrer-Policy", "X-Frame-Options DENY, nosniff y Referrer-Policy están en producción; CSP no se forzó para no romper Angular"],
             ["Bucket de evidencias fotográficas", "Riesgo residual de diseño: welfare-photos es público en schema.sql"],
         ],
         8,
@@ -530,7 +530,7 @@ def main() -> None:
     heading(doc, "12.13 Resultados consolidados de la campaña", 2)
     p(
         doc,
-        "Se ejecutaron 66 casos automatizados. Sesenta y cinco fueron satisfactorios. El caso restante es EP-14 en el build publicado. Tras el arreglo local, el mismo caso pasa. La densidad de defectos abiertos es baja y está documentada. El IBA medio observado en el tablero (81,4) es coherente con el inventario (cinco de seis evaluados) y con el animal fuera de umbral (VACA-087, 45,5, alerta de espacio mínimo ICA).",
+        "Se ejecutaron 66 casos automatizados y los 66 fueron satisfactorios en el build publicado. La densidad de defectos abiertos es baja y está documentada. El IBA medio observado en el tablero (81,4) es coherente con el inventario (cinco de seis evaluados) y con el animal fuera de umbral (VACA-087, 45,5, alerta de espacio mínimo ICA).",
     )
 
     heading(doc, "12.14 Defectos identificados y corrección", 2)
@@ -538,9 +538,9 @@ def main() -> None:
         doc,
         ["ID", "Severidad", "Descripción", "Estado"],
         [
-            ["DEF-01", "Alta", "Cerrar sesión en Vercel restaura el JWT: logout() no esperaba supabase.auth.signOut() y guestGuard reenviaba al tablero.", "Corregido en código (await signOut). Pendiente de desplegar Vercel"],
-            ["DEF-02", "Baja", "El alert nativo de ion-select muestra OK / Cancel en inglés.", "Abierto (copy del componente Ionic)"],
-            ["DEF-03", "Media", "Faltaban X-Frame-Options, X-Content-Type-Options y Referrer-Policy.", "Añadidos en vercel.json; pendiente de desplegar. CSP no se impuso"],
+            ["DEF-01", "Alta", "Cerrar sesión en Vercel restauraba el JWT: logout() no esperaba supabase.auth.signOut() y guestGuard reenviaba al tablero.", "Corregido y verificado en producción (Playwright, 0,9 s)"],
+            ["DEF-02", "Baja", "El alert nativo de ion-select mostraba OK / Cancel en inglés.", "Corregido: okText Aceptar y cancelText Cancelar"],
+            ["DEF-03", "Media", "Faltaban X-Frame-Options, X-Content-Type-Options y Referrer-Policy.", "Desplegado en producción. CSP no se impuso"],
             ["DEF-04", "Baja", "El bucket de fotos es público por esquema.", "Riesgo aceptado de prototipo"],
             ["DEF-05", "Baja", "El login publica las credenciales de demostración.", "Aceptable en prototipo; debe retirarse en un entorno productivo"],
         ],
@@ -550,7 +550,7 @@ def main() -> None:
     )
     p(
         doc,
-        "El DEF-01 es el único que corta un caso de uso (CU-11). La causa raíz es una condición de carrera: signOut se disparaba sin await, navigateByUrl('/login') activaba guestGuard y restore() aún encontraba la sesión de Supabase. La corrección espera la invalidación del token y después navega. Este hallazgo no debilita el trabajo: ilustra precisamente el valor de las pruebas empíricas sobre el despliegue, frente a una tabla de aceptación marcada a priori como satisfactoria (Sommerville, 2016).",
+        "El DEF-01 cortaba el caso de uso CU-11 en el build publicado. La causa raíz era una condición de carrera: signOut se disparaba sin await, navigateByUrl('/login') activaba guestGuard y restore() aún encontraba la sesión de Supabase. La corrección espera la invalidación del token, marca la sesión como limpiada para que restore() no la rehidrate y después navega. El 27 de octubre de 2026 se publicó en Vercel y Playwright confirmó el retorno a /#/login. Este hallazgo no debilita el trabajo: ilustra el valor de las pruebas empíricas sobre el despliegue, frente a una tabla de aceptación marcada a priori como satisfactoria (Sommerville, 2016).",
     )
 
     page_break(doc)
@@ -587,7 +587,7 @@ def main() -> None:
     )
     p(
         doc,
-        "En el plano metodológico, la campaña confirma que una tabla de 14 escenarios marcada como satisfactoria sin automatizar el cierre de sesión en la nube es insuficiente (Pressman y Maxim, 2015). El DEF-01 solo apareció cuando Playwright esperó la URL /login después de Cerrar sesión. La lección para la Fábrica de Software es incorporar E2E del camino infeliz (logout, guarda, RLS anónimo) en la definición de terminado de cada sprint Scrum. Al mismo tiempo, la pirámide evitó que un error de THI (81,3 versus 82,92) llegara disfrazado de prueba verde.",
+        "En el plano metodológico, la campaña confirma que una tabla de 14 escenarios marcada como satisfactoria sin automatizar el cierre de sesión en la nube es insuficiente (Pressman y Maxim, 2015). El DEF-01 solo apareció cuando Playwright esperó la URL /login después de Cerrar sesión; una vez desplegada la corrección, EP-14 pasó en producción. La lección para la Fábrica de Software es incorporar E2E del camino infeliz (logout, guarda, RLS anónimo) en la definición de terminado de cada sprint Scrum. Al mismo tiempo, la pirámide evitó que un error de THI (81,3 versus 82,92) llegara disfrazado de prueba verde.",
     )
     p(
         doc,
@@ -613,18 +613,17 @@ def main() -> None:
     )
     p(
         doc,
-        "Las pruebas —unitarias, de aceptación, E2E, de API, de carga y de seguridad— aportan evidencia reproducible de que el prototipo publicado es usable por un administrador, que el anónimo no lee datos y que el único caso de uso roto en producción (cierre de sesión) tiene causa raíz identificada y corrección verificada en local. Esa transparencia fortalece, no debilita, la validez del trabajo de grado.",
+        "Las pruebas —unitarias, de aceptación, E2E, de API, de carga y de seguridad— aportan evidencia reproducible de que el prototipo publicado es usable por un administrador, que el anónimo no lee datos y que el cierre de sesión (CU-11 / EP-14) permanece en login tras invalidar el JWT. Esa transparencia fortalece, no debilita, la validez del trabajo de grado.",
     )
 
     heading(doc, "16. Recomendaciones", 1)
     p(doc, "Se recomienda, en este orden:", first=True)
-    p(doc, "1. Publicar en Vercel el arreglo de logout y las cabeceras de vercel.json, y repetir EP-14 sobre el build productivo hasta marcarlo satisfactorio con evidencia.", first=False)
-    p(doc, "2. Ajustar el enunciado del segundo objetivo específico en la versión final del documento marco, para que hable de analítica de reglas e índices ICA y no de “técnicas de IA” si no se entrena un modelo.", first=False)
-    p(doc, "3. Retirar del alcance vigente el RNF de persistencia offline, o implementarlo con una prueba de sincronización, pero no dejarlo como requisito no verificado.", first=False)
-    p(doc, "4. Valorar un Content-Security-Policy explícito cuando pueda ensayarse sin romper Ionic, y restringir el bucket de fotos si el prototipo escala a datos reales de predios.", first=False)
-    p(doc, "5. Traducir o sustituir el alert OK/Cancel de ion-select, y retirar el hint de credenciales demo en un entorno que deje de ser académico.", first=False)
-    p(doc, "6. Como trabajo futuro —no como deuda de este prototipo—, integrar sensores IoT o wearables (Marketintelo, 2025) y, si hay corpus etiquetado, un clasificador de estrés térmico (Lascano-Rivera et al., 2025), manteniendo el IBA actual como línea base interpretable.", first=False)
-    p(doc, "7. Registrar E2E_EMAIL y E2E_PASSWORD como secretos de GitHub Actions para que el E2E deje de ser solo local/manual.", first=False)
+    p(doc, "1. Ajustar el enunciado del segundo objetivo específico en la versión final del documento marco, para que hable de analítica de reglas e índices ICA y no de “técnicas de IA” si no se entrena un modelo.", first=False)
+    p(doc, "2. Retirar del alcance vigente el RNF de persistencia offline, o implementarlo con una prueba de sincronización, pero no dejarlo como requisito no verificado.", first=False)
+    p(doc, "3. Valorar un Content-Security-Policy explícito cuando pueda ensayarse sin romper Ionic, y restringir el bucket de fotos si el prototipo escala a datos reales de predios.", first=False)
+    p(doc, "4. Retirar el hint de credenciales demo en un entorno que deje de ser académico.", first=False)
+    p(doc, "5. Como trabajo futuro —no como deuda de este prototipo—, integrar sensores IoT o wearables (Marketintelo, 2025) y, si hay corpus etiquetado, un clasificador de estrés térmico (Lascano-Rivera et al., 2025), manteniendo el IBA actual como línea base interpretable.", first=False)
+    p(doc, "6. Registrar E2E_EMAIL y E2E_PASSWORD como secretos de GitHub Actions para que el E2E deje de ser solo local/manual.", first=False)
 
     page_break(doc)
     heading(doc, "Referencias", 1)
