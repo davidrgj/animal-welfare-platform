@@ -319,7 +319,7 @@ def main() -> None:
             ["Pasados", "65 (el 66.º es DEF-01 en Vercel; pasa en local)"],
             ["Fallidos de producto en producción", "1 (logout)"],
             ["Densidad de defectos abiertos", "4 residuales + 1 corregido pendiente de deploy"],
-            ["Cobertura funcional de pantallas", "Login, registro, tablero, predios, alta predio, animales, alta animal (porcino), reportes, usuarios, simulación, cuenta"],
+            ["Cobertura funcional de pantallas", "Login, registro, tablero, predios, alta predio, animales, detalle, evaluación ICA, alta animal (porcino), reportes, usuarios, simulación y detalle, cuenta; login+tablero en 390×844"],
             ["Tasa de error de carga 60 hits", "0 %"],
             ["Rating estático", "A (MI 95.8)"],
             ["Tiempo de suite unitaria", "< 1 s"],
@@ -346,6 +346,14 @@ def main() -> None:
     picture(doc, "10-simulation.png", "Figura 10. Simulación de escenarios.")
     picture(doc, "14-reports.png", "Figura 11. Reportes de predio.")
     picture(doc, "05-profile.png", "Figura 12. Cuenta del administrador de evaluación.")
+    picture(doc, "10-welfare-evaluation-form.png", "Figura 13. Formulario de evaluación ICA (cinco libertades).")
+    picture(doc, "12-simulation-detail.png", "Figura 14. Detalle de simulación: peso 125.3 kg, IBA proyectado 68.2 (sesión exploratoria; el navegador tenía traductor activo, el copy original es español).")
+    picture(doc, "19-mobile-login-390x844.png", "Figura 15. Login en viewport 390×844.")
+    picture(doc, "20-mobile-dashboard-390x844.png", "Figura 16. Tablero móvil: IBA 81.4, VACA-087 en riesgo, sentence case en español.")
+    para(
+        doc,
+        "Nota sobre evidencias exploratorias: una pasada manual en Chrome activó el traductor automático (El Recuerdo → The Memory, 3 predios → «0 properties»). Eso no es un defecto del producto. Playwright sin traductor muestra «3 predios», «4 usuarios» y los nombres en español. Los conteos del DOM coinciden con {{ farms.length }} / {{ animals.length }} / {{ users.length }}.",
+    )
 
     para(doc, "Fin del informe.", bold=True, center=True, space_after=0)
     doc.save(OUT)
