@@ -38,7 +38,7 @@ export async function login(page: Page, email?: string, password?: string): Prom
 export async function chooseIonSelect(page: Page, name: string, option: string): Promise<void> {
   await page.locator(`ion-select[name="${name}"]`).click();
   await page.getByRole('radio', { name: option }).click();
-  const confirm = page.getByRole('button', { name: /^OK$/i });
+  const confirm = page.getByRole('button', { name: /^(OK|Aceptar)$/i });
   if (await confirm.count()) {
     await confirm.click();
   }

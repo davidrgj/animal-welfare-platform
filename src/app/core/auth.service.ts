@@ -11,10 +11,15 @@ const SESSION_KEY = 'animal-welfare-session';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   currentUser: Profile | null = null;
+  private sessionCleared = false;
 
   constructor(private readonly router: Router) {}
 
   async restore(): Promise<Profile | null> {
+    if (this.sessionCleared) {
+      this.currentUser = null;
+      return null;
+    }
     if (isCloud()) {
       const { data } = await supabase().auth.getSession();
       const id = data.session?.user.id;
@@ -28,9 +33,17 @@ export class AuthService {
         await supabase().auth.signOut();
         this.currentUser = null;
       }
+      if (this.sessionCleared) {
+        this.currentUser = null;
+        return null;
+      }
       return this.currentUser;
     }
     await ensureSeed();
+    if (this.sessionCleared) {
+      this.currentUser = null;
+      return null;
+    }
     const id = localStorage.getItem(SESSION_KEY);
     this.currentUser = id ? (await database.profiles.get(id)) ?? null : null;
     return this.currentUser;
@@ -46,6 +59,7 @@ export class AuthService {
       const { data, error } = await supabase().auth.signInWithPassword({ email: email.trim().toLowerCase(), password });
       if (error || !data.user) throw new Error('Invalid credentials');
       const user = await loadProfile(data.user.id);
+      this.sessionCleared = false;
       this.currentUser = user;
       return user;
     }
@@ -77,6 +91,7 @@ export class AuthService {
       if (error) throw error;
       if (!data.session || !data.user) throw new Error('Confirm email is enabled');
       const user = await loadProfile(data.user.id);
+      this.sessionCleared = false;
       this.currentUser = user;
       return user;
     }
@@ -100,13 +115,18 @@ export class AuthService {
   }
 
   async logout(): Promise<void> {
+    this.sessionCleared = true;
     this.currentUser = null;
     localStorage.removeItem(SESSION_KEY);
-    if (isCloud()) await supabase().auth.signOut();
-    await this.router.navigateByUrl('/login');
+    try {
+      if (isCloud()) await supabase().auth.signOut();
+    } finally {
+      await this.router.navigateByUrl('/login');
+    }
   }
 
   private persist(user: Profile): void {
+    this.sessionCleared = false;
     this.currentUser = user;
     localStorage.setItem(SESSION_KEY, user.id);
   }

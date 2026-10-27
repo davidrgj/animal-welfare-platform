@@ -27,38 +27,38 @@ import { todayIso } from '../core/crypto';
         <p class="page-lead">Identificación, especie y parámetros productivos.</p>
         <ion-list class="panel">
           <ion-item>
-            <ion-select label="Predio" labelPlacement="stacked" [(ngModel)]="farmId" name="farm" required>
+            <ion-select cancelText="Cancelar" okText="Aceptar" label="Predio" labelPlacement="stacked" [(ngModel)]="farmId" name="farm" required>
               @for (farm of farms; track farm.id) { <ion-select-option [value]="farm.id">{{ farm.name }}</ion-select-option> }
             </ion-select>
           </ion-item>
           <ion-item><ion-input label="Identificación (chapa o tag)" labelPlacement="stacked" [(ngModel)]="tagId" name="tag" required></ion-input></ion-item>
           <ion-item>
-            <ion-select label="Especie" labelPlacement="stacked" [(ngModel)]="species" name="species">
+            <ion-select cancelText="Cancelar" okText="Aceptar" label="Especie" labelPlacement="stacked" [(ngModel)]="species" name="species">
               @for (option of speciesOptions; track option[0]) { <ion-select-option [value]="option[0]">{{ option[1] }}</ion-select-option> }
             </ion-select>
           </ion-item>
           <ion-item><ion-input label="Raza" labelPlacement="stacked" [(ngModel)]="breed" name="breed" required></ion-input></ion-item>
           <app-floating-date-picker label="Fecha de nacimiento" [(value)]="birthDate" />
           <ion-item>
-            <ion-select label="Sexo" labelPlacement="stacked" [(ngModel)]="sex" name="sex">
+            <ion-select cancelText="Cancelar" okText="Aceptar" label="Sexo" labelPlacement="stacked" [(ngModel)]="sex" name="sex">
               @for (option of sexOptions; track option[0]) { <ion-select-option [value]="option[0]">{{ option[1] }}</ion-select-option> }
             </ion-select>
           </ion-item>
           <ion-item><ion-input label="Peso inicial (kg)" labelPlacement="stacked" type="number" [(ngModel)]="initialWeightKg" name="initial" required></ion-input></ion-item>
           <ion-item><ion-input label="Peso actual (kg)" labelPlacement="stacked" type="number" [(ngModel)]="currentWeightKg" name="current" required></ion-input></ion-item>
           <ion-item>
-            <ion-select label="Estado reproductivo" labelPlacement="stacked" [(ngModel)]="reproductiveStatus" name="repro">
+            <ion-select cancelText="Cancelar" okText="Aceptar" label="Estado reproductivo" labelPlacement="stacked" [(ngModel)]="reproductiveStatus" name="repro">
               @for (option of reproOptions; track option[0]) { <ion-select-option [value]="option[0]">{{ option[1] }}</ion-select-option> }
             </ion-select>
           </ion-item>
           <ion-item>
-            <ion-select label="Propósito" labelPlacement="stacked" [(ngModel)]="purpose" name="purpose">
+            <ion-select cancelText="Cancelar" okText="Aceptar" label="Propósito" labelPlacement="stacked" [(ngModel)]="purpose" name="purpose">
               @for (option of purposeOptions; track option[0]) { <ion-select-option [value]="option[0]">{{ option[1] }}</ion-select-option> }
             </ion-select>
           </ion-item>
           @if (species === 'GOAT') {
             <ion-item>
-              <ion-select label="Tipo de cornamenta" labelPlacement="stacked" [(ngModel)]="hornType" name="horn">
+              <ion-select cancelText="Cancelar" okText="Aceptar" label="Tipo de cornamenta" labelPlacement="stacked" [(ngModel)]="hornType" name="horn">
                 @for (option of hornOptions; track option[0]) { <ion-select-option [value]="option[0]">{{ option[1] }}</ion-select-option> }
               </ion-select>
             </ion-item>
@@ -68,7 +68,7 @@ import { todayIso } from '../core/crypto';
           }
           @if (species === 'SWINE') {
             <ion-item>
-              <ion-select label="Etapa productiva" labelPlacement="stacked" [(ngModel)]="swineStage" name="stage">
+              <ion-select cancelText="Cancelar" okText="Aceptar" label="Etapa productiva" labelPlacement="stacked" [(ngModel)]="swineStage" name="stage">
                 @for (option of swineOptions; track option[0]) { <ion-select-option [value]="option[0]">{{ option[1] }}</ion-select-option> }
               </ion-select>
             </ion-item>

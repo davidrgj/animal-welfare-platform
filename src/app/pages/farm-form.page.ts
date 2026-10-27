@@ -30,7 +30,7 @@ import { StoreService } from '../core/store.service';
           <ion-item><ion-input label="Latitud" labelPlacement="stacked" type="number" [(ngModel)]="latitude" name="lat" required></ion-input></ion-item>
           <ion-item><ion-input label="Longitud" labelPlacement="stacked" type="number" [(ngModel)]="longitude" name="lng" required></ion-input></ion-item>
           <ion-item>
-            <ion-select label="Fuente de agua" labelPlacement="stacked" [(ngModel)]="waterSource" name="water">
+            <ion-select cancelText="Cancelar" okText="Aceptar" label="Fuente de agua" labelPlacement="stacked" [(ngModel)]="waterSource" name="water">
               @for (option of water; track option[0]) { <ion-select-option [value]="option[0]">{{ option[1] }}</ion-select-option> }
             </ion-select>
           </ion-item>

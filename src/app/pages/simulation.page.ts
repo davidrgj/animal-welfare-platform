@@ -29,19 +29,19 @@ import { todayIso } from '../core/crypto';
           <ion-list>
             <ion-item><ion-input label="Nombre del escenario" labelPlacement="stacked" [(ngModel)]="name" name="name" required></ion-input></ion-item>
             <ion-item>
-              <ion-select label="Animal" labelPlacement="stacked" [(ngModel)]="animalId" name="animal">
+              <ion-select cancelText="Cancelar" okText="Aceptar" label="Animal" labelPlacement="stacked" [(ngModel)]="animalId" name="animal">
                 @for (animal of animals; track animal.id) {
                   <ion-select-option [value]="animal.id">{{ animal.tagId }} · {{ species[animal.species] }}</ion-select-option>
                 }
               </ion-select>
             </ion-item>
             <ion-item>
-              <ion-select label="Tipo de alimentación" labelPlacement="stacked" [(ngModel)]="feedType" name="feed">
+              <ion-select cancelText="Cancelar" okText="Aceptar" label="Tipo de alimentación" labelPlacement="stacked" [(ngModel)]="feedType" name="feed">
                 @for (option of feed; track option[0]) { <ion-select-option [value]="option[0]">{{ option[1] }}</ion-select-option> }
               </ion-select>
             </ion-item>
             <ion-item>
-              <ion-select label="Escenario ambiental" labelPlacement="stacked" [(ngModel)]="scenario" name="scenario">
+              <ion-select cancelText="Cancelar" okText="Aceptar" label="Escenario ambiental" labelPlacement="stacked" [(ngModel)]="scenario" name="scenario">
                 @for (option of scenarios; track option[0]) { <ion-select-option [value]="option[0]">{{ option[1] }}</ion-select-option> }
               </ion-select>
             </ion-item>

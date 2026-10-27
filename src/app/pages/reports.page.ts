@@ -26,7 +26,7 @@ import { EmptyStateComponent } from '../shared/empty-state.component';
         <p class="page-lead">IBA por predio, listo para imprimir.</p>
         <ion-list class="panel">
           <ion-item>
-            <ion-select label="Predio" labelPlacement="stacked" [(ngModel)]="farmId" (ionChange)="load()">
+            <ion-select cancelText="Cancelar" okText="Aceptar" label="Predio" labelPlacement="stacked" [(ngModel)]="farmId" (ionChange)="load()">
               @for (farm of farms; track farm.id) { <ion-select-option [value]="farm.id">{{ farm.name }}</ion-select-option> }
             </ion-select>
           </ion-item>

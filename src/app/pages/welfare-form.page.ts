@@ -28,7 +28,7 @@ import { nowIso } from '../core/crypto';
           <ion-item><ion-input label="Condición corporal (1-5)" labelPlacement="stacked" type="number" min="1" max="5" [(ngModel)]="bodyConditionScore" name="bcs" required></ion-input></ion-item>
           <ion-item><ion-input label="Tomas de agua al día" labelPlacement="stacked" type="number" min="0" [(ngModel)]="hydrationTimesPerDay" name="water" required></ion-input></ion-item>
           <ion-item>
-            <ion-select label="Estado de camas" labelPlacement="stacked" [(ngModel)]="beddingStatus" name="bedding">
+            <ion-select cancelText="Cancelar" okText="Aceptar" label="Estado de camas" labelPlacement="stacked" [(ngModel)]="beddingStatus" name="bedding">
               @for (option of bedding; track option[0]) { <ion-select-option [value]="option[0]">{{ option[1] }}</ion-select-option> }
             </ion-select>
           </ion-item>
@@ -36,7 +36,7 @@ import { nowIso } from '../core/crypto';
           <ion-item><ion-input label="Temperatura ambiente (°C)" labelPlacement="stacked" type="number" [(ngModel)]="ambientTemperatureC" name="temp" required></ion-input></ion-item>
           <ion-item><ion-input label="Humedad relativa (%)" labelPlacement="stacked" type="number" min="0" max="100" [(ngModel)]="relativeHumidity" name="rh" required></ion-input></ion-item>
           <ion-item>
-            <ion-select label="Cojera" labelPlacement="stacked" [(ngModel)]="lameness" name="lameness">
+            <ion-select cancelText="Cancelar" okText="Aceptar" label="Cojera" labelPlacement="stacked" [(ngModel)]="lameness" name="lameness">
               @for (option of lamenessOptions; track option[0]) { <ion-select-option [value]="option[0]">{{ option[1] }}</ion-select-option> }
             </ion-select>
           </ion-item>
@@ -44,12 +44,12 @@ import { nowIso } from '../core/crypto';
           <ion-item><ion-toggle [(ngModel)]="vaccinationUpToDate" name="vax">Vacunación al día</ion-toggle></ion-item>
           <ion-item><ion-input label="Espacio por animal (m²)" labelPlacement="stacked" type="number" [(ngModel)]="spacePerAnimalM2" name="space" required></ion-input></ion-item>
           <ion-item>
-            <ion-select label="Interacción social" labelPlacement="stacked" [(ngModel)]="socialInteraction" name="social">
+            <ion-select cancelText="Cancelar" okText="Aceptar" label="Interacción social" labelPlacement="stacked" [(ngModel)]="socialInteraction" name="social">
               @for (option of social; track option[0]) { <ion-select-option [value]="option[0]">{{ option[1] }}</ion-select-option> }
             </ion-select>
           </ion-item>
           <ion-item>
-            <ion-select label="Calidad del manejo" labelPlacement="stacked" [(ngModel)]="handlingQuality" name="handling">
+            <ion-select cancelText="Cancelar" okText="Aceptar" label="Calidad del manejo" labelPlacement="stacked" [(ngModel)]="handlingQuality" name="handling">
               @for (option of handling; track option[0]) { <ion-select-option [value]="option[0]">{{ option[1] }}</ion-select-option> }
             </ion-select>
           </ion-item>

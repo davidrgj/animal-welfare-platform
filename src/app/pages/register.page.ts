@@ -24,7 +24,7 @@ import { OPTIONS } from '../core/labels';
               <ion-item><ion-input label="Cédula o tarjeta profesional" labelPlacement="stacked" [(ngModel)]="documentId" name="documentId" required></ion-input></ion-item>
               <ion-item><ion-input label="Teléfono" labelPlacement="stacked" [(ngModel)]="phone" name="phone"></ion-input></ion-item>
               <ion-item>
-                <ion-select label="Rol" labelPlacement="stacked" [(ngModel)]="role" name="role">
+                <ion-select cancelText="Cancelar" okText="Aceptar" label="Rol" labelPlacement="stacked" [(ngModel)]="role" name="role">
                   @for (option of roles; track option[0]) {
                     <ion-select-option [value]="option[0]">{{ option[1] }}</ion-select-option>
                   }
