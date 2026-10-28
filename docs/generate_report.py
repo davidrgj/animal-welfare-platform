@@ -400,14 +400,14 @@ def main() -> None:
         [
             ["DEF-01", "Alta", "Logout restauraba el JWT (signOut sin await + guestGuard).", "Cerrado y verificado en producción (EP-14)"],
             ["DEF-02", "Baja", "ion-select mostraba OK/Cancel en inglés.", "Cerrado (Aceptar/Cancelar)"],
-            ["DEF-03", "Media", "Faltaban cabeceras X-Frame-Options / nosniff / Referrer-Policy.", "Cerrado en producción; CSP no impuesto"],
-            ["DEF-04", "Baja", "Bucket de fotos público por esquema.", "Riesgo residual de prototipo"],
-            ["DEF-05", "Baja", "Login publica credenciales demo.", "Riesgo residual de prototipo"],
+            ["DEF-03", "Media", "Faltaban cabeceras de seguridad (frame, nosniff, referrer, CSP).", "Cerrado: headers + CSP + Permissions-Policy en vercel.json"],
+            ["DEF-04", "Baja", "Bucket de fotos público por esquema.", "Cerrado: bucket privado + URLs firmadas; aplicar supabase/harden-storage.sql"],
+            ["DEF-05", "Baja", "Login publica credenciales demo.", "Cerrado: sin hint ni campos prellenados"],
         ],
     )
     para(
         doc,
-        "DEF-01 quedó cerrado al publicar await supabase().auth.signOut(), el flag sessionCleared (restore() no rehidrata durante el cierre) y al reejecutar Playwright sobre el alias productivo.",
+        "DEF-01 quedó cerrado con await signOut y sessionCleared. DEF-02 con okText/cancelText en español. DEF-03 con CSP y Permissions-Policy. DEF-04 con createSignedUrl y bucket no público. DEF-05 retirando el copy Demo del login.",
     )
 
     heading(doc, "17. Métricas de la campaña", 1)
@@ -420,7 +420,7 @@ def main() -> None:
             ["Casos unitarios TS + pytest (unit+aceptación)", "11 + 23"],
             ["API / seguridad / rendimiento", "10 + 6 + 2"],
             ["Fallidos de producto en producción", "0"],
-            ["Defectos abiertos residuales", "2 (bucket público; credenciales demo)"],
+            ["Defectos abiertos residuales", "0 (DEF-01 a DEF-05 cerrados en código)"],
             ["Rating estático", "A (MI 95,6)"],
             ["Tiempo E2E producción", "≈ 19 s"],
             ["Error de carga 60 hits", "0 %"],
@@ -434,7 +434,7 @@ def main() -> None:
     )
     para(
         doc,
-        "Recomendaciones: 1) valorar un CSP explícito sin romper Ionic; 2) retirar el hint de credenciales demo fuera del prototipo; 3) registrar E2E_EMAIL y E2E_PASSWORD como secrets de GitHub Actions; 4) restringir el bucket de fotos si el prototipo escala a datos reales.",
+        "Recomendaciones: 1) ejecutar supabase/harden-storage.sql en el proyecto Supabase si el bucket aún no se endureció; 2) registrar E2E_EMAIL y E2E_PASSWORD como secrets de GitHub Actions; 3) rotar cualquier contraseña de seed que haya circulado en informes previos.",
     )
 
     heading(doc, "19. Cómo reproducir", 1)

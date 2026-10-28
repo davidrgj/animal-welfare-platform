@@ -13,8 +13,7 @@ npm start
 
 Abre http://localhost:4200
 
-Usuario de demostración: `producer@farm.local` / `Producer123!`  
-También `vet@farm.local` / `Vet123!` y `admin@farm.local` / `Admin123!`
+La pantalla de login no publica credenciales. Para el modo local (IndexedDB) o una base sembrada, usa las cuentas definidas solo en `src/app/core/database.ts` / `supabase/seed.sql` — no las pegues en la interfaz ni en Vercel.
 
 ## Qué datos hay
 
@@ -33,12 +32,13 @@ Falta crear tablas y datos de demo en el [SQL editor](https://supabase.com/dashb
 
 1. `supabase/schema.sql`
 2. `supabase/seed.sql`
+3. `supabase/harden-storage.sql` (si el bucket `welfare-photos` ya existía como público)
 
 Si el esquema ya estaba aplicado antes del CRUD de usuarios, ejecuta también `supabase/admin-policies.sql`.
 
 En Authentication > Providers > Email desactiva **Confirm email** para poder registrar cuentas nuevas sin correo. Las cuentas de seed ya quedan confirmadas.
 
-Administración de usuarios y roles: entra como `admin@farm.local` / `Admin123!` → **Cuenta** → **Usuarios y roles**.
+Administración de usuarios y roles: inicia sesión con una cuenta administrador → **Cuenta** → **Usuarios y roles**.
 
 En Vercel puedes definir `SUPABASE_URL` y `SUPABASE_ANON_KEY` (o `SUPABASE_PUBLISHABLE_KEY`); el build las escribe antes de compilar. Si no, usa las de `src/environments/environment.prod.ts`.
 

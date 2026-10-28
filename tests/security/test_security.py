@@ -34,10 +34,37 @@ def test_security_headers_on_frontend():
     response = requests.get(APP_URL, timeout=30)
     headers = {key.lower(): value for key, value in response.headers.items()}
     assert "strict-transport-security" in headers or response.url.startswith("https://")
-    xfo = headers.get("x-frame-options", "")
-    csp = headers.get("content-security-policy", "")
-    # Record presence; missing headers are findings, not hard crashes of the suite.
-    print({"x-frame-options": xfo, "csp": bool(csp), "referrer-policy": headers.get("referrer-policy", "")})
+    assert headers.get("x-frame-options", "").upper() == "DENY"
+    assert headers.get("x-content-type-options", "").lower() == "nosniff"
+    assert "referrer-policy" in headers
+    assert "content-security-policy" in headers
+    assert "frame-ancestors" in headers["content-security-policy"]
+    print(
+        {
+            "x-frame-options": headers.get("x-frame-options", ""),
+            "csp": bool(headers.get("content-security-policy")),
+            "referrer-policy": headers.get("referrer-policy", ""),
+            "permissions-policy": headers.get("permissions-policy", ""),
+        }
+    )
+
+
+def test_login_page_does_not_publish_demo_credentials():
+    response = requests.get(APP_URL, timeout=30)
+    assert response.status_code == 200
+    html = response.text
+    scripts = re.findall(r'src="([^"]+\.js)"', html)
+    blobs = [html]
+    for source in scripts[:20]:
+        url = source if source.startswith("http") else APP_URL.rstrip("/") + "/" + source.lstrip("./")
+        try:
+            blobs.append(requests.get(url, timeout=30).text)
+        except requests.RequestException:
+            continue
+    joined = "\n".join(blobs).replace("&#64;", "@").replace("\\u0040", "@")
+    assert "Demo: producer@farm.local" not in joined
+    assert "Demo: producer@" not in joined
+    assert re.search(r"Demo:\s*producer@", joined, flags=re.I) is None
 
 
 def test_client_bundle_does_not_embed_service_role():

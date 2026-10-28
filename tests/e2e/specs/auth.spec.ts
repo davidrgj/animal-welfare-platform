@@ -9,6 +9,8 @@ test.describe('Authentication', () => {
     await expect(page.getByText('Contraseña')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Entrar' })).toBeVisible();
     await expect(page.getByRole('link', { name: 'Crear cuenta' })).toBeVisible();
+    await expect(page.getByText(/Demo:/i)).toHaveCount(0);
+    await expect(page.getByText('Producer123!')).toHaveCount(0);
     await shot(page, '01-login');
   });
 

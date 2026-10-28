@@ -278,11 +278,11 @@ create policy events_all on simulation_events for all to authenticated
   with check (exists (select 1 from simulation_runs where simulation_runs.id = simulation_events.simulation_run_id));
 
 insert into storage.buckets (id, name, public)
-values ('welfare-photos', 'welfare-photos', true)
-on conflict (id) do nothing;
+values ('welfare-photos', 'welfare-photos', false)
+on conflict (id) do update set public = excluded.public;
 
 drop policy if exists photo_read on storage.objects;
-create policy photo_read on storage.objects for select to public
+create policy photo_read on storage.objects for select to authenticated
   using (bucket_id = 'welfare-photos');
 drop policy if exists photo_write on storage.objects;
 create policy photo_write on storage.objects for insert to authenticated

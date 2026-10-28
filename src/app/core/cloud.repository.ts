@@ -173,18 +173,20 @@ function asFinding(row: Record<string, unknown>): ComplianceFinding {
   };
 }
 
-function photoUrl(path: string): string {
-  return supabase().storage.from(PHOTOS).getPublicUrl(path).data.publicUrl;
+async function photoUrl(path: string): Promise<string> {
+  const { data, error } = await supabase().storage.from(PHOTOS).createSignedUrl(path, 60 * 60);
+  fail(error);
+  return data?.signedUrl ?? '';
 }
 
-function asPhoto(row: Record<string, unknown>): WelfarePhoto {
+async function asPhoto(row: Record<string, unknown>): Promise<WelfarePhoto> {
   const storagePath = text(row['storage_path']);
   return {
     id: text(row['id']),
     welfareRecordId: text(row['welfare_record_id']),
     fileName: text(row['file_name']),
     contentType: text(row['content_type']),
-    objectUrl: photoUrl(storagePath),
+    objectUrl: await photoUrl(storagePath),
     createdAt: text(row['created_at'])
   };
 }
@@ -436,7 +438,7 @@ export async function listFindings(recordId: string): Promise<ComplianceFinding[
 export async function listPhotos(recordId: string): Promise<WelfarePhoto[]> {
   const { data, error } = await supabase().from('welfare_photos').select('*').eq('welfare_record_id', recordId).order('created_at');
   fail(error);
-  return (data ?? []).map((row) => asPhoto(row as Record<string, unknown>));
+  return Promise.all((data ?? []).map((row) => asPhoto(row as Record<string, unknown>)));
 }
 
 export async function insertPhoto(photo: WelfarePhoto, file: File, storagePath: string): Promise<WelfarePhoto> {

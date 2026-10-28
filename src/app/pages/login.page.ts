@@ -27,7 +27,6 @@ import { AuthService } from '../core/auth.service';
             @if (error) { <p class="error-text">{{ error }}</p> }
             <ion-button expand="block" type="submit">Entrar</ion-button>
             <a class="auth-link" routerLink="/register">Crear cuenta</a>
-            <p class="muted">Demo: producer&#64;farm.local / Producer123!</p>
           </form>
         </div>
       </div>
@@ -35,8 +34,8 @@ import { AuthService } from '../core/auth.service';
   `
 })
 export class LoginPage {
-  email = 'producer@farm.local';
-  password = 'Producer123!';
+  email = '';
+  password = '';
   error = '';
 
   constructor(private readonly auth: AuthService, private readonly router: Router) {}

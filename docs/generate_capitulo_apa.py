@@ -530,8 +530,9 @@ def main() -> None:
             ["API de administración de Auth con clave anónima", "Satisfactorio. HTTP 403"],
             ["Secretos en el bundle del cliente", "Satisfactorio. No hay service_role ni claves privadas"],
             ["A07 identificación: login inválido", "Satisfactorio. API 400; UI en español"],
-            ["Cabeceras CSP, X-Frame-Options, nosniff, Referrer-Policy", "X-Frame-Options DENY, nosniff y Referrer-Policy están en producción; CSP no se forzó para no romper Angular"],
-            ["Bucket de evidencias fotográficas", "Riesgo residual de diseño: welfare-photos es público en schema.sql"],
+            ["Cabeceras CSP, X-Frame-Options, nosniff, Referrer-Policy", "Satisfactorio. CSP, Permissions-Policy, DENY, nosniff y Referrer-Policy en vercel.json"],
+            ["Bucket de evidencias fotográficas", "Satisfactorio. Bucket privado; el cliente usa URLs firmadas (createSignedUrl)"],
+            ["Credenciales demo en login", "Satisfactorio. La UI no publica ni prellena contraseñas de demostración"],
         ],
         8,
         "Controles de seguridad evaluados según OWASP Top 10",
@@ -569,7 +570,7 @@ def main() -> None:
     heading(doc, "12.13 Resultados consolidados de la campaña", 2)
     p(
         doc,
-        "Se ejecutaron las siete suites automatizadas (unitarias TypeScript, unitarias/aceptación pytest, API, seguridad, rendimiento, calidad estática y E2E Playwright) con resultado 7/7. Los 14 escenarios EP del prototipo son satisfactorios en el build publicado, con captura de pantalla por caso. La densidad de defectos abiertos residuales es baja (bucket público y credenciales demo). El IBA medio observado en el tablero (81,4) es coherente con el inventario (cinco de seis evaluados) y con el animal fuera de umbral (VACA-087, 45,5, alerta de espacio mínimo ICA).",
+        "Se ejecutaron las siete suites automatizadas (unitarias TypeScript, unitarias/aceptación pytest, API, seguridad, rendimiento, calidad estática y E2E Playwright) con resultado 7/7. Los 14 escenarios EP del prototipo son satisfactorios en el build publicado, con captura de pantalla por caso. Los defectos DEF-01 a DEF-05 quedaron cerrados en código (logout, ion-select, cabeceras/CSP, bucket privado con URLs firmadas y retiro de credenciales demo del login). El IBA medio observado en el tablero (81,4) es coherente con el inventario (cinco de seis evaluados) y con el animal fuera de umbral (VACA-087, 45,5, alerta de espacio mínimo ICA).",
     )
 
     heading(doc, "12.14 Defectos identificados y corrección", 2)
@@ -579,9 +580,9 @@ def main() -> None:
         [
             ["DEF-01", "Alta", "Cerrar sesión en Vercel restauraba el JWT: logout() no esperaba supabase.auth.signOut() y guestGuard reenviaba al tablero.", "Cerrado y verificado en producción (EP-14)"],
             ["DEF-02", "Baja", "El alert nativo de ion-select mostraba OK / Cancel en inglés.", "Cerrado: okText Aceptar y cancelText Cancelar"],
-            ["DEF-03", "Media", "Faltaban X-Frame-Options, X-Content-Type-Options y Referrer-Policy.", "Cerrado en producción. CSP no se impuso"],
-            ["DEF-04", "Baja", "El bucket de fotos es público por esquema.", "Riesgo residual de prototipo"],
-            ["DEF-05", "Baja", "El login publica las credenciales de demostración.", "Riesgo residual de prototipo"],
+            ["DEF-03", "Media", "Faltaban cabeceras de seguridad (frame, nosniff, referrer, CSP).", "Cerrado: vercel.json con CSP y Permissions-Policy"],
+            ["DEF-04", "Baja", "El bucket de fotos era público por esquema.", "Cerrado: bucket privado + createSignedUrl; harden-storage.sql"],
+            ["DEF-05", "Baja", "El login publicaba las credenciales de demostración.", "Cerrado: sin hint Demo ni campos prellenados"],
         ],
         10,
         "Defectos de la campaña y estado de corrección",
