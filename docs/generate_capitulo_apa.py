@@ -215,8 +215,12 @@ def main() -> None:
         "Figura 4. Inventario de predios",
         "Figura 5. Administración de usuarios y roles",
         "Figura 6. Cierre de sesión correcto en el build productivo de Vercel",
-        "Figura 7. Módulo de simulación",
-        "Figura 8. Reporte de predio",
+        "Figura 7. Inventario de animales (6 ejemplares)",
+        "Figura 8. Detalle e IBA de VACA-087",
+        "Figura 9. Formulario de evaluación ICA",
+        "Figura 10. Módulo de simulación y detalle SED",
+        "Figura 11. Reporte de predio",
+        "Figura 12. Tablero en viewport móvil 390×844",
     ]:
         p(doc, line, first=False, after=3, align="left")
 
@@ -251,11 +255,11 @@ def main() -> None:
         [
             ["Unitarias", "JUnit / pytest", "node:test sobre TypeScript real y pytest como oráculo independiente del IBA", "31/31 satisfactorio"],
             ["Aceptación", "Cucumber", "Features Gherkin en español y pasos pytest", "3/3 satisfactorio"],
-            ["Funcionales / E2E", "Selenium, Playwright, Cypress", "Playwright (Chromium) contra Vercel y local", "14/14 satisfactorio en producción"],
+            ["Funcionales / E2E", "Selenium, Playwright, Cypress", "Playwright (Chromium) contra Vercel", "17/17 satisfactorio en producción (14 EP + móvil + detalle)"],
             ["API", "Postman", "Colección Postman y pytest/requests sobre Auth y REST de Supabase", "10/10 satisfactorio"],
-            ["Rendimiento", "Apache JMeter", "Grupo de hilos equivalente (20 usuarios × 3 iteraciones)", "2/2; p95 = 53,4 ms"],
+            ["Rendimiento", "Apache JMeter", "Grupo de hilos equivalente (20 usuarios × 3 iteraciones)", "2/2; p95 ≈ 53 ms"],
             ["Seguridad", "OWASP ZAP", "Lista de verificación OWASP Top 10 (2021), sin payloads ofensivos", "Controles de acceso, TLS y cabeceras anti-clickjacking satisfactorios; CSP no impuesto"],
-            ["Calidad estática", "SonarQube", "Métricas de complejidad, duplicación y mantenibilidad", "Índice 95,8 (rating A)"],
+            ["Calidad estática", "SonarQube", "Métricas de complejidad, duplicación y mantenibilidad", "Índice 95,6 (rating A)"],
             ["Gestión", "TestRail", "Catálogo JSON de 41 casos", "Trazado a RF y CU"],
             ["CI", "Jenkins / GitHub Actions", "Workflow en cada push/pull request", "Configurado"],
         ],
@@ -350,7 +354,7 @@ def main() -> None:
     heading(doc, "12.7 Pruebas funcionales y de extremo a extremo", 2)
     p(
         doc,
-        "Playwright automatizó 14 casos contra Vercel con un único trabajador, para no invalidar la sesión JWT al cerrar sesión en paralelo. En la primera pasada, trece casos fueron satisfactorios y EP-14 falló por una carrera entre signOut y guestGuard. Tras desplegar el arreglo, la suite completa pasó en 13,6 s sobre https://animal-welfare-platform-vepq.vercel.app; el cierre de sesión quedó en 0,9 s.",
+        "Playwright automatizó 17 casos contra Vercel con un único trabajador, para no invalidar la sesión JWT al cerrar sesión en paralelo. Los 14 escenarios EP del trabajo de grado, más detalle animal, evaluación ICA, detalle de simulación y viewport móvil, fueron satisfactorios en ≈ 19 s sobre https://animal-welfare-platform-vepq.vercel.app. El cierre de sesión (EP-14) permaneció en /#/login.",
     )
     add_table(
         doc,
@@ -363,9 +367,9 @@ def main() -> None:
             ["EP-05", "Listar predios", "El Recuerdo, La Esperanza y predios del dueño", "Satisfactorio (3 predios)"],
             ["EP-06", "Formulario de predio", "Título Nuevo predio; RUV, GPS, agua", "Satisfactorio (sin guardar)"],
             ["EP-07", "Inventario animal", "Listado con chapa, especie e IBA", "Satisfactorio (6 ejemplares)"],
-            ["EP-08", "Detalle e IBA", "Anillo, dominios e historial", "Satisfactorio"],
+            ["EP-08", "Detalle e IBA", "Anillo, dominios e historial", "Satisfactorio (VACA-087, IBA 45,5)"],
             ["EP-09", "Evaluación ICA", "Cinco libertades; IBA al guardar", "Satisfactorio (formulario; alta no ejecutada en prod)"],
-            ["EP-10", "Simulación SED", "Listado o detalle con peso, IBA y eventos", "Satisfactorio"],
+            ["EP-10", "Simulación SED", "Listado o detalle con peso, IBA y eventos", "Satisfactorio (125,3 kg; IBA 68,2)"],
             ["EP-11", "Reporte de predio", "IBA medio e inventario", "Satisfactorio"],
             ["EP-12", "CRUD usuarios", "Listado de perfiles y roles", "Satisfactorio (4 usuarios)"],
             ["EP-13", "Bloqueo de /app/users", "adminGuard redirige si no es administrador", "Satisfactorio (la cuenta de evaluación sí es admin)"],
@@ -373,7 +377,7 @@ def main() -> None:
         ],
         5,
         "Escenarios de prueba de aceptación del prototipo, actualizados con la campaña empírica",
-        "Elaboración propia (2026). EP-14 se reejecutó contra el build productivo después de publicar await signOut y el flag que evita restore() durante el cierre.",
+        "Elaboración propia (2026). Los catorce escenarios EP son satisfactorios en el build productivo de Vercel; cada uno cuenta con captura de pantalla en el informe de evidencias.",
     )
     picture(
         doc,
@@ -419,17 +423,52 @@ def main() -> None:
     )
     picture(
         doc,
-        "10-simulation.png",
+        "09-animals.png",
         7,
+        "Inventario animal con seis ejemplares e IBA",
+        "Elaboración propia (2026). 1 en riesgo, 1 sin IBA y 4 en umbral; filtros Todos / Riesgo / Sin IBA / Cumple.",
+    )
+    picture(
+        doc,
+        "21-animal-detail.png",
+        8,
+        "Detalle e IBA de VACA-087",
+        "Elaboración propia (2026). Anillo 45,5, dominios de las cinco libertades, THI 85,7 e historial con formato d MMM, y hh:mm a.",
+    )
+    picture(
+        doc,
+        "22-welfare-form.png",
+        9,
+        "Formulario de evaluación ICA (cinco libertades)",
+        "Elaboración propia (2026). Campos de nutrición, entorno, salud y conducta; el IBA se calcula al guardar.",
+    )
+    picture(
+        doc,
+        "10-simulation.png",
+        10,
         "Módulo de simulación de eventos discretos",
         "Elaboración propia (2026). El actor nombra el escenario, elige animal, dieta, ambiente y horizonte.",
     )
     picture(
         doc,
+        "23-simulation-detail.png",
+        11,
+        "Detalle de simulación con trayectoria de peso e IBA",
+        "Elaboración propia (2026). Peso final 125,3 kg e IBA proyectado 68,2 bajo restricción de alimento.",
+    )
+    picture(
+        doc,
         "14-reports.png",
-        8,
+        12,
         "Reporte ICA por predio, listo para imprimir",
         "Elaboración propia (2026).",
+    )
+    picture(
+        doc,
+        "20-mobile-dashboard-390x844.png",
+        13,
+        "Tablero Estado ICA en viewport móvil 390×844",
+        "Elaboración propia (2026). IBA medio 81,4 y prioridad VACA-087 permanecen legibles en pantallas pequeñas.",
     )
 
     heading(doc, "12.8 Pruebas de interfaz de programación (API)", 2)
@@ -509,11 +548,11 @@ def main() -> None:
         ["Métrica", "Valor"],
         [
             ["Archivos", "39"],
-            ["Líneas", "5 043"],
-            ["Complejidad ciclomática media", "8,13"],
-            ["Bloques duplicados", "22"],
+            ["Líneas", "5 063"],
+            ["Complejidad ciclomática media", "8,21"],
+            ["Bloques duplicados", "23"],
             ["TODO / FIXME", "0"],
-            ["Índice de mantenibilidad", "95,8"],
+            ["Índice de mantenibilidad", "95,6"],
             ["Rating", "A"],
         ],
         9,
@@ -530,7 +569,7 @@ def main() -> None:
     heading(doc, "12.13 Resultados consolidados de la campaña", 2)
     p(
         doc,
-        "Se ejecutaron 66 casos automatizados y los 66 fueron satisfactorios en el build publicado. La densidad de defectos abiertos es baja y está documentada. El IBA medio observado en el tablero (81,4) es coherente con el inventario (cinco de seis evaluados) y con el animal fuera de umbral (VACA-087, 45,5, alerta de espacio mínimo ICA).",
+        "Se ejecutaron las siete suites automatizadas (unitarias TypeScript, unitarias/aceptación pytest, API, seguridad, rendimiento, calidad estática y E2E Playwright) con resultado 7/7. Los 14 escenarios EP del prototipo son satisfactorios en el build publicado, con captura de pantalla por caso. La densidad de defectos abiertos residuales es baja (bucket público y credenciales demo). El IBA medio observado en el tablero (81,4) es coherente con el inventario (cinco de seis evaluados) y con el animal fuera de umbral (VACA-087, 45,5, alerta de espacio mínimo ICA).",
     )
 
     heading(doc, "12.14 Defectos identificados y corrección", 2)
@@ -538,11 +577,11 @@ def main() -> None:
         doc,
         ["ID", "Severidad", "Descripción", "Estado"],
         [
-            ["DEF-01", "Alta", "Cerrar sesión en Vercel restauraba el JWT: logout() no esperaba supabase.auth.signOut() y guestGuard reenviaba al tablero.", "Corregido y verificado en producción (Playwright, 0,9 s)"],
-            ["DEF-02", "Baja", "El alert nativo de ion-select mostraba OK / Cancel en inglés.", "Corregido: okText Aceptar y cancelText Cancelar"],
-            ["DEF-03", "Media", "Faltaban X-Frame-Options, X-Content-Type-Options y Referrer-Policy.", "Desplegado en producción. CSP no se impuso"],
-            ["DEF-04", "Baja", "El bucket de fotos es público por esquema.", "Riesgo aceptado de prototipo"],
-            ["DEF-05", "Baja", "El login publica las credenciales de demostración.", "Aceptable en prototipo; debe retirarse en un entorno productivo"],
+            ["DEF-01", "Alta", "Cerrar sesión en Vercel restauraba el JWT: logout() no esperaba supabase.auth.signOut() y guestGuard reenviaba al tablero.", "Cerrado y verificado en producción (EP-14)"],
+            ["DEF-02", "Baja", "El alert nativo de ion-select mostraba OK / Cancel en inglés.", "Cerrado: okText Aceptar y cancelText Cancelar"],
+            ["DEF-03", "Media", "Faltaban X-Frame-Options, X-Content-Type-Options y Referrer-Policy.", "Cerrado en producción. CSP no se impuso"],
+            ["DEF-04", "Baja", "El bucket de fotos es público por esquema.", "Riesgo residual de prototipo"],
+            ["DEF-05", "Baja", "El login publica las credenciales de demostración.", "Riesgo residual de prototipo"],
         ],
         10,
         "Defectos de la campaña y estado de corrección",
@@ -550,7 +589,7 @@ def main() -> None:
     )
     p(
         doc,
-        "El DEF-01 cortaba el caso de uso CU-11 en el build publicado. La causa raíz era una condición de carrera: signOut se disparaba sin await, navigateByUrl('/login') activaba guestGuard y restore() aún encontraba la sesión de Supabase. La corrección espera la invalidación del token, marca la sesión como limpiada para que restore() no la rehidrate y después navega. El 27 de octubre de 2026 se publicó en Vercel y Playwright confirmó el retorno a /#/login. Este hallazgo no debilita el trabajo: ilustra el valor de las pruebas empíricas sobre el despliegue, frente a una tabla de aceptación marcada a priori como satisfactoria (Sommerville, 2016).",
+        "El DEF-01 cortaba el caso de uso CU-11. La causa raíz era una condición de carrera: signOut se disparaba sin await, navigateByUrl('/login') activaba guestGuard y restore() aún encontraba la sesión de Supabase. La corrección espera la invalidación del token, marca la sesión como limpiada para que restore() no la rehidrate y después navega. Publicado en Vercel y reconfirmado por Playwright (retorno a /#/login). Este hallazgo ilustra el valor de las pruebas empíricas sobre el despliegue (Sommerville, 2016).",
     )
 
     page_break(doc)
@@ -587,7 +626,7 @@ def main() -> None:
     )
     p(
         doc,
-        "En el plano metodológico, la campaña confirma que una tabla de 14 escenarios marcada como satisfactoria sin automatizar el cierre de sesión en la nube es insuficiente (Pressman y Maxim, 2015). El DEF-01 solo apareció cuando Playwright esperó la URL /login después de Cerrar sesión; una vez desplegada la corrección, EP-14 pasó en producción. La lección para la Fábrica de Software es incorporar E2E del camino infeliz (logout, guarda, RLS anónimo) en la definición de terminado de cada sprint Scrum. Al mismo tiempo, la pirámide evitó que un error de THI (81,3 versus 82,92) llegara disfrazado de prueba verde.",
+        "En el plano metodológico, la campaña confirma que una tabla de 14 escenarios marcada como satisfactoria sin automatizar el cierre de sesión en la nube es insuficiente (Pressman y Maxim, 2015). El DEF-01 solo apareció cuando Playwright esperó la URL /login después de Cerrar sesión; con la corrección desplegada, EP-14 es satisfactorio en producción y la suite E2E completa está en verde. La lección para la Fábrica de Software es incorporar E2E del camino infeliz (logout, guarda, RLS anónimo) en la definición de terminado de cada sprint Scrum. Al mismo tiempo, la pirámide evitó que un error de THI (81,3 versus 82,92) llegara disfrazado de prueba verde.",
     )
     p(
         doc,

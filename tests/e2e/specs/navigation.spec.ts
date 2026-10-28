@@ -22,14 +22,16 @@ test.describe('Authenticated navigation', () => {
 
   test('tab bar reaches farms, animals, simulation and profile', async ({ page }) => {
     const tabs = [
-      { href: '/#/app/farms', title: 'Predios', shot: '08-farms' },
-      { href: '/#/app/animals', title: 'Animales', shot: '09-animals' },
-      { href: '/#/app/simulation', title: 'Simulación', shot: '10-simulation' },
-      { href: '/#/app/profile', title: 'Cuenta', shot: '11-account' }
+      { href: '/#/app/farms', title: 'Predios', shot: '08-farms', ready: 'a.farm-card' },
+      { href: '/#/app/animals', title: 'Animales', shot: '09-animals', ready: 'a.animal-row' },
+      { href: '/#/app/simulation', title: 'Simulación', shot: '10-simulation', ready: 'text=Nuevo escenario' },
+      { href: '/#/app/profile', title: 'Cuenta', shot: '11-account', ready: 'text=Cerrar sesión' }
     ];
     for (const tab of tabs) {
       await page.goto(tab.href);
       await expect(page.locator('ion-title').first()).toContainText(tab.title);
+      await expect(page.locator(tab.ready).first()).toBeVisible({ timeout: 25_000 });
+      await page.waitForTimeout(400);
       await shot(page, tab.shot);
     }
   });
@@ -81,5 +83,54 @@ test.describe('Authenticated navigation', () => {
       expect(stamp).not.toMatch(/\d{4}-\d{2}-\d{2} \d{2}:/);
     }
     await shot(page, '16-dashboard-dates');
+  });
+
+  test('animal detail shows IBA ring and opens the welfare form', async ({ page }) => {
+    await page.goto('/#/app/animals');
+    await expect(page.locator('ion-title').first()).toContainText('Animales');
+    await expect(page.locator('a.animal-row').first()).toBeVisible({ timeout: 20_000 });
+    const preferred = page.locator('a.animal-row', { hasText: 'VACA-087' });
+    const target = (await preferred.count()) ? preferred.first() : page.locator('a.animal-row').first();
+    const tag = ((await target.locator('strong').innerText()) || '').trim();
+    expect(tag.length).toBeGreaterThan(0);
+    await target.click();
+    await expect(page).toHaveURL(/#\/app\/animals\/[^/]+$/);
+    await expect(page.locator('h1.status-title')).toHaveText(tag, { timeout: 20_000 });
+    await expect(page.getByRole('button', { name: /evaluación/i }).first()).toBeVisible();
+    await shot(page, '21-animal-detail');
+    await page.getByRole('button', { name: /evaluación/i }).first().click();
+    await expect(page).toHaveURL(/\/welfare/);
+    await expect(page.locator('ion-title').first()).toContainText('Evaluación de bienestar');
+    await expect(page.getByText('Estado de camas')).toBeVisible();
+    await shot(page, '22-welfare-form');
+  });
+
+  test('simulation detail opens from an existing run when available', async ({ page }) => {
+    await page.goto('/#/app/simulation');
+    await expect(page.locator('ion-title').first()).toContainText('Simulación');
+    await expect(page.getByText('Nuevo escenario')).toBeVisible({ timeout: 20_000 });
+    await shot(page, '10-simulation');
+    const existing = page.locator('a.animal-row').first();
+    await expect(existing).toBeVisible({ timeout: 20_000 });
+    await existing.click();
+    await expect(page).toHaveURL(/#\/app\/simulation\/[^/]+/);
+    await expect(page.locator('.stat-pair')).toBeVisible({ timeout: 20_000 });
+    await expect(page.getByText('IBA proyectado')).toBeVisible();
+    await shot(page, '23-simulation-detail');
+  });
+
+  test('mobile viewport keeps login and dashboard usable', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/#/app/dashboard');
+    await expect(page.locator('ion-title').first()).toContainText('Estado ICA');
+    await expect(page.locator('.status-title, .display').first()).toBeVisible({ timeout: 20_000 });
+    await expect(page.locator('.status-meta').first()).toBeVisible();
+    await shot(page, '20-mobile-dashboard-390x844');
+    await page.goto('/#/app/profile');
+    await expect(page.getByRole('button', { name: 'Cerrar sesión' })).toBeVisible();
+    await page.getByRole('button', { name: 'Cerrar sesión' }).click();
+    await page.waitForURL(/#\/login/, { timeout: 25_000 });
+    await expect(page.locator('h1.auth-title')).toHaveText('Bienestar ICA');
+    await shot(page, '19-mobile-login-390x844');
   });
 });

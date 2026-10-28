@@ -1,11 +1,11 @@
 {
   "files": 39,
-  "lines_of_code": 5043,
+  "lines_of_code": 5063,
   "comment_lines": 1,
   "todo_fixme": 0,
-  "duplicated_blocks": 22,
-  "average_cyclomatic": 8.13,
-  "maintainability_index": 95.8,
+  "duplicated_blocks": 23,
+  "average_cyclomatic": 8.21,
+  "maintainability_index": 95.6,
   "hottest_files": [
     {
       "file": "src/app/core/store.service.ts",
@@ -20,6 +20,10 @@
       "complexity": 20
     },
     {
+      "file": "src/app/core/auth.service.ts",
+      "complexity": 16
+    },
+    {
       "file": "src/app/pages/user-form.page.ts",
       "complexity": 16
     },
@@ -30,10 +34,6 @@
     {
       "file": "src/app/pages/animal-form.page.ts",
       "complexity": 14
-    },
-    {
-      "file": "src/app/core/auth.service.ts",
-      "complexity": 13
     },
     {
       "file": "src/app/pages/animal-detail.page.ts",
