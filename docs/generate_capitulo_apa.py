@@ -237,7 +237,7 @@ def main() -> None:
     )
     p(
         doc,
-        "La campaña se ejecutó el 27 de octubre de 2026 (America/Bogota) contra el prototipo publicado en https://animal-welfare-platform-vepq.vercel.app/ y contra el código fuente versionado. El criterio de éxito no es la ausencia total de defectos —impropia de un prototipo académico—, sino la cobertura de los casos de uso CU-01 a CU-11, la corroboración de las fórmulas del índice de bienestar animal (IBA) y del índice temperatura-humedad (THI), y la documentación honesta de no conformidades, con su corrección cuando aplica (Myers et al., 2012).",
+        "La campaña se ejecutó el 28 de octubre de 2026 (America/Bogota) contra el prototipo publicado en https://animal-welfare-platform-vepq.vercel.app/ y contra el código fuente versionado. El criterio de éxito no es la ausencia total de defectos —impropia de un prototipo académico—, sino la cobertura de los casos de uso CU-01 a CU-11, la corroboración de las fórmulas del índice de bienestar animal (IBA) y del índice temperatura-humedad (THI), y la documentación honesta de no conformidades, con su corrección cuando aplica (Myers et al., 2012). Las capturas de pantalla del E2E se tomaron tras una espera de estabilización de ocho segundos por vista, para evitar fotogramas blancos o transitorios de Ionic.",
     )
 
     heading(doc, "12.2 Estrategia y pirámide de pruebas", 2)
@@ -278,7 +278,7 @@ def main() -> None:
             ["Cuenta de evaluación", "Administrador de prueba del investigador (rol ADMINISTRATOR)"],
             ["Inventario observado", "Tres predios (El Recuerdo, La Esperanza, Prueba), seis animales, cuatro perfiles"],
             ["Navegador E2E", "Playwright Chromium, viewport 1280 × 800; exploración adicional 390 × 844"],
-            ["Fecha", "27 de octubre de 2026, zona America/Bogota"],
+            ["Fecha", "28 de octubre de 2026, zona America/Bogota"],
             ["Fuera de alcance", "Apps nativas iOS/Android, carga destructiva sobre Postgres, fuzzing, WCAG formal, persistencia offline de Ionic Storage"],
         ],
         2,
@@ -530,7 +530,7 @@ def main() -> None:
             ["API de administración de Auth con clave anónima", "Satisfactorio. HTTP 403"],
             ["Secretos en el bundle del cliente", "Satisfactorio. No hay service_role ni claves privadas"],
             ["A07 identificación: login inválido", "Satisfactorio. API 400; UI en español"],
-            ["Cabeceras CSP, X-Frame-Options, nosniff, Referrer-Policy", "Satisfactorio. CSP, Permissions-Policy, DENY, nosniff y Referrer-Policy en vercel.json"],
+            ["Cabeceras X-Frame-Options, nosniff, Referrer-Policy, Permissions-Policy", "Satisfactorio. DENY, nosniff, Referrer-Policy y Permissions-Policy en vercel.json; CSP omitido porque script-src 'self' bloquea manejadores inline de Ionic"],
             ["Bucket de evidencias fotográficas", "Satisfactorio. Bucket privado; el cliente usa URLs firmadas (createSignedUrl)"],
             ["Credenciales demo en login", "Satisfactorio. La UI no publica ni prellena contraseñas de demostración"],
         ],
@@ -580,7 +580,7 @@ def main() -> None:
         [
             ["DEF-01", "Alta", "Cerrar sesión en Vercel restauraba el JWT: logout() no esperaba supabase.auth.signOut() y guestGuard reenviaba al tablero.", "Cerrado y verificado en producción (EP-14)"],
             ["DEF-02", "Baja", "El alert nativo de ion-select mostraba OK / Cancel en inglés.", "Cerrado: okText Aceptar y cancelText Cancelar"],
-            ["DEF-03", "Media", "Faltaban cabeceras de seguridad (frame, nosniff, referrer, CSP).", "Cerrado: vercel.json con CSP y Permissions-Policy"],
+            ["DEF-03", "Media", "Faltaban cabeceras de seguridad (frame, nosniff, referrer).", "Cerrado: vercel.json con DENY, nosniff, Referrer-Policy y Permissions-Policy; CSP retirado tras romper estilos de Ionic"],
             ["DEF-04", "Baja", "El bucket de fotos era público por esquema.", "Cerrado: bucket privado + createSignedUrl; harden-storage.sql"],
             ["DEF-05", "Baja", "El login publicaba las credenciales de demostración.", "Cerrado: sin hint Demo ni campos prellenados"],
         ],
@@ -631,7 +631,7 @@ def main() -> None:
     )
     p(
         doc,
-        "Respecto a los RNF, HTTPS y HSTS se cumplen; el aislamiento del productor se verifica en unitarias y en RLS; la persistencia offline declarada en el análisis de requerimientos no se implementó ni se probó, y debe retirarse como compromiso del prototipo actual. Las cabeceras CSP incompletas son un riesgo residual típico de SPA Angular y se mitigaron parcialmente con X-Frame-Options y nosniff.",
+        "Respecto a los RNF, HTTPS y HSTS se cumplen; el aislamiento del productor se verifica en unitarias y en RLS; la persistencia offline declarada en el análisis de requerimientos no se implementó ni se probó, y debe retirarse como compromiso del prototipo actual. Una Content-Security-Policy estricta (script-src 'self') se evaluó y se retiró del despliegue porque bloqueaba manejadores inline de Ionic y dejaba la interfaz sin estilos; el riesgo residual de XSS se mitiga con X-Frame-Options DENY, nosniff, Referrer-Policy y Permissions-Policy.",
     )
 
     heading(doc, "15. Conclusiones", 1)

@@ -89,7 +89,7 @@ def main() -> None:
     para(doc, "Informe de ejecución de pruebas", bold=True, size=22, center=True, space_after=6)
     para(doc, "Plataforma de bienestar animal — Bienestar ICA", size=14, center=True, space_after=12)
     para(doc, "Aplicación bajo prueba: https://animal-welfare-platform-vepq.vercel.app", center=True, space_after=2)
-    para(doc, "Fecha de ejecución: 27 oct, 2026 (America/Bogota)", center=True, space_after=2)
+    para(doc, "Fecha de ejecución: 28 oct, 2026 (America/Bogota)", center=True, space_after=2)
     para(doc, "Autor: David Ramirez  ·  Cuenta de evaluación: rxgdavid@gmail.com (administrador)", center=True, space_after=18)
     para(
         doc,
@@ -154,7 +154,7 @@ def main() -> None:
             ["Datos visibles", "3 predios, 6 animales, 4 usuarios; IBA medio 81,4"],
             ["Navegador E2E", "Playwright Chromium, viewport 1280×800 y 390×844"],
             ["Python / Node", "Python 3.12, Node 22, pytest 8.3, Playwright 1.64"],
-            ["Fecha", "27 oct, 2026, zona America/Bogota"],
+            ["Fecha", "28 oct, 2026, zona America/Bogota"],
         ],
     )
 
@@ -185,7 +185,7 @@ def main() -> None:
     heading(doc, "10. Pruebas funcionales / E2E con evidencias", 1)
     para(
         doc,
-        "17 casos Playwright contra la URL de Vercel con la cuenta administrador. 17/17 satisfactorios en 19 s (1 worker). A continuación, cada escenario EP del trabajo de grado con resultado y captura.",
+        "17 casos Playwright contra la URL de Vercel con la cuenta administrador. 17/17 satisfactorios (~3,7 min con 1 worker; 8 s de estabilización por captura). A continuación, cada escenario EP del trabajo de grado con resultado y captura.",
     )
     add_table(
         doc,
@@ -369,7 +369,7 @@ def main() -> None:
             ["Admin Auth API con anon key", "Pass", "HTTP 403"],
             ["Secretos en el bundle", "Pass", "Sin service_role ni claves privadas"],
             ["A07 — login inválido", "Pass", "API 400; UI en español"],
-            ["Cabeceras anti-clickjacking", "Pass", "X-Frame-Options DENY, nosniff, Referrer-Policy; CSP no impuesto"],
+            ["Cabeceras anti-clickjacking", "Pass", "X-Frame-Options DENY, nosniff, Referrer-Policy, Permissions-Policy; CSP omitido (rompe Ionic)"],
         ],
     )
 
@@ -400,14 +400,14 @@ def main() -> None:
         [
             ["DEF-01", "Alta", "Logout restauraba el JWT (signOut sin await + guestGuard).", "Cerrado y verificado en producción (EP-14)"],
             ["DEF-02", "Baja", "ion-select mostraba OK/Cancel en inglés.", "Cerrado (Aceptar/Cancelar)"],
-            ["DEF-03", "Media", "Faltaban cabeceras de seguridad (frame, nosniff, referrer, CSP).", "Cerrado: headers + CSP + Permissions-Policy en vercel.json"],
+            ["DEF-03", "Media", "Faltaban cabeceras de seguridad (frame, nosniff, referrer).", "Cerrado: DENY, nosniff, Referrer-Policy, Permissions-Policy; CSP retirado tras romper Ionic"],
             ["DEF-04", "Baja", "Bucket de fotos público por esquema.", "Cerrado: bucket privado + URLs firmadas; aplicar supabase/harden-storage.sql"],
             ["DEF-05", "Baja", "Login publica credenciales demo.", "Cerrado: sin hint ni campos prellenados"],
         ],
     )
     para(
         doc,
-        "DEF-01 quedó cerrado con await signOut y sessionCleared. DEF-02 con okText/cancelText en español. DEF-03 con CSP y Permissions-Policy. DEF-04 con createSignedUrl y bucket no público. DEF-05 retirando el copy Demo del login.",
+        "DEF-01 quedó cerrado con await signOut y sessionCleared. DEF-02 con okText/cancelText en español. DEF-03 con cabeceras anti-clickjacking (sin CSP estricto, que rompía Ionic). DEF-04 con createSignedUrl y bucket no público. DEF-05 retirando el copy Demo del login. Las capturas E2E se tomaron tras 8 s de estabilización por vista.",
     )
 
     heading(doc, "17. Métricas de la campaña", 1)

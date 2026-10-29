@@ -1,6 +1,6 @@
 {
   "files": 39,
-  "lines_of_code": 5063,
+  "lines_of_code": 5064,
   "comment_lines": 1,
   "todo_fixme": 0,
   "duplicated_blocks": 23,
@@ -47,7 +47,7 @@
     },
     {
       "file": "src/app/core/cloud.repository.ts",
-      "lines": 574
+      "lines": 576
     },
     {
       "file": "src/app/core/store.service.ts",

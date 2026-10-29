@@ -1,75 +1,49 @@
 {
-  "suites": [
-    {
-      "name": "unit-ts",
-      "command": "npx tsx --test tests/unit/domain.test.ts",
-      "exit_code": 0,
-      "seconds": 0.4,
-      "passed": true,
-      "stdout_tail": "TAP version 13\n# Subtest: ICA scoring\n    # Subtest: computes THI close to 82.9 at 30 C and 80% RH\n    ok 1 - computes THI close to 82.9 at 30 C and 80% RH\n      ---\n      duration_ms: 0.598649\n      ...\n    # Subtest: marks swine THI 85 as emergency\n    ok 2 - marks swine THI 85 as emergency\n      ---\n      duration_ms: 0.134212\n      ...\n    # Subtest: classifies IBA 82 as compliant\n    ok 3 - classifies IBA 82 as compliant\n      ---\n      duration_ms: 0.113831\n      ...\n    # Subtest: uses 0.85 m2 for fattening swine\n    ok 4 - uses 0.85 m2 for fattening swine\n      ---\n      duration_ms: 0.079\n      ...\n    # Subtest: scores a healthy animal above the ICA green threshold\n    ok 5 - scores a healthy animal above the ICA green threshold\n      ---\n      duration_ms: 0.30026\n      ...\n    # Subtest: flags heat stress, lameness and overdue vaccine as findings\n    ok 6 - flags heat stress, lameness and overdue vaccine as findings\n      ---\n      duration_ms: 0.16705\n      ...\n    # Subtest: caps swine behavior when environmental enrichment is missing\n    ok 7 - caps swine behavior when environmental enrichment is missing\n      ---\n      duration_ms: 0.098053\n      ...\n    1..7\nok 1 - ICA scoring\n  ---\n  duration_ms: 2.140234\n  type: 'suite'\n  ...\n# Subtest: discrete-event simulation\n    # Subtest: emits one snapshot per horizon day and is deterministic\n    ok 1 - emits one snapshot per horizon day and is deterministic\n      ---\n      duration_ms: 1.546999\n      ...\n    # Subtest: improved housing finishes heavier than feed restriction\n    ok 2 - improved housing finishes heavier than feed restriction\n      ---\n      duration_ms: 0.572011\n      ...\n    # Subtest: starts with an ICA checkpoint event\n    ok 3 - starts with an ICA checkpoint event\n      ---\n      duration_ms: 0.837137\n      ...\n    1..3\nok 2 - discrete-event simulation\n  ---\n  duration_ms: 3.182144\n  type: 'suite'\n  ...\n# Subtest: visibility rules\n    # Subtest: hides foreign farms from producers\n    ok 1 - hides foreign farms from producers\n      ---\n      duration_ms: 0.181228\n      ...\n    1..1\nok 3 - visibility rules\n  ---\n  duration_ms: 0.230191\n  type: 'suite'\n  ...\n1..3\n# tests 11\n# suites 3\n# pass 11\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 151.32967\n",
-      "stderr_tail": ""
-    },
-    {
-      "name": "unit-py",
-      "command": "pytest tests/unit tests/acceptance -q",
-      "exit_code": 0,
-      "seconds": 0.13,
-      "passed": true,
-      "stdout_tail": ".......................                                                  [100%]\n",
-      "stderr_tail": ""
-    },
-    {
-      "name": "api",
-      "command": "pytest tests/api -q",
-      "exit_code": 0,
-      "seconds": 1.0,
-      "passed": true,
-      "stdout_tail": "..........                                                               [100%]\n",
-      "stderr_tail": ""
-    },
-    {
-      "name": "security",
-      "command": "pytest tests/security -q",
-      "exit_code": 0,
-      "seconds": 0.44,
-      "passed": true,
-      "stdout_tail": "......                                                                   [100%]\n",
-      "stderr_tail": ""
-    },
-    {
-      "name": "performance",
-      "command": "pytest tests/performance -q",
-      "exit_code": 0,
-      "seconds": 0.42,
-      "passed": true,
-      "stdout_tail": "..                                                                       [100%]\n",
-      "stderr_tail": ""
-    },
-    {
-      "name": "quality",
-      "command": "/usr/bin/python3 tests/quality/analyze_quality.py",
-      "exit_code": 0,
-      "seconds": 0.03,
-      "passed": true,
-      "stdout_tail": "{\n  \"files\": 39,\n  \"lines_of_code\": 5063,\n  \"comment_lines\": 1,\n  \"todo_fixme\": 0,\n  \"duplicated_blocks\": 23,\n  \"average_cyclomatic\": 8.21,\n  \"maintainability_index\": 95.6,\n  \"hottest_files\": [\n    {\n      \"file\": \"src/app/core/store.service.ts\",\n      \"complexity\": 61\n    },\n    {\n      \"file\": \"src/app/core/welfare-scoring.ts\",\n      \"complexity\": 46\n    },\n    {\n      \"file\": \"src/app/pages/dashboard.page.ts\",\n      \"complexity\": 20\n    },\n    {\n      \"file\": \"src/app/core/auth.service.ts\",\n      \"complexity\": 16\n    },\n    {\n      \"file\": \"src/app/pages/user-form.page.ts\",\n      \"complexity\": 16\n    },\n    {\n      \"file\": \"src/app/core/cloud.repository.ts\",\n      \"complexity\": 15\n    },\n    {\n      \"file\": \"src/app/pages/animal-form.page.ts\",\n      \"complexity\": 14\n    },\n    {\n      \"file\": \"src/app/pages/animal-detail.page.ts\",\n      \"complexity\": 11\n    }\n  ],\n  \"largest_files\": [\n    {\n      \"file\": \"src/styles.scss\",\n      \"lines\": 844\n    },\n    {\n      \"file\": \"src/app/core/cloud.repository.ts\",\n      \"lines\": 574\n    },\n    {\n      \"file\": \"src/app/core/store.service.ts\",\n      \"lines\": 474\n    },\n    {\n      \"file\": \"src/app/core/labels.ts\",\n      \"lines\": 202\n    },\n    {\n      \"file\": \"src/app/core/welfare-scoring.ts\",\n      \"lines\": 191\n    },\n    {\n      \"file\": \"src/app/core/simulation.ts\",\n      \"lines\": 171\n    },\n    {\n      \"file\": \"src/app/pages/dashboard.page.ts\",\n      \"lines\": 171\n    },\n    {\n      \"file\": \"src/app/pages/animal-form.page.ts\",\n      \"lines\": 161\n    }\n  ],\n  \"bugs_heuristic\": 0,\n  \"vulnerabilities_heuristic\": 0,\n  \"rating\": \"A\"\n}\n",
-      "stderr_tail": ""
-    },
-    {
-      "name": "e2e",
-      "command": "npx playwright test --config tests/e2e/playwright.config.ts",
-      "exit_code": 0,
-      "seconds": 18.95,
-      "passed": true,
-      "stdout_tail": "\nRunning 17 tests using 1 worker\n\n  \u2713   1 [chromium] \u203a tests/e2e/specs/auth.spec.ts:5:7 \u203a Authentication \u203a login page shows ICA branding and sentence-case labels (319ms)\n  \u2713   2 [chromium] \u203a tests/e2e/specs/auth.spec.ts:15:7 \u203a Authentication \u203a invalid password shows a Spanish error and stays on login (415ms)\n  \u2713   3 [chromium] \u203a tests/e2e/specs/auth.spec.ts:25:7 \u203a Authentication \u203a valid credentials open the dashboard (1.8s)\n  \u2713   4 [chromium] \u203a tests/e2e/specs/auth.spec.ts:31:7 \u203a Authentication \u203a protected dashboard redirects guests to login (324ms)\n  \u2713   5 [chromium] \u203a tests/e2e/specs/auth.spec.ts:38:7 \u203a Authentication \u203a logout returns to login (929ms)\n  \u2713   6 [chromium] \u203a tests/e2e/specs/auth.spec.ts:49:7 \u203a Authentication \u203a register page lists producer and veterinarian but not administrator (463ms)\n  \u2713   7 [chromium] \u203a tests/e2e/specs/auth.spec.ts:60:7 \u203a Authentication \u203a guest with a session is sent away from login (472ms)\n  \u2713   8 [chromium] \u203a tests/e2e/specs/navigation.spec.ts:9:7 \u203a Authenticated navigation \u203a farm inventory is consistent with the dashboard count (887ms)\n  \u2713   9 [chromium] \u203a tests/e2e/specs/navigation.spec.ts:23:7 \u203a Authenticated navigation \u203a tab bar reaches farms, animals, simulation and profile (2.8s)\n  \u2713  10 [chromium] \u203a tests/e2e/specs/navigation.spec.ts:39:7 \u203a Authenticated navigation \u203a new farm form uses sentence-case title and required identity fields (633ms)\n  \u2713  11 [chromium] \u203a tests/e2e/specs/navigation.spec.ts:48:7 \u203a Authenticated navigation \u203a new animal form reveals species-specific controls (1.4s)\n  \u2713  12 [chromium] \u203a tests/e2e/specs/navigation.spec.ts:58:7 \u203a Authenticated navigation \u203a reports page is reachable from the account screen (1.0s)\n  \u2713  13 [chromium] \u203a tests/e2e/specs/navigation.spec.ts:66:7 \u203a Authenticated navigation \u203a users administration is hidden from non-admin or redirected (2.0s)\n  \u2713  14 [chromium] \u203a tests/e2e/specs/navigation.spec.ts:76:7 \u203a Authenticated navigation \u203a dashboard uses the corporate date format on alerts when present (543ms)\n  \u2713  15 [chromium] \u203a tests/e2e/specs/navigation.spec.ts:88:7 \u203a Authenticated navigation \u203a animal detail shows IBA ring and opens the welfare form (1.3s)\n  \u2713  16 [chromium] \u203a tests/e2e/specs/navigation.spec.ts:108:7 \u203a Authenticated navigation \u203a simulation detail opens from an existing run when available (1.2s)\n  \u2713  17 [chromium] \u203a tests/e2e/specs/navigation.spec.ts:122:7 \u203a Authenticated navigation \u203a mobile viewport keeps login and dashboard usable (1.3s)\n\n  17 passed (18.3s)\n",
-      "stderr_tail": "(node:12425) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:12425) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
-    }
-  ],
+  "campaign_date": "2026-10-28",
+  "timezone": "America/Bogota",
+  "target": "https://animal-welfare-platform-vepq.vercel.app",
   "passed": 7,
   "failed": 0,
   "skipped": 0,
+  "suites": [
+    {
+      "name": "unit-ts",
+      "passed": true,
+      "cases": "11/11"
+    },
+    {
+      "name": "unit-py",
+      "passed": true,
+      "cases": "20/20+acceptance"
+    },
+    {
+      "name": "api",
+      "passed": true
+    },
+    {
+      "name": "security",
+      "passed": true
+    },
+    {
+      "name": "performance",
+      "passed": true
+    },
+    {
+      "name": "quality",
+      "passed": true,
+      "rating": "A",
+      "mi": 95.6
+    },
+    {
+      "name": "e2e",
+      "passed": true,
+      "cases": "17/17",
+      "seconds": 220.3
+    }
+  ],
   "quality": {
     "files": 39,
-    "lines_of_code": 5063,
+    "lines_of_code": 5064,
     "comment_lines": 1,
     "todo_fixme": 0,
     "duplicated_blocks": 23,
@@ -116,7 +90,7 @@
       },
       {
         "file": "src/app/core/cloud.repository.ts",
-        "lines": 574
+        "lines": 576
       },
       {
         "file": "src/app/core/store.service.ts",
@@ -146,5 +120,14 @@
     "bugs_heuristic": 0,
     "vulnerabilities_heuristic": 0,
     "rating": "A"
-  }
+  },
+  "e2e": {
+    "startTime": "2026-10-29T03:12:42.239Z",
+    "duration": 220349.138,
+    "expected": 17,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "screenshot_settle_ms": 8000
 }

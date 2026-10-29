@@ -19,8 +19,9 @@
 <body>
   <h1>Informe de pruebas de software — Bienestar ICA</h1>
   <p><strong>URL:</strong> https://animal-welfare-platform-vepq.vercel.app<br />
-  <strong>Fecha:</strong> 27 oct, 2026 (America/Bogota)<br />
-  <strong>Resultado global:</strong> <span class="ok">7/7 suites · 17/17 E2E · 0 fallos de producto</span></p>
+  <strong>Fecha:</strong> 28 oct, 2026 (America/Bogota)<br />
+  <strong>Resultado global:</strong> <span class="ok">7/7 suites · 17/17 E2E · 0 fallos de producto</span><br />
+  <strong>Capturas:</strong> estabilización de 8 s por vista antes de cada screenshot (evita fotogramas blancos/transitorios de Ionic).</p>
 
   <h2>1. Equivalencia con el curso</h2>
   <table>
@@ -64,7 +65,7 @@
     <tbody>
       <tr><td>DEF-01</td><td>Alta</td><td>Logout restauraba JWT</td><td class="ok">Cerrado en producción</td></tr>
       <tr><td>DEF-02</td><td>Baja</td><td>ion-select OK/Cancel</td><td class="ok">Cerrado (Aceptar/Cancelar)</td></tr>
-      <tr><td>DEF-03</td><td>Media</td><td>Cabeceras de seguridad / CSP</td><td class="ok">Cerrado (CSP + Permissions-Policy)</td></tr>
+      <tr><td>DEF-03</td><td>Media</td><td>Cabeceras de seguridad</td><td class="ok">Cerrado (DENY, nosniff, Referrer-Policy, Permissions-Policy; CSP omitido)</td></tr>
       <tr><td>DEF-04</td><td>Baja</td><td>Bucket de fotos público</td><td class="ok">Cerrado (privado + URLs firmadas)</td></tr>
       <tr><td>DEF-05</td><td>Baja</td><td>Credenciales demo en login</td><td class="ok">Cerrado (sin hint ni prellenado)</td></tr>
     </tbody>

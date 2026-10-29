@@ -44,6 +44,11 @@ export async function chooseIonSelect(page: Page, name: string, option: string):
   }
 }
 
+/** Wait long enough for Ionic/Angular paint before capturing evidence (8–10 s max). */
 export async function shot(page: Page, name: string): Promise<void> {
-  await page.screenshot({ path: path.join(evidenceDir, `${name}.png`), fullPage: true });
+  await page.waitForLoadState('domcontentloaded').catch(() => undefined);
+  await page.waitForLoadState('networkidle', { timeout: 15_000 }).catch(() => undefined);
+  await page.locator('ion-content, .auth-shell, ion-app').first().waitFor({ state: 'visible', timeout: 15_000 }).catch(() => undefined);
+  await page.waitForTimeout(8_000);
+  await page.screenshot({ path: path.join(evidenceDir, `${name}.png`), fullPage: true, animations: 'disabled' });
 }

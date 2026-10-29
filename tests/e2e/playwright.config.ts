@@ -4,8 +4,8 @@ const baseURL = process.env.E2E_BASE_URL ?? 'https://animal-welfare-platform-vep
 
 export default defineConfig({
   testDir: './specs',
-  timeout: 60_000,
-  expect: { timeout: 15_000 },
+  timeout: 180_000,
+  expect: { timeout: 20_000 },
   fullyParallel: false,
   workers: 1,
   retries: process.env.CI ? 1 : 0,
