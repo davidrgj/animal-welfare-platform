@@ -1,17 +1,18 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonSkeletonText, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { Animal, ComplianceFinding, Farm, WelfareRecord } from '../core/models';
-import { COMPLIANCE_LABEL, DOMAIN_LABEL, FINDING_LABEL, HEAT_LABEL, PURPOSE_LABEL, SPECIES_LABEL, complianceClass, ibaFill, speciesMark } from '../core/labels';
+import { COMPLIANCE_LABEL, DOMAIN_LABEL, FINDING_LABEL, HEAT_LABEL, PURPOSE_LABEL, SPECIES_LABEL, complianceClass, ibaFill } from '../core/labels';
 import { StoreService } from '../core/store.service';
 import { EmptyStateComponent } from '../shared/empty-state.component';
 import { IbaRingComponent } from '../shared/iba-ring.component';
+import { SpeciesMarkComponent } from '../shared/species-mark.component';
 
 @Component({
   selector: 'app-animal-detail',
   standalone: true,
-  imports: [DatePipe, RouterLink, IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar, EmptyStateComponent, IbaRingComponent],
+  imports: [DatePipe, RouterLink, IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonSkeletonText, IonTitle, IonToolbar, EmptyStateComponent, IbaRingComponent, SpeciesMarkComponent],
   template: `
     <ion-header>
       <ion-toolbar>
@@ -22,7 +23,18 @@ import { IbaRingComponent } from '../shared/iba-ring.component';
       </ion-toolbar>
     </ion-header>
     <ion-content>
-      @if (animal && farm) {
+      @if (loading) {
+        <div class="page-body stack">
+          <section class="status-hero skeleton-surface skeleton-row" style="display:grid;grid-template-columns:auto 1fr;gap:16px;padding:20px">
+            <ion-skeleton-text animated class="skeleton-circle" style="width:96px;height:96px"></ion-skeleton-text>
+            <div class="skeleton-lines" style="align-self:center">
+              <ion-skeleton-text animated class="skeleton-pill" style="width:40%"></ion-skeleton-text>
+              <ion-skeleton-text animated class="skeleton-pill" style="width:70%"></ion-skeleton-text>
+              <ion-skeleton-text animated class="skeleton-pill" style="width:55%"></ion-skeleton-text>
+            </div>
+          </section>
+        </div>
+      } @else if (animal && farm) {
         <div class="page-body stack">
           <section class="status-hero detail-hero">
             <div class="status-hero-main">
@@ -32,7 +44,10 @@ import { IbaRingComponent } from '../shared/iba-ring.component';
                 <app-iba-ring [value]="0" caption="Sin IBA" [size]="140" />
               }
               <div class="status-hero-copy">
-                <p class="page-kicker">{{ species[animal.species] }} · {{ farm.name }}</p>
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+                  <app-species-mark [species]="animal.species" />
+                  <p class="page-kicker" style="margin:0">{{ species[animal.species] }} · {{ farm.name }}</p>
+                </div>
                 <h1 class="display status-title">{{ animal.tagId }}</h1>
                 <p class="status-meta">{{ animal.breed }} · {{ purpose[animal.purpose] }} · {{ animal.currentWeightKg }} kg</p>
                 @if (latest) {
@@ -99,6 +114,7 @@ import { IbaRingComponent } from '../shared/iba-ring.component';
   `
 })
 export class AnimalDetailPage implements OnInit {
+  loading = true;
   animal: Animal | null = null;
   farm: Farm | null = null;
   records: WelfareRecord[] = [];
@@ -110,7 +126,6 @@ export class AnimalDetailPage implements OnInit {
   readonly domains = DOMAIN_LABEL;
   readonly findingLabel = FINDING_LABEL;
   readonly complianceClass = complianceClass;
-  readonly speciesMark = speciesMark;
   readonly ibaFill = ibaFill;
 
   constructor(readonly store: StoreService, private readonly route: ActivatedRoute, private readonly router: Router) {}
@@ -127,6 +142,7 @@ export class AnimalDetailPage implements OnInit {
     for (const record of this.records) {
       this.findings.set(record.id, await this.store.findings(record.id));
     }
+    this.loading = false;
   }
 
   async remove(): Promise<void> {

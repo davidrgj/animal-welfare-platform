@@ -1,18 +1,20 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { IonButton, IonContent, IonHeader, IonSkeletonText, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { Chart } from 'chart.js/auto';
 import { AuthService } from '../core/auth.service';
-import { ALERT_HINT, COMPLIANCE_LABEL, FINDING_LABEL, HEAT_LABEL, SPECIES_LABEL, complianceClass, ibaFill, severityClass, speciesMark } from '../core/labels';
+import { ALERT_HINT, COMPLIANCE_LABEL, FINDING_LABEL, HEAT_LABEL, SPECIES_LABEL, complianceClass, ibaFill, severityClass } from '../core/labels';
 import { ComplianceLevel } from '../core/models';
 import { DashboardData, StoreService } from '../core/store.service';
 import { EmptyStateComponent } from '../shared/empty-state.component';
 import { IbaRingComponent } from '../shared/iba-ring.component';
+import { SpeciesMarkComponent } from '../shared/species-mark.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [DatePipe, RouterLink, IonButton, IonContent, IonHeader, IonSkeletonText, IonTitle, IonToolbar, EmptyStateComponent, IbaRingComponent],
+  imports: [DatePipe, RouterLink, IonButton, IonContent, IonHeader, IonSkeletonText, IonTitle, IonToolbar, EmptyStateComponent, IbaRingComponent, SpeciesMarkComponent],
   template: `
     <ion-header>
       <ion-toolbar>
@@ -22,9 +24,25 @@ import { IbaRingComponent } from '../shared/iba-ring.component';
     <ion-content>
       <div class="page-body stack">
         @if (loading) {
-          <section class="status-hero skeleton-surface">
-            <ion-skeleton-text animated class="skeleton-block"></ion-skeleton-text>
+          <section class="status-hero skeleton-surface skeleton-row" style="display:grid;grid-template-columns:auto 1fr;gap:16px;padding:20px">
+            <ion-skeleton-text animated class="skeleton-circle" style="width:96px;height:96px"></ion-skeleton-text>
+            <div class="skeleton-lines" style="align-self:center">
+              <ion-skeleton-text animated class="skeleton-pill" style="width:28%"></ion-skeleton-text>
+              <ion-skeleton-text animated class="skeleton-pill" style="width:72%"></ion-skeleton-text>
+              <ion-skeleton-text animated class="skeleton-pill" style="width:54%"></ion-skeleton-text>
+            </div>
           </section>
+          <div class="skeleton-list">
+            @for (row of [1, 2, 3]; track row) {
+              <div class="list-card skeleton-surface skeleton-row">
+                <ion-skeleton-text animated class="skeleton-circle"></ion-skeleton-text>
+                <div class="skeleton-lines">
+                  <ion-skeleton-text animated class="skeleton-pill" style="width:42%"></ion-skeleton-text>
+                  <ion-skeleton-text animated class="skeleton-pill" style="width:68%"></ion-skeleton-text>
+                </div>
+              </div>
+            }
+          </div>
         } @else if (data) {
           <section class="status-hero">
             <div class="status-hero-main">
@@ -66,6 +84,26 @@ import { IbaRingComponent } from '../shared/iba-ring.component';
             <a routerLink="/app/reports" class="action-chip">Reporte</a>
           </div>
 
+          @if (data.evaluatedCount > 0 || data.animalCount > 0) {
+            <div class="dashboard-charts">
+              <section class="panel">
+                <h2 class="panel-title">Semáforo ICA</h2>
+                <p class="chart-panel-lead">Distribución de cumplimiento del inventario evaluado.</p>
+                <div class="chart-frame"><canvas #complianceCanvas></canvas></div>
+                <div class="chart-legend">
+                  <span class="chart-legend-item"><span class="chart-legend-swatch" style="background:#30d158"></span>Cumple</span>
+                  <span class="chart-legend-item"><span class="chart-legend-swatch" style="background:#ff9f0a"></span>Atención</span>
+                  <span class="chart-legend-item"><span class="chart-legend-swatch" style="background:#ff3b30"></span>No cumple</span>
+                </div>
+              </section>
+              <section class="panel">
+                <h2 class="panel-title">Especies</h2>
+                <p class="chart-panel-lead">Composición del lote bajo monitoreo.</p>
+                <div class="chart-frame"><canvas #speciesCanvas></canvas></div>
+              </section>
+            </div>
+          }
+
           <section class="panel">
             <div class="spread">
               <h2 class="panel-title">Cola de riesgo</h2>
@@ -76,7 +114,7 @@ import { IbaRingComponent } from '../shared/iba-ring.component';
             } @else {
               @for (item of data.riskAnimals; track item.animal.id) {
                 <a class="animal-row list-card risk-row" [routerLink]="['/app/animals', item.animal.id]">
-                  <span [class]="speciesMark(item.animal.species)">{{ species[item.animal.species].charAt(0) }}</span>
+                  <app-species-mark [species]="item.animal.species" />
                   <div class="list-card-copy">
                     <strong>{{ item.animal.tagId }}</strong>
                     <p class="muted">{{ species[item.animal.species] }} · {{ item.farm.name }} · {{ heat[store.heatFor(item.animal, item.record)] }}</p>
@@ -120,17 +158,21 @@ import { IbaRingComponent } from '../shared/iba-ring.component';
     </ion-content>
   `
 })
-export class DashboardPage implements OnInit {
+export class DashboardPage implements OnInit, AfterViewChecked, OnDestroy {
+  @ViewChild('complianceCanvas') complianceCanvas?: ElementRef<HTMLCanvasElement>;
+  @ViewChild('speciesCanvas') speciesCanvas?: ElementRef<HTMLCanvasElement>;
   loading = true;
   data: DashboardData | null = null;
   firstName = '';
+  private complianceChart: Chart | null = null;
+  private speciesChart: Chart | null = null;
+  private chartsDrawn = false;
   readonly species = SPECIES_LABEL;
   readonly compliance = COMPLIANCE_LABEL;
   readonly heat = HEAT_LABEL;
   readonly finding = FINDING_LABEL;
   readonly hint = ALERT_HINT;
   readonly complianceClass = complianceClass;
-  readonly speciesMark = speciesMark;
   readonly ibaFill = ibaFill;
   readonly severityClass = severityClass;
 
@@ -158,13 +200,91 @@ export class DashboardPage implements OnInit {
     await this.reload();
   }
 
+  ngAfterViewChecked(): void {
+    if (!this.loading && this.data && !this.chartsDrawn) {
+      this.drawCharts();
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.complianceChart?.destroy();
+    this.speciesChart?.destroy();
+  }
+
   async dismiss(alertId: string): Promise<void> {
     await this.store.acknowledge(alertId);
     await this.reload();
   }
 
   private async reload(): Promise<void> {
+    this.chartsDrawn = false;
+    this.complianceChart?.destroy();
+    this.speciesChart?.destroy();
+    this.complianceChart = null;
+    this.speciesChart = null;
     this.data = await this.store.dashboard();
     this.loading = false;
+  }
+
+  private drawCharts(): void {
+    if (!this.data || this.chartsDrawn) return;
+    const complianceCanvas = this.complianceCanvas?.nativeElement;
+    const speciesCanvas = this.speciesCanvas?.nativeElement;
+    if (!complianceCanvas || !speciesCanvas) return;
+    this.chartsDrawn = true;
+
+    const compliant = this.data.compliance.find((row) => row.level === 'COMPLIANT')?.count ?? 0;
+    const attention = this.data.compliance.find((row) => row.level === 'ATTENTION')?.count ?? 0;
+    const nonCompliant = this.data.compliance.find((row) => row.level === 'NON_COMPLIANT')?.count ?? 0;
+    const unevaluated = this.data.unevaluatedCount;
+
+    this.complianceChart = new Chart(complianceCanvas, {
+      type: 'doughnut',
+      data: {
+        labels: ['Cumple', 'Atención', 'No cumple', 'Sin IBA'],
+        datasets: [{
+          data: [compliant, attention, nonCompliant, unevaluated],
+          backgroundColor: ['#30d158', '#ff9f0a', '#ff3b30', '#c7c7cc'],
+          borderWidth: 0,
+          hoverOffset: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '68%',
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: (item) => ` ${item.label}: ${item.raw}` } }
+        }
+      }
+    });
+
+    this.speciesChart = new Chart(speciesCanvas, {
+      type: 'bar',
+      data: {
+        labels: this.data.species.map((row) => SPECIES_LABEL[row.species]),
+        datasets: [{
+          data: this.data.species.map((row) => row.count),
+          backgroundColor: ['#ff9f0a', '#af52de', '#30d158'],
+          borderRadius: 10,
+          borderSkipped: false,
+          maxBarThickness: 42
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { display: false }, ticks: { color: '#86868B', font: { size: 12 } } },
+          y: {
+            beginAtZero: true,
+            ticks: { stepSize: 1, color: '#86868B', font: { size: 12 } },
+            grid: { color: 'rgba(60,60,67,0.08)' }
+          }
+        }
+      }
+    });
   }
 }

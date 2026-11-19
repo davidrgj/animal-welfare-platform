@@ -312,6 +312,7 @@ ion-toggle {
   height: 100%;
   border-radius: inherit;
   background: var(--accent);
+  transition: width 700ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .iba-fill-bad { background: var(--danger); }
@@ -328,6 +329,14 @@ ion-toggle {
   font-weight: 600;
   color: #ffffff;
   flex: none;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+
+.species-mark svg,
+.species-mark ion-icon {
+  width: 22px;
+  height: 22px;
+  display: block;
 }
 
 .species-mark-lg {
@@ -336,10 +345,17 @@ ion-toggle {
   font-size: 18px;
 }
 
-.species-mark-cattle { background: #ff9f0a; }
-.species-mark-goat { background: #af52de; }
-.species-mark-swine { background: #30d158; }
-.species-mark-sim { background: #007aff; }
+.species-mark-lg svg,
+.species-mark-lg ion-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.species-mark-cattle { background: linear-gradient(145deg, #ffb340, #ff9f0a); }
+.species-mark-goat { background: linear-gradient(145deg, #c77dff, #af52de); }
+.species-mark-swine { background: linear-gradient(145deg, #5ce083, #30d158); }
+.species-mark-sim { background: linear-gradient(145deg, #4da3ff, #007aff); }
+.species-mark-farm { background: linear-gradient(145deg, #63d2a0, #34c759); }
 
 .panel,
 .farm-card {
@@ -793,12 +809,96 @@ input.field-box[type="file"] {
 
 .detail-hero .status-title { font-size: 30px; }
 
-.farm-card-rich {
-  transition: transform 180ms ease, box-shadow 180ms ease;
+.farm-card-rich,
+.list-card,
+.priority-action,
+.action-chip {
+  transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
 }
 
-.farm-card-rich:active {
+.farm-card-rich:active,
+.list-card:active,
+.priority-action:active,
+.action-chip:active {
   transform: scale(0.985);
+}
+
+.stack > .list-card,
+.stack > .farm-card,
+.stack > .panel,
+.stack > .status-hero,
+.stack > .hero-card,
+.stack > .action-strip {
+  animation: rise-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.stack > :nth-child(2) { animation-delay: 40ms; }
+.stack > :nth-child(3) { animation-delay: 80ms; }
+.stack > :nth-child(4) { animation-delay: 120ms; }
+.stack > :nth-child(5) { animation-delay: 160ms; }
+.stack > :nth-child(6) { animation-delay: 200ms; }
+
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.chart-panel-lead {
+  margin: -2px 0 14px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.dashboard-charts {
+  display: grid;
+  gap: 12px;
+}
+
+@media (min-width: 860px) {
+  .dashboard-charts {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin-top: 12px;
+}
+
+.chart-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.chart-legend-swatch {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.skeleton-list {
+  display: grid;
+  gap: 10px;
+}
+
+.skeleton-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  align-items: center;
+  padding: 16px;
+  border-radius: 16px;
+}
+
+.skeleton-row .skeleton-lines {
+  display: grid;
+  gap: 8px;
 }
 
 .timeline-item {

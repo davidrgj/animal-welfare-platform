@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { IonBackButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { IonBackButton, IonButtons, IonContent, IonHeader, IonSkeletonText, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { Chart } from 'chart.js/auto';
 import { EVENT_LABEL, FEED_LABEL, SCENARIO_LABEL, STAGE_LABEL } from '../core/labels';
 import { SimulationEvent, SimulationRun, SimulationSnapshot } from '../core/models';
@@ -11,7 +11,7 @@ import { EmptyStateComponent } from '../shared/empty-state.component';
 @Component({
   selector: 'app-simulation-detail',
   standalone: true,
-  imports: [DatePipe, IonBackButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar, EmptyStateComponent],
+  imports: [DatePipe, IonBackButton, IonButtons, IonContent, IonHeader, IonSkeletonText, IonTitle, IonToolbar, EmptyStateComponent],
   template: `
     <ion-header>
       <ion-toolbar>
@@ -22,7 +22,17 @@ import { EmptyStateComponent } from '../shared/empty-state.component';
       </ion-toolbar>
     </ion-header>
     <ion-content>
-      @if (run) {
+      @if (!run) {
+        <div class="page-body stack">
+          <section class="hero-card skeleton-surface" style="padding:20px">
+            <ion-skeleton-text animated class="skeleton-pill" style="width:48%"></ion-skeleton-text>
+            <ion-skeleton-text animated class="skeleton-block" style="height:72px;margin-top:14px"></ion-skeleton-text>
+          </section>
+          <section class="panel skeleton-surface" style="padding:18px">
+            <ion-skeleton-text animated class="skeleton-block" style="height:220px"></ion-skeleton-text>
+          </section>
+        </div>
+      } @else {
         <div class="page-body stack">
           <section class="hero-card hero-ink">
             <p class="page-kicker">{{ feed[run.feedType] }} · {{ scenario[run.scenario] }}</p>
