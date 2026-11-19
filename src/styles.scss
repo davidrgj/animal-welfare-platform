@@ -930,6 +930,130 @@ input.field-box[type="file"] {
   color: var(--ink);
 }
 
+.account-trigger {
+  --padding-start: 4px;
+  --padding-end: 8px;
+  height: auto;
+  margin-inline-end: 2px;
+}
+
+.account-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  padding: 2px 8px 2px 2px;
+  border-radius: 999px;
+  background: rgba(60, 60, 67, 0.06);
+}
+
+.account-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  flex: none;
+  background: linear-gradient(145deg, #4da3ff, #007aff);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.account-avatar-lg {
+  width: 44px;
+  height: 44px;
+  font-size: 14px;
+}
+
+.account-meta {
+  display: none;
+  text-align: left;
+  line-height: 1.15;
+  min-width: 0;
+}
+
+.account-meta strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  max-width: 9ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-meta small {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.account-chip ion-icon {
+  font-size: 14px;
+  color: #8e8e93;
+}
+
+@media (min-width: 520px) {
+  .account-meta { display: block; }
+}
+
+.account-popover {
+  --width: 280px;
+  --box-shadow: 0 16px 40px rgba(0, 0, 0, 0.14);
+  --border-radius: 16px;
+}
+
+.account-popover-content {
+  --background: #ffffff;
+}
+
+.account-popover-head {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  align-items: center;
+  padding: 16px 16px 12px;
+  border-bottom: 0.5px solid var(--line);
+}
+
+.account-popover-head strong {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.account-popover-head p {
+  margin: 2px 0 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.account-popover ion-item {
+  --min-height: 44px;
+  --padding-start: 14px;
+  --inner-padding-end: 14px;
+  font-size: 15px;
+}
+
+.account-popover ion-icon {
+  color: #8e8e93;
+  font-size: 1.15rem;
+  margin-inline-end: 8px;
+}
+
+.account-logout {
+  color: var(--danger);
+}
+
+.account-logout ion-icon,
+.account-logout ion-label {
+  color: var(--danger);
+}
+
 @media print {
   .tab-bar,
   ion-header,

@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { IonButton, IonContent, IonHeader, IonSkeletonText, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { IonButton, IonButtons, IonContent, IonHeader, IonSkeletonText, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { Animal, Farm, WelfareRecord } from '../core/models';
 import { COMPLIANCE_LABEL, SPECIES_LABEL, complianceClass, ibaFill } from '../core/labels';
 import { StoreService } from '../core/store.service';
+import { AccountMenuComponent } from '../shared/account-menu.component';
 import { EmptyStateComponent } from '../shared/empty-state.component';
 import { SpeciesMarkComponent } from '../shared/species-mark.component';
 
@@ -12,12 +13,15 @@ type AnimalFilter = 'ALL' | 'RISK' | 'OK' | 'OPEN';
 @Component({
   selector: 'app-animals',
   standalone: true,
-  imports: [RouterLink, IonButton, IonContent, IonHeader, IonSkeletonText, IonTitle, IonToolbar, EmptyStateComponent, SpeciesMarkComponent],
+  imports: [RouterLink, IonButton, IonButtons, IonContent, IonHeader, IonSkeletonText, IonTitle, IonToolbar, AccountMenuComponent, EmptyStateComponent, SpeciesMarkComponent],
   template: `
     <ion-header>
       <ion-toolbar>
         <ion-title>Animales</ion-title>
-        <ion-button slot="end" fill="clear" routerLink="/app/animals/new">Nuevo</ion-button>
+        <ion-buttons slot="end">
+          <ion-button fill="clear" routerLink="/app/animals/new">Nuevo</ion-button>
+        </ion-buttons>
+        <app-account-menu></app-account-menu>
       </ion-toolbar>
     </ion-header>
     <ion-content>

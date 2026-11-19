@@ -6,6 +6,7 @@ import { IonButton, IonContent, IonHeader, IonInput, IonItem, IonList, IonSelect
 import { Animal, EnvironmentScenario, FeedType, SimulationRun } from '../core/models';
 import { FEED_LABEL, OPTIONS, SCENARIO_LABEL, SPECIES_LABEL } from '../core/labels';
 import { StoreService } from '../core/store.service';
+import { AccountMenuComponent } from '../shared/account-menu.component';
 import { EmptyStateComponent } from '../shared/empty-state.component';
 import { FloatingDatePickerComponent } from '../shared/floating-date-picker.component';
 import { SpeciesMarkComponent } from '../shared/species-mark.component';
@@ -14,11 +15,12 @@ import { todayIso } from '../core/crypto';
 @Component({
   selector: 'app-simulation',
   standalone: true,
-  imports: [DatePipe, FormsModule, RouterLink, IonButton, IonContent, IonHeader, IonInput, IonItem, IonList, IonSelect, IonSelectOption, IonSkeletonText, IonTitle, IonToolbar, EmptyStateComponent, FloatingDatePickerComponent, SpeciesMarkComponent],
+  imports: [DatePipe, FormsModule, RouterLink, IonButton, IonContent, IonHeader, IonInput, IonItem, IonList, IonSelect, IonSelectOption, IonSkeletonText, IonTitle, IonToolbar, AccountMenuComponent, EmptyStateComponent, FloatingDatePickerComponent, SpeciesMarkComponent],
   template: `
     <ion-header>
       <ion-toolbar>
         <ion-title>Simulación</ion-title>
+        <app-account-menu></app-account-menu>
       </ion-toolbar>
     </ion-header>
     <ion-content>

@@ -4,15 +4,17 @@ import { RouterLink } from '@angular/router';
 import { IonButton, IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { AuthService } from '../core/auth.service';
 import { ROLE_LABEL } from '../core/labels';
+import { AccountMenuComponent } from '../shared/account-menu.component';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [DatePipe, RouterLink, IonButton, IonContent, IonHeader, IonTitle, IonToolbar],
+  imports: [DatePipe, RouterLink, IonButton, IonContent, IonHeader, IonTitle, IonToolbar, AccountMenuComponent],
   template: `
     <ion-header>
       <ion-toolbar>
         <ion-title>Cuenta</ion-title>
+        <app-account-menu></app-account-menu>
       </ion-toolbar>
     </ion-header>
     <ion-content>

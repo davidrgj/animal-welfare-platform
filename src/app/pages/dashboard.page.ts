@@ -7,6 +7,7 @@ import { AuthService } from '../core/auth.service';
 import { ALERT_HINT, COMPLIANCE_LABEL, FINDING_LABEL, HEAT_LABEL, SPECIES_LABEL, complianceClass, ibaFill, severityClass } from '../core/labels';
 import { ComplianceLevel } from '../core/models';
 import { DashboardData, StoreService } from '../core/store.service';
+import { AccountMenuComponent } from '../shared/account-menu.component';
 import { EmptyStateComponent } from '../shared/empty-state.component';
 import { IbaRingComponent } from '../shared/iba-ring.component';
 import { SpeciesMarkComponent } from '../shared/species-mark.component';
@@ -14,11 +15,12 @@ import { SpeciesMarkComponent } from '../shared/species-mark.component';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [DatePipe, RouterLink, IonButton, IonContent, IonHeader, IonSkeletonText, IonTitle, IonToolbar, EmptyStateComponent, IbaRingComponent, SpeciesMarkComponent],
+  imports: [DatePipe, RouterLink, IonButton, IonContent, IonHeader, IonSkeletonText, IonTitle, IonToolbar, AccountMenuComponent, EmptyStateComponent, IbaRingComponent, SpeciesMarkComponent],
   template: `
     <ion-header>
       <ion-toolbar>
         <ion-title>Estado ICA</ion-title>
+        <app-account-menu></app-account-menu>
       </ion-toolbar>
     </ion-header>
     <ion-content>

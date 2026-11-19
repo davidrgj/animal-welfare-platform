@@ -1,21 +1,25 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { IonButton, IonContent, IonHeader, IonSkeletonText, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { IonButton, IonButtons, IonContent, IonHeader, IonSkeletonText, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { Farm } from '../core/models';
 import { WATER_LABEL } from '../core/labels';
 import { StoreService } from '../core/store.service';
+import { AccountMenuComponent } from '../shared/account-menu.component';
 import { EmptyStateComponent } from '../shared/empty-state.component';
 import { SpeciesMarkComponent } from '../shared/species-mark.component';
 
 @Component({
   selector: 'app-farms',
   standalone: true,
-  imports: [RouterLink, IonButton, IonContent, IonHeader, IonSkeletonText, IonTitle, IonToolbar, EmptyStateComponent, SpeciesMarkComponent],
+  imports: [RouterLink, IonButton, IonButtons, IonContent, IonHeader, IonSkeletonText, IonTitle, IonToolbar, AccountMenuComponent, EmptyStateComponent, SpeciesMarkComponent],
   template: `
     <ion-header>
       <ion-toolbar>
         <ion-title>Predios</ion-title>
-        <ion-button slot="end" fill="clear" routerLink="/app/farms/new">Nuevo</ion-button>
+        <ion-buttons slot="end">
+          <ion-button fill="clear" routerLink="/app/farms/new">Nuevo</ion-button>
+        </ion-buttons>
+        <app-account-menu></app-account-menu>
       </ion-toolbar>
     </ion-header>
     <ion-content>

@@ -5,12 +5,12 @@ import { provideRouter, withHashLocation } from '@angular/router';
 import { LOCALE_ID } from '@angular/core';
 import { provideIonicAngular } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { addOutline, alertCircleOutline, analyticsOutline, calendarOutline, cameraOutline, checkmarkCircleOutline, clipboardOutline, cloudOfflineOutline, documentTextOutline, flaskOutline, homeOutline, imagesOutline, leafOutline, locationOutline, logOutOutline, pawOutline, personOutline, pulseOutline, saveOutline, sunnyOutline, thermometerOutline, warningOutline, waterOutline } from 'ionicons/icons';
+import { addOutline, alertCircleOutline, analyticsOutline, calendarOutline, cameraOutline, checkmarkCircleOutline, chevronDownOutline, clipboardOutline, cloudOfflineOutline, documentTextOutline, flaskOutline, homeOutline, imagesOutline, leafOutline, locationOutline, logOutOutline, pawOutline, peopleOutline, personOutline, pulseOutline, saveOutline, sunnyOutline, thermometerOutline, warningOutline, waterOutline } from 'ionicons/icons';
 import { AppComponent } from './app/app.component';
 import { routes } from './app/app.routes';
 
 registerLocaleData(localeEsCo);
-addIcons({ addOutline, alertCircleOutline, analyticsOutline, calendarOutline, cameraOutline, checkmarkCircleOutline, clipboardOutline, cloudOfflineOutline, documentTextOutline, flaskOutline, homeOutline, imagesOutline, leafOutline, locationOutline, logOutOutline, pawOutline, personOutline, pulseOutline, saveOutline, sunnyOutline, thermometerOutline, warningOutline, waterOutline });
+addIcons({ addOutline, alertCircleOutline, analyticsOutline, calendarOutline, cameraOutline, checkmarkCircleOutline, chevronDownOutline, clipboardOutline, cloudOfflineOutline, documentTextOutline, flaskOutline, homeOutline, imagesOutline, leafOutline, locationOutline, logOutOutline, pawOutline, peopleOutline, personOutline, pulseOutline, saveOutline, sunnyOutline, thermometerOutline, warningOutline, waterOutline });
 
 bootstrapApplication(AppComponent, {
   providers: [
