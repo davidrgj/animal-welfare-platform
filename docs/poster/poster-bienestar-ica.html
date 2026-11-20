@@ -978,7 +978,7 @@
 
         <div class="sm:text-right border-t sm:border-t-0 pt-2 sm:pt-0 border-[#E2E8F0]">
           <span class="inline-block font-mono-tech text-[10.5px] font-semibold text-[#0F172A] bg-[#F8FAFC] border border-[#CBD5E1] px-3 py-1.5 rounded">
-            Motor determinista de eventos discretos + lineamientos ICA (sin caja negra opaca)
+            Motor determinista de eventos discretos + lineamientos ICA
           </span>
         </div>
       </footer>
@@ -1065,18 +1065,94 @@
     }
 
     /**
-     * Captura #poster-canvas asegurando dimensiones exactas de todos los SVG inline
-     * y carga completa de fuentes tipográficas.
+     * html2canvas 1.4.x no aplica bien gap en flex/grid: eso desalinea el export.
+     * Solo en el clon (no toca el DOM visible) convertimos gap a márgenes equivalentes.
+     */
+    function polyfillGapOnClone(liveRoot, clonedRoot) {
+      const liveNodes = [liveRoot, ...liveRoot.querySelectorAll('*')];
+      const clonedNodes = [clonedRoot, ...clonedRoot.querySelectorAll('*')];
+
+      liveNodes.forEach((liveEl, index) => {
+        const clonedEl = clonedNodes[index];
+        if (!clonedEl || !liveEl || liveEl.nodeType !== 1) return;
+
+        const style = window.getComputedStyle(liveEl);
+        const display = style.display;
+        const isFlex = display === 'flex' || display === 'inline-flex';
+        const isGrid = display === 'grid' || display === 'inline-grid';
+        if (!isFlex && !isGrid) return;
+
+        const rowGap = Number.parseFloat(style.rowGap) || 0;
+        const columnGap = Number.parseFloat(style.columnGap) || 0;
+        if (rowGap <= 0 && columnGap <= 0) return;
+
+        const children = Array.from(clonedEl.children).filter((node) => node.nodeType === 1);
+        if (!children.length) return;
+
+        if (isFlex) {
+          // En wrap el polyfill por márgenes distorsiona filas nuevas; se deja el gap original.
+          const wrap = style.flexWrap || 'nowrap';
+          if (wrap !== 'nowrap') return;
+
+          clonedEl.style.gap = '0px';
+          clonedEl.style.rowGap = '0px';
+          clonedEl.style.columnGap = '0px';
+
+          const direction = style.flexDirection || 'row';
+          children.forEach((child, childIndex) => {
+            if (childIndex === 0) return;
+            if (direction.startsWith('column')) {
+              child.style.marginTop = `${(Number.parseFloat(child.style.marginTop) || 0) + rowGap}px`;
+            } else {
+              child.style.marginLeft = `${(Number.parseFloat(child.style.marginLeft) || 0) + columnGap}px`;
+            }
+          });
+          return;
+        }
+
+        clonedEl.style.gap = '0px';
+        clonedEl.style.rowGap = '0px';
+        clonedEl.style.columnGap = '0px';
+
+        // Grid simple: margen inferior/derecho excepto última fila/columna aproximada
+        const templateCols = (style.gridTemplateColumns || '').trim();
+        const columns = Math.max(1, templateCols ? templateCols.split(/\s+/).length : children.length);
+        children.forEach((child, childIndex) => {
+          const col = childIndex % columns;
+          const row = Math.floor(childIndex / columns);
+          const lastCol = columns - 1;
+          const lastRow = Math.floor((children.length - 1) / columns);
+          if (col < lastCol && columnGap > 0) {
+            child.style.marginRight = `${(Number.parseFloat(child.style.marginRight) || 0) + columnGap}px`;
+          }
+          if (row < lastRow && rowGap > 0) {
+            child.style.marginBottom = `${(Number.parseFloat(child.style.marginBottom) || 0) + rowGap}px`;
+          }
+        });
+      });
+    }
+
+    /**
+     * Captura #poster-canvas con fuentes listas, viewport congelado y polyfill de gap
+     * solo dentro del clon de exportación.
      */
     async function capturePosterCanvas(scaleFactor) {
       const posterElement = document.getElementById('poster-canvas');
       if (!posterElement) throw new Error('Contenedor #poster-canvas no encontrado');
 
+      window.scrollTo(0, 0);
+      posterElement.scrollIntoView({ block: 'start' });
+
       if (document.fonts && document.fonts.ready) {
         await document.fonts.ready;
       }
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      await new Promise((resolve) => setTimeout(resolve, 80));
 
-      // Fijar dimensiones explícitas en los SVG antes de clonar para garantizar fidelidad 1:1 en html2canvas
+      const posterRect = posterElement.getBoundingClientRect();
+      const captureWidth = Math.ceil(posterElement.scrollWidth || posterRect.width);
+      const captureHeight = Math.ceil(posterElement.scrollHeight || posterRect.height);
+
       const originalSvgs = Array.from(posterElement.querySelectorAll('svg'));
       const computedSizes = originalSvgs.map((svg) => {
         const rect = svg.getBoundingClientRect();
@@ -1089,20 +1165,49 @@
         allowTaint: false,
         backgroundColor: '#FFFFFF',
         logging: false,
+        imageTimeout: 15000,
+        removeContainer: true,
+        foreignObjectRendering: false,
+        scrollX: 0,
+        scrollY: 0,
+        x: 0,
+        y: 0,
+        width: captureWidth,
+        height: captureHeight,
+        windowWidth: Math.max(captureWidth, Math.ceil(window.innerWidth)),
+        windowHeight: Math.max(captureHeight, Math.ceil(window.innerHeight)),
         ignoreElements: (element) => element.classList && element.classList.contains('no-export'),
-        onclone: (clonedDoc) => {
-          const clonedPoster = clonedDoc.getElementById('poster-canvas');
-          if (clonedPoster) {
-            clonedPoster.style.boxShadow = 'none';
-            clonedPoster.style.margin = '0';
-            const clonedSvgs = clonedPoster.querySelectorAll('svg');
-            clonedSvgs.forEach((svg, idx) => {
-              if (computedSizes[idx] && computedSizes[idx].width > 0) {
-                svg.setAttribute('width', String(computedSizes[idx].width));
-                svg.setAttribute('height', String(computedSizes[idx].height));
-              }
-            });
-          }
+        onclone: (clonedDoc, clonedElement) => {
+          const clonedPoster = clonedElement || clonedDoc.getElementById('poster-canvas');
+          if (!clonedPoster) return;
+
+          clonedPoster.style.boxShadow = 'none';
+          clonedPoster.style.margin = '0';
+          clonedPoster.style.width = `${captureWidth}px`;
+          clonedPoster.style.maxWidth = `${captureWidth}px`;
+          clonedPoster.style.height = 'auto';
+
+          const lock = clonedDoc.createElement('style');
+          lock.textContent = `
+            .no-export { display: none !important; }
+            #poster-canvas, #poster-canvas * {
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+            }
+          `;
+          clonedDoc.head.appendChild(lock);
+
+          const clonedSvgs = clonedPoster.querySelectorAll('svg');
+          clonedSvgs.forEach((svg, idx) => {
+            if (computedSizes[idx] && computedSizes[idx].width > 0) {
+              svg.setAttribute('width', String(computedSizes[idx].width));
+              svg.setAttribute('height', String(computedSizes[idx].height));
+              svg.style.width = `${computedSizes[idx].width}px`;
+              svg.style.height = `${computedSizes[idx].height}px`;
+            }
+          });
+
+          polyfillGapOnClone(posterElement, clonedPoster);
         }
       });
     }
