@@ -36,7 +36,13 @@ Falta crear tablas y datos de demo en el [SQL editor](https://supabase.com/dashb
 
 Si el esquema ya estaba aplicado antes del CRUD de usuarios, ejecuta también `supabase/admin-policies.sql`.
 
-En Authentication > Providers > Email desactiva **Confirm email** para poder registrar cuentas nuevas sin correo. Las cuentas de seed ya quedan confirmadas.
+Para que el registro entre de inmediato (sin correo de verificación):
+
+1. [Authentication → Providers → Email](https://supabase.com/dashboard/project/gkomojjjyydbdajpxyqw/auth/providers): desactiva **Confirm email**.
+2. [Authentication → URL Configuration](https://supabase.com/dashboard/project/gkomojjjyydbdajpxyqw/auth/url-configuration): **Site URL** = `https://animal-welfare-platform-vepq.vercel.app` (no `localhost`).
+3. Opcional, en el SQL editor ejecuta `supabase/disable-email-confirm.sql` para confirmar usuarios pendientes y auto-confirmar altas nuevas.
+
+Las cuentas de seed ya quedan confirmadas.
 
 Administración de usuarios y roles: inicia sesión con una cuenta administrador → **Cuenta** → **Usuarios y roles**.
 

@@ -4,7 +4,7 @@ import { Profile, UserRole } from './models';
 import { hashSecret, newId, nowIso } from './crypto';
 import { loadProfile } from './cloud.repository';
 import { database, ensureSeed } from './database';
-import { isCloud, supabase } from './supabase.client';
+import { authEmailRedirectTo, isCloud, supabase } from './supabase.client';
 
 const SESSION_KEY = 'animal-welfare-session';
 
@@ -80,6 +80,7 @@ export class AuthService {
         email,
         password: input.password,
         options: {
+          emailRedirectTo: authEmailRedirectTo(),
           data: {
             full_name: input.fullName.trim(),
             document_id: input.documentId.trim(),
@@ -89,11 +90,24 @@ export class AuthService {
         }
       });
       if (error) throw error;
-      if (!data.session || !data.user) throw new Error('Confirm email is enabled');
-      const user = await loadProfile(data.user.id);
+      if (!data.user) throw new Error('User was not created');
+
+      // If Confirm email is still on in Supabase, signUp has no session: sign in right away
+      // (works once emails are auto-confirmed / Confirm email is disabled).
+      if (!data.session) {
+        const { data: signedIn, error: signInError } = await supabase().auth.signInWithPassword({
+          email,
+          password: input.password
+        });
+        if (signInError || !signedIn.user) {
+          throw new Error('EMAIL_CONFIRM_BLOCKED');
+        }
+      }
+
+      const profile = await loadProfile(data.user.id);
       this.sessionCleared = false;
-      this.currentUser = user;
-      return user;
+      this.currentUser = profile;
+      return profile;
     }
     await ensureSeed();
     const users = await database.profiles.toArray();

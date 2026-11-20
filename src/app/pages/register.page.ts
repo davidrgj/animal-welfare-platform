@@ -32,7 +32,7 @@ import { OPTIONS } from '../core/labels';
               </ion-item>
             </ion-list>
             @if (error) { <p class="error-text">{{ error }}</p> }
-            <ion-button expand="block" type="submit">Registrarme</ion-button>
+            <ion-button expand="block" type="submit" [disabled]="saving">{{ saving ? 'Creando cuenta…' : 'Registrarme' }}</ion-button>
             <a class="auth-link" routerLink="/login">Ya tengo cuenta</a>
           </form>
         </div>
@@ -48,12 +48,14 @@ export class RegisterPage {
   phone = '';
   role: UserRole = 'PRODUCER';
   error = '';
+  saving = false;
   readonly roles = OPTIONS.role.filter(([value]) => value !== 'ADMINISTRATOR');
 
   constructor(private readonly auth: AuthService, private readonly router: Router) {}
 
   async submit(): Promise<void> {
     this.error = '';
+    this.saving = true;
     try {
       await this.auth.register({
         fullName: this.fullName,
@@ -66,9 +68,14 @@ export class RegisterPage {
       await this.router.navigateByUrl('/app/dashboard');
     } catch (error) {
       const message = error instanceof Error ? error.message : '';
-      if (message.toLowerCase().includes('already')) this.error = 'Ese correo ya está registrado.';
-      else if (message.toLowerCase().includes('confirm')) this.error = 'Desactiva confirmar correo en Authentication o revisa tu bandeja.';
-      else this.error = 'No se pudo crear la cuenta.';
+      const lower = message.toLowerCase();
+      if (lower.includes('already') || lower.includes('registered')) this.error = 'Ese correo ya está registrado. Prueba iniciar sesión.';
+      else if (lower.includes('email_confirm_blocked') || lower.includes('email not confirmed')) {
+        this.error = 'El correo quedó creado, pero Supabase aún pide confirmación. Desactiva Confirm email en Authentication → Providers → Email y vuelve a entrar.';
+      } else if (lower.includes('password')) this.error = 'La contraseña no cumple los requisitos mínimos.';
+      else this.error = 'No se pudo crear la cuenta. Revisa los datos o intenta iniciar sesión si ya te registraste.';
+    } finally {
+      this.saving = false;
     }
   }
 }
