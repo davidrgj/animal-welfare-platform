@@ -10,8 +10,9 @@ let accountMenuSerial = 0;
   selector: 'app-account-menu',
   standalone: true,
   imports: [RouterLink, IonButton, IonButtons, IonContent, IonIcon, IonItem, IonLabel, IonList, IonPopover],
+  host: { slot: 'end', class: 'account-menu-host' },
   template: `
-    <ion-buttons slot="end">
+    <ion-buttons>
       <ion-button [id]="triggerId" fill="clear" class="account-trigger" aria-haspopup="menu" [attr.aria-label]="'Menú de ' + firstName">
         <span class="account-chip">
           <span class="account-avatar" aria-hidden="true">{{ initials }}</span>
@@ -59,7 +60,12 @@ let accountMenuSerial = 0;
       </ng-template>
     </ion-popover>
   `,
-  styles: [`:host { display: contents; }`]
+  styles: [`
+    :host {
+      display: block;
+      margin-inline-end: 4px;
+    }
+  `]
 })
 export class AccountMenuComponent {
   @ViewChild('popover') popover?: IonPopover;
