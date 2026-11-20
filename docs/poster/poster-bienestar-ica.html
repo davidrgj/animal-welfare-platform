@@ -1,654 +1,1229 @@
 <!DOCTYPE html>
-<html lang="es-CO">
+<html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Póster — Bienestar ICA</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bienestar ICA — Póster Técnico & Académico · Tech Fest UCC 2026</title>
+
+  <!-- Tailwind CSS para sistema de utilidades responsivo -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Tipografías de Estudio de Software: Plus Jakarta Sans, Inter y JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,800&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet" />
+
+  <!-- Librerías de exportación real en cliente (PDF, PNG HD) y generación QR SVG -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+
+  <!-- Configuración dinámica de orientación de página para impresión complementaria -->
+  <style id="dynamic-page-orientation">
+    @page {
+      size: portrait;
+      margin: 0;
+    }
+  </style>
+
   <style>
+    /* ==========================================================================
+       TOKENS DE DISEÑO ARQUITECTÓNICO (SWISS EDITORIAL + SOFTWARE STUDIO)
+       ========================================================================== */
     :root {
-      --ink: #14201a;
-      --forest: #1b3a2f;
-      --moss: #2f6b4f;
-      --paper: #f4efe6;
-      --card: #fffdf8;
-      --line: rgba(20, 32, 26, 0.12);
-      --muted: #5c6b63;
-      --amber: #c47a12;
+      --canvas-bg: #FFFFFF;
+      --surface-subtle: #F8FAFC;
+      --obsidian: #0B1120;
+      --obsidian-elevated: #111827;
+      --grid-border: #E2E8F0;
+      --grid-border-strong: #CBD5E1;
+      --text-primary: #0F172A;
+      --text-secondary: #475569;
+      --text-muted: #64748B;
+      --emerald: #059669;
+      --emerald-bright: #10B981;
+      --sky: #0284C7;
+      --amber: #D97706;
+      --amber-bright: #F59E0B;
+      --crimson: #DC2626;
     }
 
-    * { box-sizing: border-box; }
-    html, body {
+    * {
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
       margin: 0;
-      padding: 0;
-      background: #d8d2c6;
-      color: var(--ink);
-      font-family: "IBM Plex Sans", system-ui, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text-primary);
+      background-color: #E2E8F0;
+      background-image: radial-gradient(#CBD5E1 1px, transparent 1px);
+      background-size: 20px 20px;
+      overflow-x: hidden;
     }
 
-    .poster {
-      width: 1240px;
-      height: 1754px;
-      margin: 24px auto;
-      background:
-        radial-gradient(900px 420px at 100% 0%, rgba(196, 122, 18, 0.12), transparent 55%),
-        radial-gradient(700px 500px at 0% 18%, rgba(47, 107, 79, 0.10), transparent 50%),
-        var(--paper);
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.22);
-    }
-
-    .poster::before {
-      content: "";
-      position: absolute;
-      inset: 18px;
-      border: 1px solid rgba(20, 32, 26, 0.16);
-      pointer-events: none;
-      z-index: 2;
-    }
-
-    .rail {
-      position: absolute;
-      left: 0; top: 0; bottom: 0;
-      width: 18px;
-      background: linear-gradient(180deg, var(--forest), var(--moss));
-    }
-
-    .inner {
-      position: relative;
-      z-index: 1;
-      height: 100%;
-      padding: 40px 46px 32px 54px;
-      display: grid;
-      grid-template-rows: auto auto auto auto auto auto auto;
-      gap: 16px;
-    }
-
-    .top {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 24px;
-      align-items: start;
-    }
-
-    .brand { display: flex; gap: 14px; align-items: center; }
-    .brand img {
-      width: 56px; height: 56px; border-radius: 14px;
-      box-shadow: 0 8px 20px rgba(0, 122, 255, 0.25);
-    }
-    .brand-copy strong {
-      display: block;
-      font-family: Fraunces, Georgia, serif;
-      font-size: 28px;
-      line-height: 1;
+    .font-display {
+      font-family: 'Plus Jakarta Sans', sans-serif;
       letter-spacing: -0.03em;
     }
-    .brand-copy span {
-      display: block;
-      margin-top: 4px;
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 500;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
+
+    .font-mono-tech {
+      font-family: 'JetBrains Mono', monospace;
+      font-variant-numeric: tabular-nums;
     }
 
-    .meta {
-      text-align: right;
-      font-size: 13px;
-      line-height: 1.45;
-      color: var(--muted);
-      max-width: 280px;
-    }
-    .meta b { color: var(--ink); font-weight: 600; }
-
-    .hero h1 {
-      margin: 0;
-      font-family: Fraunces, Georgia, serif;
-      font-weight: 800;
-      font-size: 42px;
-      line-height: 1.05;
-      letter-spacing: -0.035em;
-      max-width: 22ch;
-    }
-    .hero-lead {
-      margin: 12px 0 0;
-      max-width: 62ch;
-      font-size: 17px;
-      line-height: 1.45;
-      color: var(--muted);
-    }
-
-    .hook {
-      display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
-      gap: 16px;
-    }
-
-    .case {
-      background: var(--forest);
-      color: #f7f3ea;
-      border-radius: 20px;
-      padding: 24px 26px;
-      position: relative;
-      overflow: hidden;
-    }
-    .case::after {
-      content: "";
-      position: absolute;
-      right: -40px; bottom: -50px;
-      width: 160px; height: 160px;
-      border-radius: 50%;
-      background: rgba(196, 122, 18, 0.22);
-    }
-    .case .kicker {
-      margin: 0;
-      font-size: 12px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: rgba(247, 243, 234, 0.72);
-      font-weight: 600;
-    }
-    .case .tag-id {
-      margin: 8px 0 0;
-      font-family: Fraunces, Georgia, serif;
-      font-size: 30px;
-      font-weight: 700;
-      letter-spacing: -0.03em;
-    }
-    .case .iba {
-      margin-top: 16px;
-      display: flex;
-      align-items: end;
-      gap: 14px;
-    }
-    .case .iba strong {
-      font-family: Fraunces, Georgia, serif;
-      font-size: 68px;
-      line-height: 0.85;
-      letter-spacing: -0.05em;
-      color: #f0b45a;
-    }
-    .case .iba span {
-      padding-bottom: 8px;
-      font-size: 14px;
-      line-height: 1.3;
-      max-width: 18ch;
-      color: rgba(247, 243, 234, 0.86);
-    }
-
-    .problem {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 20px;
-      padding: 22px 24px;
-      display: grid;
-      gap: 12px;
-      align-content: start;
-    }
-    .problem h2, .block-title, .proof h2, .diff h2 {
-      margin: 0;
-      font-family: Fraunces, Georgia, serif;
-      font-size: 22px;
-      letter-spacing: -0.02em;
-    }
-    .problem p, .diff p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.45;
-    }
-    .contrast {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-    .contrast div {
-      border-radius: 14px;
-      padding: 12px 14px;
-      background: #efe8db;
-    }
-    .contrast strong {
-      display: block;
-      font-size: 13px;
-      margin-bottom: 4px;
-      color: var(--ink);
-    }
-    .contrast span {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.35;
-    }
-
-    .shots-wrap { display: grid; gap: 12px; }
-    .shots {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-    }
-    .shot {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-    .shot-frame {
-      background: #e7e1d5;
-      padding: 10px;
-      height: 210px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
-    .shot-frame img {
+    /* ==========================================================================
+       LIENZO DEL PÓSTER: MODO VERTICAL (A1 / 9:16) VS PROYECCIÓN (16:9)
+       ========================================================================== */
+    .poster-stage {
       width: 100%;
-      height: 100%;
-      object-fit: contain;
-      object-position: center top;
-      border-radius: 8px;
-      display: block;
-      background: #f5f5f7;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.10);
-    }
-    .shot figcaption {
-      padding: 11px 13px 13px;
-      font-size: 13px;
-      line-height: 1.35;
-      color: var(--muted);
-    }
-    .shot figcaption b {
-      display: block;
-      color: var(--ink);
-      font-size: 14px;
-      margin-bottom: 2px;
-    }
-
-    .method {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      align-items: start;
-    }
-    .pill {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 14px 16px 16px;
-      display: grid;
-      gap: 10px;
-      align-content: start;
-    }
-    .pill-head {
       display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 8px;
-    }
-    .pill .num {
-      font-family: Fraunces, Georgia, serif;
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--moss);
-      letter-spacing: -0.03em;
-    }
-    .pill h3 {
-      margin: 0;
-      font-size: 16px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
-    .pill p {
-      margin: 0;
-      font-size: 13px;
-      line-height: 1.4;
-      color: var(--muted);
-    }
-    .chip-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      border-radius: 999px;
-      padding: 5px 9px;
-      font-size: 11px;
-      font-weight: 600;
-      background: #efe8db;
-      color: var(--ink);
-    }
-    .chip-ok { background: rgba(31, 122, 76, 0.12); color: #1f7a4c; }
-    .chip-warn { background: rgba(196, 122, 18, 0.16); color: #8a5608; }
-    .chip-bad { background: rgba(180, 35, 24, 0.12); color: #9b1c1c; }
-    .formula {
-      margin: 0;
-      padding: 10px 12px;
-      border-radius: 12px;
-      background: #efe8db;
-      font-family: "IBM Plex Sans", system-ui, sans-serif;
-      font-size: 12px;
-      line-height: 1.35;
-      color: var(--ink);
-      font-weight: 500;
-    }
-    .mini-bars {
-      display: grid;
-      gap: 6px;
-    }
-    .mini-bar {
-      display: grid;
-      grid-template-columns: 72px 1fr 34px;
-      gap: 8px;
-      align-items: center;
-      font-size: 11px;
-      color: var(--muted);
-    }
-    .mini-bar i {
-      height: 7px;
-      border-radius: 99px;
-      background: #ddd5c6;
-      display: block;
-      overflow: hidden;
-    }
-    .mini-bar i span {
-      display: block;
-      height: 100%;
-      border-radius: inherit;
-      background: var(--moss);
-    }
-    .mini-bar b {
-      text-align: right;
-      color: var(--ink);
-      font-weight: 600;
+      justify-content: center;
+      padding: 1.5rem 1rem 3rem 1rem;
+      transition: all 0.25s ease;
     }
 
-    .bottom {
-      display: grid;
-      grid-template-columns: 1.35fr 1fr 0.75fr;
-      gap: 14px;
-      align-items: stretch;
-    }
-    .proof {
-      background: #efe8db;
-      border-radius: 16px;
-      padding: 16px 18px;
-    }
-    .proof-grid {
-      margin-top: 12px;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-    }
-    .stat {
-      background: var(--card);
-      border-radius: 12px;
-      padding: 12px 8px;
-      text-align: center;
-    }
-    .stat strong {
-      display: block;
-      font-family: Fraunces, Georgia, serif;
-      font-size: 24px;
-      letter-spacing: -0.03em;
-      color: var(--forest);
-    }
-    .stat span {
-      display: block;
-      margin-top: 2px;
-      font-size: 11px;
-      color: var(--muted);
-      line-height: 1.25;
-    }
-
-    .diff {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 16px 18px;
-    }
-    .diff ul {
-      margin: 10px 0 0;
-      padding: 0;
-      list-style: none;
-      display: grid;
-      gap: 8px;
-    }
-    .diff li {
+    .poster-sheet {
+      background: var(--canvas-bg);
+      border: 1px solid var(--grid-border-strong);
+      box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.16), 0 0 0 1px rgba(15, 23, 42, 0.03);
+      width: 100%;
+      max-width: 1120px;
+      transition: max-width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       position: relative;
-      padding-left: 16px;
-      font-size: 13.5px;
-      line-height: 1.35;
-      color: var(--muted);
     }
-    .diff li::before {
-      content: "";
+
+    /* Micro-marcas de registro editorial en las 4 esquinas del lienzo */
+    .corner-tick {
       position: absolute;
-      left: 0;
-      top: 0.45em;
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--amber);
+      width: 10px;
+      height: 10px;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .corner-tick.tl { top: 8px; left: 8px; border-top: 1.5px solid #94A3B8; border-left: 1.5px solid #94A3B8; }
+    .corner-tick.tr { top: 8px; right: 8px; border-top: 1.5px solid #94A3B8; border-right: 1.5px solid #94A3B8; }
+    .corner-tick.bl { bottom: 8px; left: 8px; border-bottom: 1.5px solid #94A3B8; border-left: 1.5px solid #94A3B8; }
+    .corner-tick.br { bottom: 8px; right: 8px; border-bottom: 1.5px solid #94A3B8; border-right: 1.5px solid #94A3B8; }
+
+    /* ==========================================================================
+       REORGANIZACIÓN ARMÓNICA PARA MODO PROYECCIÓN (16:9 WIDESCREEN)
+       ========================================================================== */
+    body.mode-widescreen .poster-sheet {
+      max-width: 1620px;
     }
 
-    .qr-box {
-      background: var(--forest);
-      color: #f7f3ea;
-      border-radius: 16px;
-      padding: 14px;
-      display: grid;
-      justify-items: center;
-      align-content: center;
-      gap: 8px;
-      text-align: center;
-    }
-    .qr-box img {
-      width: 112px;
-      height: 112px;
-      border-radius: 10px;
-      background: #fff;
-      padding: 8px;
-    }
-    .qr-box strong { font-size: 14px; }
-    .qr-box span {
-      font-size: 11px;
-      line-height: 1.35;
-      color: rgba(247, 243, 234, 0.78);
-      word-break: break-all;
-      max-width: 18ch;
+    @media (min-width: 1200px) {
+      body.mode-widescreen .poster-main-body {
+        display: grid;
+        grid-template-columns: 3.6fr 5.4fr 3fr;
+        align-items: stretch;
+      }
+
+      body.mode-widescreen .hero-title-grid {
+        display: grid;
+        grid-template-columns: 1.25fr 1fr;
+        gap: 1.5rem;
+        align-items: center;
+      }
+
+      body.mode-widescreen .zone-hero-split {
+        display: flex;
+        flex-direction: column;
+        border-right: 1px solid var(--grid-border);
+      }
+      body.mode-widescreen .zone-hero-split > div {
+        width: 100% !important;
+        border-right: none !important;
+      }
+
+      body.mode-widescreen .zone-mockups {
+        border-right: 1px solid var(--grid-border);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      body.mode-widescreen .mockups-grid {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem !important;
+      }
+      body.mode-widescreen .mockup-card-inner {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 0.9rem;
+        align-items: center;
+      }
+
+      body.mode-widescreen .zone-right-stack {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      body.mode-widescreen .engines-grid {
+        grid-template-columns: 1fr !important;
+      }
+      body.mode-widescreen .engines-grid > article {
+        border-right: none !important;
+        border-bottom: 1px solid var(--grid-border);
+        padding: 0.95rem 1.15rem !important;
+      }
+      body.mode-widescreen .validation-grid {
+        grid-template-columns: 1fr !important;
+      }
+      body.mode-widescreen .validation-grid > div {
+        border-right: none !important;
+        border-bottom: 1px solid var(--grid-border);
+        padding: 0.95rem 1.15rem !important;
+      }
+      body.mode-widescreen .validation-grid > div:last-child {
+        border-bottom: none;
+      }
     }
 
-    .foot {
-      display: flex;
-      justify-content: space-between;
-      gap: 16px;
-      align-items: end;
-      padding-top: 8px;
-      border-top: 1px solid var(--line);
+    /* ==========================================================================
+       REGLAS DE IMPRESIÓN COMPLEMENTARIA (@media print)
+       ========================================================================== */
+    @media print {
+      .no-export, .no-print {
+        display: none !important;
+      }
+
+      html, body {
+        background: #FFFFFF !important;
+        background-image: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .poster-stage {
+        padding: 0 !important;
+        margin: 0 !important;
+        display: block !important;
+      }
+
+      .poster-sheet {
+        max-width: 100% !important;
+        width: 100% !important;
+        border: none !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+      }
+
+      section, article, header, footer {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
     }
-    .foot p {
-      margin: 0;
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.4;
-    }
-    .foot b { color: var(--ink); }
   </style>
 </head>
-<body>
-  <article class="poster" aria-label="Póster Bienestar ICA">
-    <div class="rail" aria-hidden="true"></div>
-    <div class="inner">
-      <header class="top">
-        <div class="brand">
-          <img src="./mark.svg" alt="" />
-          <div class="brand-copy">
-            <strong>Bienestar ICA</strong>
-            <span>Monitoreo y simulación · UCC</span>
+<body class="mode-vertical">
+
+  <!-- ========================================================================
+       BARRA SUPERIOR FLOTANTE DE EXPORTACIÓN Y PROPORCIÓN (.no-export)
+       ======================================================================== -->
+  <nav class="no-export sticky top-0 z-50 bg-[#0B1120]/95 backdrop-blur-md border-b border-slate-800 text-white px-4 py-2.5 shadow-lg">
+    <div class="max-w-[1620px] mx-auto flex flex-wrap items-center justify-between gap-3">
+      <!-- Identificador de estudio -->
+      <div class="flex items-center gap-2.5">
+        <span class="inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400"></span>
+        <span class="font-mono-tech text-xs uppercase tracking-wider text-slate-300 font-semibold">
+          BIENESTAR ICA <span class="text-slate-500">·</span> POSTER STUDIO
+        </span>
+      </div>
+
+      <!-- Controles de Formato y Descarga Directa (PDF / PNG / Imprimir) -->
+      <div class="flex flex-wrap items-center gap-2 sm:gap-2.5">
+        <!-- Selector de proporción -->
+        <div class="inline-flex rounded-lg bg-slate-900 p-1 border border-slate-700/80" role="group" aria-label="Selector de formato del póster">
+          <button
+            id="btn-mode-vertical"
+            type="button"
+            onclick="setPosterMode('vertical')"
+            class="px-3 py-1.5 rounded-md text-xs font-medium transition-all bg-emerald-600 text-white shadow-sm flex items-center gap-1.5 cursor-pointer"
+          >
+            <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6">
+              <rect x="4" y="1.5" width="8" height="13" rx="1.2" />
+            </svg>
+            <span>Póster Vertical (A1 / 9:16)</span>
+          </button>
+
+          <button
+            id="btn-mode-widescreen"
+            type="button"
+            onclick="setPosterMode('widescreen')"
+            class="px-3 py-1.5 rounded-md text-xs font-medium transition-all text-slate-300 hover:text-white flex items-center gap-1.5 cursor-pointer"
+          >
+            <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6">
+              <rect x="1.5" y="4" width="13" height="8" rx="1.2" />
+            </svg>
+            <span>Modo Proyección (16:9 Widescreen)</span>
+          </button>
+        </div>
+
+        <!-- Botón Primario: Descargar PDF Real (html2canvas + jsPDF) -->
+        <button
+          id="btn-download-pdf"
+          type="button"
+          onclick="downloadPosterPDF()"
+          class="px-4 py-2 rounded-lg text-xs font-semibold bg-emerald-500 hover:bg-emerald-400 text-[#0B1120] shadow-sm transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-60 disabled:cursor-wait"
+        >
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span id="label-download-pdf">Descargar PDF</span>
+        </button>
+
+        <!-- Botón Secundario: Descargar PNG (HD) -->
+        <button
+          id="btn-download-png"
+          type="button"
+          onclick="downloadPosterPNG()"
+          class="px-3.5 py-2 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-700 transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-60 disabled:cursor-wait"
+        >
+          <svg class="w-3.5 h-3.5 text-sky-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+            <polyline points="21 15 16 10 5 21"></polyline>
+          </svg>
+          <span id="label-download-png">Descargar PNG (HD)</span>
+        </button>
+
+        <!-- Botón Complementario: Imprimir -->
+        <button
+          type="button"
+          onclick="printPoster()"
+          class="px-3.5 py-2 rounded-lg text-xs font-medium bg-white hover:bg-slate-100 text-[#0B1120] transition-colors flex items-center gap-1.5 cursor-pointer"
+        >
+          <svg class="w-3.5 h-3.5 text-slate-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+            <rect x="6" y="14" width="12" height="8"></rect>
+          </svg>
+          <span>Imprimir</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Toast de estado limpio (excluido de exportación) -->
+  <div id="studio-toast" class="no-export fixed bottom-5 right-5 z-50 pointer-events-none opacity-0 translate-y-2 transition-all duration-200">
+    <div class="bg-[#0B1120] text-white border border-slate-700 px-4 py-2.5 rounded-lg shadow-xl flex items-center gap-2.5 text-xs font-medium">
+      <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+      <span id="studio-toast-text">Listo</span>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       ESCENARIO DEL PÓSTER DIGITAL (#poster-canvas)
+       ======================================================================== -->
+  <main class="poster-stage">
+    <div id="poster-canvas" class="poster-sheet">
+      <!-- Marcas técnicas de registro editorial -->
+      <span class="corner-tick tl"></span>
+      <span class="corner-tick tr"></span>
+      <span class="corner-tick bl"></span>
+      <span class="corner-tick br"></span>
+
+      <!-- ====================================================================
+           1. ENCABEZADO INSTITUCIONAL, AUTORÍA Y TITULAR PRINCIPAL
+           ==================================================================== -->
+      <header class="border-b border-[#E2E8F0]">
+        <!-- Barra superior de identidad y autoría -->
+        <div class="bg-[#F8FAFC] border-b border-[#E2E8F0] px-6 sm:px-8 py-4 flex flex-wrap items-center justify-between gap-4">
+          <!-- Izquierda: Marca SVG Bienestar ICA + MONITOREO Y SIMULACIÓN · UCC -->
+          <div class="flex items-center gap-3.5">
+            <div class="w-11 h-11 shrink-0 rounded-[12px] overflow-hidden shadow-sm ring-1 ring-black/5" aria-hidden="true">
+              <svg width="44" height="44" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Bienestar ICA">
+                <rect width="64" height="64" rx="16" fill="#007AFF"/>
+                <path d="M16 40c6-12 13-18 16-18s10 6 16 18" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>
+                <circle cx="24" cy="24" r="3" fill="#fff"/>
+                <circle cx="40" cy="22" r="3.6" fill="#fff"/>
+              </svg>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="font-display text-xl sm:text-2xl font-extrabold text-[#0F172A] tracking-tight">Bienestar ICA</span>
+                <span class="font-mono-tech text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-50 text-[#059669] border border-emerald-200">
+                  V2.6 AUDITABLE
+                </span>
+              </div>
+              <p class="font-mono-tech text-[11px] font-semibold tracking-[0.06em] text-[#475569] uppercase mt-0.5">
+                MONITOREO Y SIMULACIÓN · UCC
+              </p>
+            </div>
+          </div>
+
+          <!-- Derecha: Metadatos de autoría y evento Tech Fest -->
+          <div class="sm:text-right">
+            <div class="text-xs sm:text-[13px] font-bold text-[#0F172A]">
+              David Ramírez Gutiérrez <span class="text-[#94A3B8] font-normal">·</span> <span class="font-semibold text-[#334155]">Ingeniería de Sistemas</span>
+            </div>
+            <div class="text-[11.5px] text-[#475569] mt-0.5">
+              Universidad Cooperativa de Colombia <span class="text-[#94A3B8]">·</span> <span class="font-mono-tech font-bold text-[#0284C7]">TECH FEST · 20 Nov, 2026</span>
+            </div>
           </div>
         </div>
-        <div class="meta">
-          <b>David Ramírez Gutiérrez</b><br />
-          Ingeniería de Sistemas<br />
-          Universidad Cooperativa de Colombia<br />
-          TECH FEST · 20 nov, 2026
+
+        <!-- Titular Principal y Bajada Explicativa -->
+        <div class="px-6 sm:px-8 py-6 sm:py-7 bg-white">
+          <div class="hero-title-grid">
+            <h1 class="font-display text-2xl sm:text-[34px] lg:text-[38px] font-extrabold text-[#0F172A] leading-[1.12] tracking-tight mb-3">
+              ¿Qué pasa si cambio la dieta mañana… sin tocar todavía al animal?
+            </h1>
+            <p class="text-sm sm:text-[15px] text-[#475569] leading-[1.55] max-w-4xl">
+              Plataforma de ingeniería para el monitoreo normativo del bienestar animal bajo lineamientos del <strong class="text-[#0F172A] font-semibold">ICA</strong> (bovinos, caprinos y porcinos) y simulación determinista de dieta, manejo y clima antes de intervenir el lote en campo.
+            </p>
+          </div>
         </div>
       </header>
 
-      <section class="hero">
-        <h1>¿Qué pasa si cambio la dieta mañana… sin tocar todavía al animal?</h1>
-        <p class="hero-lead">
-          Plataforma para monitorear el bienestar de bovinos y caprinos según lineamientos del ICA,
-          y simular el efecto de dieta o clima sobre peso e índice de bienestar antes de intervenir el lote.
-        </p>
-      </section>
+      <!-- CUERPO PRINCIPAL DE LA RETÍCULA -->
+      <div class="poster-main-body">
 
-      <section class="hook">
-        <div class="case">
-          <p class="kicker">Caso del inventario</p>
-          <p class="tag-id">VACA-087 · El Recuerdo</p>
-          <div class="iba">
-            <strong>45,5</strong>
-            <span>IBA actual · No cumple · THI 85,7 · prioridad operativa</span>
-          </div>
-        </div>
-        <div class="problem">
-          <h2>El problema en campo</h2>
-          <p>El bienestar ICA se documenta tarde: planillas, visitas puntuales y decisiones que se validan cuando el daño ya ocurrió.</p>
-          <div class="contrast">
-            <div>
-              <strong>Hoy</strong>
-              <span>Se cambia dieta o manejo y se espera a ver qué pasa.</span>
+        <!-- ==================================================================
+             2. FILA DESTACADA: CASO DEL INVENTARIO (OSCURO) + PROBLEMA EN CAMPO
+             ================================================================== -->
+        <section class="zone-hero-split grid grid-cols-1 lg:grid-cols-12 border-b border-[#E2E8F0]">
+
+          <!-- Tarjeta Oscura Obsidian Slate: CASO DEL INVENTARIO · VACA-087 · El Recuerdo -->
+          <div class="lg:col-span-5 p-6 sm:p-7 bg-[#0B1120] text-white border-b lg:border-b-0 lg:border-r border-[#E2E8F0] flex flex-col justify-between relative overflow-hidden">
+            <div class="relative z-10">
+              <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-red-500/15 border border-red-500/40 mb-3">
+                <span class="w-2 h-2 rounded-full bg-[#DC2626]"></span>
+                <span class="font-mono-tech text-[10px] font-bold tracking-[0.07em] text-red-300 uppercase">
+                  CASO DEL INVENTARIO · VACA-087 · El Recuerdo
+                </span>
+              </div>
+
+              <!-- KPI Principal 45,5 -->
+              <div class="bg-[#111827] border border-slate-800 rounded-lg p-4 mb-3.5">
+                <div class="flex items-baseline justify-between gap-2">
+                  <div class="flex items-baseline gap-2">
+                    <span class="font-mono-tech text-4xl sm:text-[46px] font-bold text-[#F59E0B] leading-none tracking-tight">
+                      45,5
+                    </span>
+                    <span class="font-mono-tech text-sm text-slate-400 font-medium">/ 100</span>
+                  </div>
+                  <span class="font-mono-tech text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-[#DC2626] text-white">
+                    PRIORIDAD OPERATIVA
+                  </span>
+                </div>
+                <p class="font-mono-tech text-[11.5px] font-semibold text-slate-200 mt-2">
+                  IBA actual · <span class="text-red-400">No cumple</span> · <span class="text-amber-300">THI 85,7</span> · prioridad operativa
+                </p>
+              </div>
             </div>
-            <div>
-              <strong>Con la plataforma</strong>
-              <span>Se proyecta el IBA y el peso, y luego se decide.</span>
+
+            <!-- Resumen rápido de diagnóstico del ejemplar -->
+            <div class="relative z-10 pt-3 border-t border-slate-800 flex items-center justify-between font-mono-tech text-[11px] text-slate-300">
+              <span>Especie: <strong class="text-white">Bovino</strong></span>
+              <span>Estado térmico: <strong class="text-red-400">Estrés alto</strong></span>
             </div>
           </div>
-        </div>
-      </section>
 
-      <section class="shots-wrap">
-        <h2 class="block-title">Qué ve el productor o el veterinario</h2>
-        <div class="shots">
-          <figure class="shot">
-            <div class="shot-frame"><img src="./dash.png" alt="Tablero Estado ICA" /></div>
-            <figcaption><b>Tablero Estado ICA</b>Prioridad del lote, alertas y semáforo de cumplimiento.</figcaption>
-          </figure>
-          <figure class="shot">
-            <div class="shot-frame"><img src="./detail.png" alt="Detalle del animal" /></div>
-            <figcaption><b>Detalle del animal</b>Cinco libertades, hallazgos y THI del ejemplar.</figcaption>
-          </figure>
-          <figure class="shot">
-            <div class="shot-frame"><img src="./sim.png" alt="Simulación" /></div>
-            <figcaption><b>Simulación</b>Trayectoria de peso e IBA bajo dieta o sequía.</figcaption>
-          </figure>
-        </div>
-      </section>
+          <!-- Tarjeta Clara: El problema en campo (Hoy reactivo vs. Con la plataforma) -->
+          <div class="lg:col-span-7 p-6 sm:p-7 bg-white flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2.5">
+                <span class="font-mono-tech text-[11px] font-bold uppercase tracking-[0.08em] text-[#0284C7]">
+                  DIAGNÓSTICO OPERATIVO
+                </span>
+                <span class="font-mono-tech text-[10px] text-[#64748B]">CAMPO → SIMULACIÓN</span>
+              </div>
 
-      <section class="method">
-        <div class="pill">
-          <div class="pill-head">
-            <div class="num">01</div>
-            <h3>Índice IBA</h3>
-          </div>
-          <p>Cinco libertades en un solo número. Ejemplo del caso VACA-087:</p>
-          <div class="mini-bars">
-            <div class="mini-bar"><span>Nutrición</span><i><span style="width:70%"></span></i><b>70</b></div>
-            <div class="mini-bar"><span>Entorno</span><i><span style="width:33%"></span></i><b>33</b></div>
-            <div class="mini-bar"><span>Salud</span><i><span style="width:32%"></span></i><b>32</b></div>
-            <div class="mini-bar"><span>Conducta</span><i><span style="width:70%"></span></i><b>70</b></div>
-            <div class="mini-bar"><span>Mental</span><i><span style="width:20%"></span></i><b>20</b></div>
-          </div>
-          <div class="chip-row">
-            <span class="chip chip-ok">≥ 80 cumple</span>
-            <span class="chip chip-warn">≥ 60 atención</span>
-            <span class="chip chip-bad">&lt; 60 no cumple</span>
-          </div>
-        </div>
-        <div class="pill">
-          <div class="pill-head">
-            <div class="num">02</div>
-            <h3>THI</h3>
-          </div>
-          <p>Estrés calórico por temperatura y humedad. En VACA-087 el THI llega a 85,7.</p>
-          <p class="formula">THI = (1,8·T + 32) − [(0,55 − 0,0055·HR)·(1,8·T − 26)]</p>
-          <div class="mini-bars">
-            <div class="mini-bar"><span>Normal</span><i><span style="width:28%;background:#1f7a4c"></span></i><b>bajo</b></div>
-            <div class="mini-bar"><span>Alerta</span><i><span style="width:55%;background:#c47a12"></span></i><b>medio</b></div>
-            <div class="mini-bar"><span>Peligro</span><i><span style="width:78%;background:#b42318"></span></i><b>alto</b></div>
-            <div class="mini-bar"><span>VACA-087</span><i><span style="width:86%;background:#b42318"></span></i><b>85,7</b></div>
-          </div>
-          <p>Umbrales distintos para rumiante y porcino: no se trata igual a todas las especies.</p>
-        </div>
-        <div class="pill">
-          <div class="pill-head">
-            <div class="num">03</div>
-            <h3>Simulación</h3>
-          </div>
-          <p>Antes de cambiar dieta o manejo, se proyecta el lote día a día.</p>
-          <div class="chip-row">
-            <span class="chip">Sequía</span>
-            <span class="chip">Ola de calor</span>
-            <span class="chip">Restricción de alimento</span>
-            <span class="chip">Mejora de instalaciones</span>
-          </div>
-          <div class="mini-bars">
-            <div class="mini-bar"><span>Peso final</span><i><span style="width:82%"></span></i><b>125 kg</b></div>
-            <div class="mini-bar"><span>IBA proy.</span><i><span style="width:68%;background:#c47a12"></span></i><b>68,2</b></div>
-            <div class="mini-bar"><span>Horizonte</span><i><span style="width:50%"></span></i><b>días</b></div>
-          </div>
-          <p>Un snapshot por día, determinista: misma semilla, mismo resultado. Sirve para decidir, no para adivinar.</p>
-        </div>
-      </section>
+              <h2 class="font-display text-xl sm:text-2xl font-extrabold text-[#0F172A] mb-4">
+                El problema en campo
+              </h2>
 
-      <section class="bottom">
-        <div class="proof">
-          <h2>Resultado observado</h2>
-          <p style="margin:6px 0 0;color:var(--muted);font-size:14px;line-height:1.4">
-            En el inventario de evaluación: tres predios, seis animales y un ejemplar fuera de umbral que concentra la prioridad.
-          </p>
-          <div class="proof-grid">
-            <div class="stat"><strong>81,4</strong><span>IBA medio</span></div>
-            <div class="stat"><strong>3</strong><span>predios</span></div>
-            <div class="stat"><strong>6</strong><span>animales</span></div>
-            <div class="stat"><strong>45,5</strong><span>caso crítico</span></div>
-          </div>
-        </div>
-        <div class="diff">
-          <h2>Aporte</h2>
-          <ul>
-            <li>Une monitoreo ICA con proyección antes de intervenir.</li>
-            <li>Índice interpretable: se puede explicar al productor y al jurado.</li>
-            <li>Sirve a productor, veterinario y administrador en el mismo flujo.</li>
-            <li>Cubre bovino, caprino y porcino con reglas por especie.</li>
-          </ul>
-        </div>
-        <div class="qr-box">
-          <img src="./qr.png" alt="Código QR al prototipo" />
-          <strong>Probar el prototipo</strong>
-          <span>animal-welfare-platform-vepq.vercel.app</span>
-        </div>
-      </section>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <!-- Hoy (reactivo) -->
+                <div class="p-4 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0]">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="inline-flex items-center justify-center w-5 h-5 rounded bg-red-100 text-[#DC2626] font-mono-tech text-xs font-bold">✕</span>
+                    <h3 class="font-mono-tech text-xs font-bold uppercase tracking-wider text-[#DC2626]">
+                      Hoy (reactivo)
+                    </h3>
+                  </div>
+                  <p class="text-[13px] text-[#475569] leading-relaxed">
+                    El bienestar ICA se documenta tarde en planillas aisladas; los cambios de dieta o manejo se aplican a prueba y error cuando el daño productivo o térmico ya ocurrió.
+                  </p>
+                </div>
 
-      <footer class="foot">
-        <p>
-          <b>Autor:</b> David Ramírez Gutiérrez · Ingeniería de Sistemas · UCC<br />
-          <b>Director:</b> Paola Valencia · TECH FEST UCC · 20 nov, 2026
+                <!-- Con la plataforma (simulación previa) -->
+                <div class="p-4 rounded-lg bg-emerald-50/50 border border-emerald-200">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="inline-flex items-center justify-center w-5 h-5 rounded bg-emerald-600 text-white font-mono-tech text-xs font-bold">✓</span>
+                    <h3 class="font-mono-tech text-xs font-bold uppercase tracking-wider text-[#059669]">
+                      Con la plataforma (simulación previa)
+                    </h3>
+                  </div>
+                  <p class="text-[13px] text-[#0F172A] font-medium leading-relaxed">
+                    Se audita el índice <span class="font-mono-tech font-bold text-[#059669]">IBA</span> y estrés <span class="font-mono-tech font-bold text-[#0284C7]">THI</span> en tiempo real, y se proyecta el peso e IBA día a día antes de intervenir el lote.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-[#E2E8F0] flex flex-wrap items-center justify-between gap-2 font-mono-tech text-[11px] text-[#64748B]">
+              <span>TRAZABILIDAD NORMATIVA ICA</span>
+              <span class="text-[#0F172A] font-semibold">DECISIÓN BASADA EN EVIDENCIA DETERMINISTA</span>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ==================================================================
+             3. SECCIÓN: QUÉ VE EL PRODUCTOR O EL VETERINARIO (3 MOCKUPS SVG 420x230)
+             ================================================================== -->
+        <section class="zone-mockups p-6 sm:p-7 bg-[#F8FAFC] border-b border-[#E2E8F0]">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+            <div>
+              <span class="font-mono-tech text-[10px] font-bold uppercase tracking-[0.08em] text-[#0284C7]">
+                INTERFAZ DEL SISTEMA · CAPTURA VECTORIAL DE ALTA PRECISIÓN
+              </span>
+              <h2 class="font-display text-lg sm:text-xl font-extrabold text-[#0F172A]">
+                Qué ve el productor o el veterinario
+              </h2>
+            </div>
+            <span class="font-mono-tech text-[11px] text-[#64748B] bg-white border border-[#E2E8F0] px-2.5 py-1 rounded">
+              3 VISTAS OPERATIVAS
+            </span>
+          </div>
+
+          <div class="mockups-grid grid grid-cols-1 md:grid-cols-3 gap-4">
+
+            <!-- TARJETA 1: /tablero-estado-ica (viewBox="0 0 420 230") -->
+            <div class="bg-white border border-[#E2E8F0] rounded-lg p-3.5 flex flex-col justify-between">
+              <div class="mockup-card-inner">
+                <div class="rounded-md border border-[#E2E8F0] bg-white overflow-hidden mb-3">
+                  <svg viewBox="0 0 420 230" width="420" height="230" style="width: 100%; height: auto; display: block;" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="420" height="230" fill="#FFFFFF" />
+                    <!-- Barra superior ventana -->
+                    <rect width="420" height="26" fill="#F8FAFC" />
+                    <line x1="0" y1="26" x2="420" y2="26" stroke="#E2E8F0" stroke-width="1" />
+                    <circle cx="14" cy="13" r="3" fill="#CBD5E1" />
+                    <circle cx="24" cy="13" r="3" fill="#CBD5E1" />
+                    <circle cx="34" cy="13" r="3" fill="#CBD5E1" />
+                    <text x="406" y="16.5" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="9.5" font-weight="600" fill="#64748B">/tablero-estado-ica</text>
+
+                    <!-- Izquierda (x=14 a x=150): Gráfico de dona SVG -->
+                    <rect x="14" y="36" width="136" height="180" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1" />
+                    <circle cx="82" cy="116" r="46" fill="none" stroke="#E2E8F0" stroke-width="12" />
+                    <!-- Segmento Verde Cumple -->
+                    <circle cx="82" cy="116" r="46" fill="none" stroke="#059669" stroke-width="12"
+                            stroke-dasharray="196 290" stroke-dashoffset="0" transform="rotate(-90 82 116)" stroke-linecap="round" />
+                    <!-- Segmento Ámbar Atención -->
+                    <circle cx="82" cy="116" r="46" fill="none" stroke="#D97706" stroke-width="12"
+                            stroke-dasharray="46 290" stroke-dashoffset="-200" transform="rotate(-90 82 116)" />
+                    <!-- Segmento Rojo Crítico -->
+                    <circle cx="82" cy="116" r="46" fill="none" stroke="#DC2626" stroke-width="12"
+                            stroke-dasharray="36 290" stroke-dashoffset="-250" transform="rotate(-90 82 116)" />
+
+                    <text x="82" y="114" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="20" fill="#0F172A">81,4</text>
+                    <text x="82" y="129" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="8.2" fill="#059669">IBA MEDIO LOTE</text>
+                    <text x="82" y="196" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600" font-size="9" fill="#475569">6 ejemplares · 3 predios</text>
+
+                    <!-- Derecha (x=162 a x=406, width=244): 3 cajas apiladas con amplio margen derecho -->
+                    <!-- 1) Caja Verde -->
+                    <rect x="162" y="36" width="244" height="48" rx="6" fill="#ECFDF5" stroke="#A7F3D0" stroke-width="1" />
+                    <circle cx="176" cy="54" r="4.5" fill="#059669" />
+                    <text x="188" y="55" font-family="Inter, sans-serif" font-weight="700" font-size="10.5" fill="#065F46">Cumple (≥ 80)</text>
+                    <text x="188" y="72" font-family="JetBrains Mono, monospace" font-size="9" fill="#047857">4 ejemplares óptimos</text>
+
+                    <!-- 2) Caja Ámbar -->
+                    <rect x="162" y="92" width="244" height="48" rx="6" fill="#FFFBEB" stroke="#FDE68A" stroke-width="1" />
+                    <circle cx="176" cy="110" r="4.5" fill="#D97706" />
+                    <text x="188" y="111" font-family="Inter, sans-serif" font-weight="700" font-size="10.5" fill="#92400E">Atención (60–79)</text>
+                    <text x="188" y="128" font-family="JetBrains Mono, monospace" font-size="9" fill="#B45309">1 ejemplar en seguimiento</text>
+
+                    <!-- 3) Caja Roja -->
+                    <rect x="162" y="148" width="244" height="68" rx="6" fill="#FEF2F2" stroke="#FECACA" stroke-width="1" />
+                    <circle cx="176" cy="166" r="4.5" fill="#DC2626" />
+                    <text x="188" y="167" font-family="Inter, sans-serif" font-weight="700" font-size="10" fill="#991B1B">Crítico (&lt; 60) · Prioridad #1</text>
+                    <text x="188" y="184" font-family="JetBrains Mono, monospace" font-weight="700" font-size="9.5" fill="#DC2626">VACA-087 → IBA 45,5</text>
+                    <text x="188" y="201" font-family="JetBrains Mono, monospace" font-size="8.8" fill="#7F1D1D">Intervención inmediata requerida</text>
+                  </svg>
+                </div>
+
+                <div>
+                  <h3 class="font-display text-sm font-extrabold text-[#0F172A] mb-1">Tablero Estado ICA</h3>
+                  <p class="text-xs text-[#475569] leading-relaxed">
+                    Prioridad del lote (<strong class="font-mono-tech text-[#0F172A]">81,4 IBA</strong>), alertas tempranas y semáforo normativo de cumplimiento.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- TARJETA 2: /diagnostico-clinico (viewBox="0 0 420 230") -->
+            <div class="bg-white border border-[#E2E8F0] rounded-lg p-3.5 flex flex-col justify-between">
+              <div class="mockup-card-inner">
+                <div class="rounded-md border border-[#E2E8F0] bg-white overflow-hidden mb-3">
+                  <svg viewBox="0 0 420 230" width="420" height="230" style="width: 100%; height: auto; display: block;" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="420" height="230" fill="#FFFFFF" />
+                    <!-- Barra superior ventana -->
+                    <rect width="420" height="26" fill="#F8FAFC" />
+                    <line x1="0" y1="26" x2="420" y2="26" stroke="#E2E8F0" stroke-width="1" />
+                    <circle cx="14" cy="13" r="3" fill="#CBD5E1" />
+                    <circle cx="24" cy="13" r="3" fill="#CBD5E1" />
+                    <circle cx="34" cy="13" r="3" fill="#CBD5E1" />
+                    <text x="406" y="16.5" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="9.5" font-weight="600" fill="#64748B">/diagnostico-clinico</text>
+
+                    <!-- Cabecera oscura del ejemplar -->
+                    <rect x="14" y="34" width="392" height="30" rx="6" fill="#0B1120" />
+                    <text x="26" y="53" font-family="JetBrains Mono, monospace" font-weight="700" font-size="10.5" fill="#FFFFFF">VACA-087 · El Recuerdo</text>
+                    <rect x="272" y="40" width="124" height="18" rx="4" fill="#DC2626" />
+                    <text x="334" y="52.5" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="9" fill="#FFFFFF">THI 85,7 · PELIGRO</text>
+
+                    <!-- Barras horizontales de las Cinco Libertades (x=14 a x=406) -->
+                    <!-- Fila 1: Nutrición 70 -->
+                    <text x="14" y="84" font-family="Inter, sans-serif" font-weight="600" font-size="9.5" fill="#0F172A">Nutrición</text>
+                    <rect x="108" y="75" width="248" height="10" rx="5" fill="#F1F5F9" />
+                    <rect x="108" y="75" width="173.6" height="10" rx="5" fill="#D97706" />
+                    <text x="406" y="84" text-anchor="end" font-family="JetBrains Mono, monospace" font-weight="700" font-size="9.5" fill="#D97706">70/100</text>
+
+                    <!-- Fila 2: Entorno 33 -->
+                    <text x="14" y="106" font-family="Inter, sans-serif" font-weight="600" font-size="9.5" fill="#0F172A">Entorno</text>
+                    <rect x="108" y="97" width="248" height="10" rx="5" fill="#F1F5F9" />
+                    <rect x="108" y="97" width="81.8" height="10" rx="5" fill="#DC2626" />
+                    <text x="406" y="106" text-anchor="end" font-family="JetBrains Mono, monospace" font-weight="700" font-size="9.5" fill="#DC2626">33/100</text>
+
+                    <!-- Fila 3: Salud 32 -->
+                    <text x="14" y="128" font-family="Inter, sans-serif" font-weight="600" font-size="9.5" fill="#0F172A">Salud</text>
+                    <rect x="108" y="119" width="248" height="10" rx="5" fill="#F1F5F9" />
+                    <rect x="108" y="119" width="79.4" height="10" rx="5" fill="#DC2626" />
+                    <text x="406" y="128" text-anchor="end" font-family="JetBrains Mono, monospace" font-weight="700" font-size="9.5" fill="#DC2626">32/100</text>
+
+                    <!-- Fila 4: Conducta 70 -->
+                    <text x="14" y="150" font-family="Inter, sans-serif" font-weight="600" font-size="9.5" fill="#0F172A">Conducta</text>
+                    <rect x="108" y="141" width="248" height="10" rx="5" fill="#F1F5F9" />
+                    <rect x="108" y="141" width="173.6" height="10" rx="5" fill="#D97706" />
+                    <text x="406" y="150" text-anchor="end" font-family="JetBrains Mono, monospace" font-weight="700" font-size="9.5" fill="#D97706">70/100</text>
+
+                    <!-- Fila 5: Mental 20 -->
+                    <text x="14" y="172" font-family="Inter, sans-serif" font-weight="600" font-size="9.5" fill="#0F172A">Estado Mental</text>
+                    <rect x="108" y="163" width="248" height="10" rx="5" fill="#F1F5F9" />
+                    <rect x="108" y="163" width="49.6" height="10" rx="5" fill="#DC2626" />
+                    <text x="406" y="172" text-anchor="end" font-family="JetBrains Mono, monospace" font-weight="700" font-size="9.5" fill="#DC2626">20/100</text>
+
+                    <!-- Pie resumen clínico -->
+                    <rect x="14" y="186" width="392" height="30" rx="6" fill="#FEF2F2" stroke="#FECACA" stroke-width="1" />
+                    <text x="26" y="205" font-family="JetBrains Mono, monospace" font-weight="700" font-size="9.2" fill="#991B1B">IBA: 45,5 (No cumple) · Hallazgo: estrés térmico y baja sombra</text>
+                  </svg>
+                </div>
+
+                <div>
+                  <h3 class="font-display text-sm font-extrabold text-[#0F172A] mb-1">Diagnóstico Clínico</h3>
+                  <p class="text-xs text-[#475569] leading-relaxed">
+                    Evaluación individual de Cinco Libertades, hallazgos sanitarios auditados y monitoreo térmico <strong class="font-mono-tech text-[#0F172A]">THI 85,7</strong>.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- TARJETA 3: /simulador-escenarios (viewBox="0 0 420 230") -->
+            <div class="bg-white border border-[#E2E8F0] rounded-lg p-3.5 flex flex-col justify-between">
+              <div class="mockup-card-inner">
+                <div class="rounded-md border border-[#E2E8F0] bg-white overflow-hidden mb-3">
+                  <svg viewBox="0 0 420 230" width="420" height="230" style="width: 100%; height: auto; display: block;" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="420" height="230" fill="#FFFFFF" />
+                    <!-- Barra superior ventana -->
+                    <rect width="420" height="26" fill="#F8FAFC" />
+                    <line x1="0" y1="26" x2="420" y2="26" stroke="#E2E8F0" stroke-width="1" />
+                    <circle cx="14" cy="13" r="3" fill="#CBD5E1" />
+                    <circle cx="24" cy="13" r="3" fill="#CBD5E1" />
+                    <circle cx="34" cy="13" r="3" fill="#CBD5E1" />
+                    <text x="406" y="16.5" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="9.5" font-weight="600" fill="#64748B">/simulador-escenarios</text>
+
+                    <!-- Caja KPI Izquierda (x=14, y=42, width=190, height=44, rx=6) -->
+                    <rect x="14" y="42" width="190" height="44" rx="6" fill="#ECFDF5" stroke="#A7F3D0" stroke-width="1" />
+                    <text x="24" y="57" font-family="Inter, sans-serif" font-weight="700" font-size="8.2" fill="#065F46">IBA PROYECTADO (DÍA 14)</text>
+                    <text x="24" y="75" font-family="JetBrains Mono, monospace" font-weight="700" font-size="11" fill="#059669">45,5 → 68,2 (+22,7)</text>
+
+                    <!-- Caja KPI Derecha (x=214, y=42, width=192, height=44, rx=6) -->
+                    <rect x="214" y="42" width="192" height="44" rx="6" fill="#F0F9FF" stroke="#BAE6FD" stroke-width="1" />
+                    <text x="224" y="57" font-family="Inter, sans-serif" font-weight="700" font-size="8.2" fill="#075985">PESO PROYECTADO</text>
+                    <text x="224" y="75" font-family="JetBrains Mono, monospace" font-weight="700" font-size="11" fill="#0284C7">125 kg · Determinista</text>
+
+                    <!-- Área gráfica trayectoria a 14 días (y=98 a y=215) -->
+                    <line x1="42" y1="108" x2="402" y2="108" stroke="#E2E8F0" stroke-width="1" />
+                    <line x1="42" y1="142" x2="402" y2="142" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="3 3" />
+                    <line x1="42" y1="176" x2="402" y2="176" stroke="#E2E8F0" stroke-width="1" />
+                    <line x1="42" y1="198" x2="402" y2="198" stroke="#CBD5E1" stroke-width="1" />
+
+                    <!-- Etiquetas eje Y -->
+                    <text x="36" y="111" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="8.5" fill="#64748B">80</text>
+                    <text x="36" y="145" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="8.5" fill="#64748B">60</text>
+                    <text x="36" y="179" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="8.5" fill="#64748B">45</text>
+
+                    <!-- Sombra área intervenida -->
+                    <polygon points="48,175 135,156 222,140 310,127 394,118 394,198 48,198" fill="rgba(5, 150, 105, 0.10)" />
+
+                    <!-- Línea Sin Intervención (45,5) punteada -->
+                    <polyline points="48,175 135,178 222,182 310,185 394,188" fill="none" stroke="#DC2626" stroke-width="2" stroke-dasharray="4 3" />
+                    <text x="394" y="182" text-anchor="end" font-family="Inter, sans-serif" font-weight="600" font-size="8.5" fill="#DC2626">Sin Intervención (45,5)</text>
+
+                    <!-- Línea Escenario Intervenido (68,2) esmeralda -->
+                    <polyline points="48,175 135,156 222,140 310,127 394,118" fill="none" stroke="#059669" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
+                    <circle cx="48" cy="175" r="4" fill="#D97706" stroke="#FFFFFF" stroke-width="1.2" />
+                    <circle cx="394" cy="118" r="4.5" fill="#059669" stroke="#FFFFFF" stroke-width="1.4" />
+                    <text x="386" y="110" text-anchor="end" font-family="Inter, sans-serif" font-weight="700" font-size="8.8" fill="#059669">Escenario Intervenido (68,2)</text>
+
+                    <!-- Eje X días -->
+                    <text x="48" y="212" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8.5" fill="#64748B">D0</text>
+                    <text x="135" y="212" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8.5" fill="#64748B">D4</text>
+                    <text x="222" y="212" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8.5" fill="#64748B">D7</text>
+                    <text x="310" y="212" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8.5" fill="#64748B">D10</text>
+                    <text x="394" y="212" text-anchor="end" font-family="JetBrains Mono, monospace" font-weight="700" font-size="8.5" fill="#0F172A">D14</text>
+                  </svg>
+                </div>
+
+                <div>
+                  <h3 class="font-display text-sm font-extrabold text-[#0F172A] mb-1">Simulación de Corto Plazo</h3>
+                  <p class="text-xs text-[#475569] leading-relaxed">
+                    Trayectoria de peso (<strong class="font-mono-tech text-[#0F172A]">125 kg</strong>) e IBA (<strong class="font-mono-tech text-[#059669]">45,5 → 68,2</strong>) bajo dieta, manejo o sequía.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- COLUMNA DERECHA EN MODO WIDESCREEN (PILARES TÉCNICOS + RESULTADOS & QR) -->
+        <div class="zone-right-stack">
+
+          <!-- ================================================================
+               4. FILA DE 3 PILARES TÉCNICOS (01 ÍNDICE IBA, 02 THI, 03 SIMULACIÓN)
+               ================================================================ -->
+          <section class="engines-grid grid grid-cols-1 md:grid-cols-3 border-b border-[#E2E8F0] bg-white">
+
+            <!-- PILAR 01: Índice IBA -->
+            <article class="p-6 sm:p-7 border-b md:border-b-0 md:border-r border-[#E2E8F0] flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2.5">
+                  <span class="font-mono-tech text-2xl font-bold text-[#059669]">01</span>
+                  <span class="font-mono-tech text-[10px] font-bold uppercase tracking-wider text-[#475569] bg-slate-100 px-2 py-0.5 rounded">
+                    Índice IBA
+                  </span>
+                </div>
+                <h3 class="font-display text-lg font-extrabold text-[#0F172A] mb-1.5">
+                  Cinco Libertades en un solo número
+                </h3>
+                <p class="text-xs text-[#475569] mb-3.5">
+                  Ejemplo auditado del caso <strong class="font-mono-tech text-[#0F172A]">VACA-087</strong>:
+                </p>
+
+                <!-- Desglose exacto de VACA-087 -->
+                <div class="space-y-2 font-mono-tech text-[11px] mb-4">
+                  <div class="grid grid-cols-12 items-center gap-2">
+                    <span class="col-span-4 text-[#334155] font-medium">Nutrición</span>
+                    <div class="col-span-6 h-2 bg-slate-100 rounded-full overflow-hidden">
+                      <div class="h-full bg-[#D97706] rounded-full" style="width: 70%;"></div>
+                    </div>
+                    <span class="col-span-2 text-right font-bold text-[#0F172A]">70</span>
+                  </div>
+                  <div class="grid grid-cols-12 items-center gap-2">
+                    <span class="col-span-4 text-[#334155] font-medium">Entorno</span>
+                    <div class="col-span-6 h-2 bg-slate-100 rounded-full overflow-hidden">
+                      <div class="h-full bg-[#DC2626] rounded-full" style="width: 33%;"></div>
+                    </div>
+                    <span class="col-span-2 text-right font-bold text-[#DC2626]">33</span>
+                  </div>
+                  <div class="grid grid-cols-12 items-center gap-2">
+                    <span class="col-span-4 text-[#334155] font-medium">Salud</span>
+                    <div class="col-span-6 h-2 bg-slate-100 rounded-full overflow-hidden">
+                      <div class="h-full bg-[#DC2626] rounded-full" style="width: 32%;"></div>
+                    </div>
+                    <span class="col-span-2 text-right font-bold text-[#DC2626]">32</span>
+                  </div>
+                  <div class="grid grid-cols-12 items-center gap-2">
+                    <span class="col-span-4 text-[#334155] font-medium">Conducta</span>
+                    <div class="col-span-6 h-2 bg-slate-100 rounded-full overflow-hidden">
+                      <div class="h-full bg-[#D97706] rounded-full" style="width: 70%;"></div>
+                    </div>
+                    <span class="col-span-2 text-right font-bold text-[#0F172A]">70</span>
+                  </div>
+                  <div class="grid grid-cols-12 items-center gap-2">
+                    <span class="col-span-4 text-[#334155] font-medium">Mental</span>
+                    <div class="col-span-6 h-2 bg-slate-100 rounded-full overflow-hidden">
+                      <div class="h-full bg-[#DC2626] rounded-full" style="width: 20%;"></div>
+                    </div>
+                    <span class="col-span-2 text-right font-bold text-[#DC2626]">20</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Leyenda de umbrales -->
+              <div class="pt-3 border-t border-[#E2E8F0] flex flex-wrap gap-1.5 font-mono-tech text-[10px] font-bold">
+                <span class="px-2 py-0.5 rounded bg-emerald-50 text-[#059669] border border-emerald-200">≥ 80 cumple</span>
+                <span class="px-2 py-0.5 rounded bg-amber-50 text-[#D97706] border border-amber-200">≥ 60 atención</span>
+                <span class="px-2 py-0.5 rounded bg-red-50 text-[#DC2626] border border-red-200">&lt; 60 no cumple</span>
+              </div>
+            </article>
+
+            <!-- PILAR 02: THI Estrés Calórico -->
+            <article class="p-6 sm:p-7 border-b md:border-b-0 md:border-r border-[#E2E8F0] flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2.5">
+                  <span class="font-mono-tech text-2xl font-bold text-[#0284C7]">02</span>
+                  <span class="font-mono-tech text-[10px] font-bold uppercase tracking-wider text-[#475569] bg-slate-100 px-2 py-0.5 rounded">
+                    THI · Estrés Calórico
+                  </span>
+                </div>
+                <h3 class="font-display text-lg font-extrabold text-[#0F172A] mb-1.5">
+                  Riesgo térmico por temperatura y humedad
+                </h3>
+                <p class="text-xs text-[#475569] mb-3">
+                  En <strong class="font-mono-tech text-[#0F172A]">VACA-087</strong> el índice THI alcanza <strong class="font-mono-tech text-[#DC2626]">85,7</strong>:
+                </p>
+
+                <!-- Fórmula matemática exacta -->
+                <div class="bg-[#0B1120] text-sky-300 border border-slate-800 rounded-md px-3 py-2 font-mono-tech text-[10.5px] leading-snug mb-3.5">
+                  THI = (1,8·T + 32) − [(0,55 − 0,0055·HR)·(1,8·T − 26)]
+                </div>
+
+                <!-- Comparativa Normal / Alerta / Peligro / VACA-087 -->
+                <div class="space-y-1.5 font-mono-tech text-[10.5px] mb-3">
+                  <div class="grid grid-cols-12 items-center gap-2">
+                    <span class="col-span-4 text-[#475569]">Normal</span>
+                    <div class="col-span-5 h-1.5 bg-slate-100 rounded-full"><div class="h-full bg-[#059669] rounded-full" style="width: 45%;"></div></div>
+                    <span class="col-span-3 text-right text-[#059669] font-semibold">bajo</span>
+                  </div>
+                  <div class="grid grid-cols-12 items-center gap-2">
+                    <span class="col-span-4 text-[#475569]">Alerta</span>
+                    <div class="col-span-5 h-1.5 bg-slate-100 rounded-full"><div class="h-full bg-[#D97706] rounded-full" style="width: 68%;"></div></div>
+                    <span class="col-span-3 text-right text-[#D97706] font-semibold">medio</span>
+                  </div>
+                  <div class="grid grid-cols-12 items-center gap-2">
+                    <span class="col-span-4 text-[#475569]">Peligro</span>
+                    <div class="col-span-5 h-1.5 bg-slate-100 rounded-full"><div class="h-full bg-[#DC2626] rounded-full" style="width: 86%;"></div></div>
+                    <span class="col-span-3 text-right text-[#DC2626] font-semibold">alto</span>
+                  </div>
+                  <div class="grid grid-cols-12 items-center gap-2 bg-red-50 px-1.5 py-1 rounded border border-red-200">
+                    <span class="col-span-4 font-bold text-[#991B1B]">VACA-087</span>
+                    <div class="col-span-5 h-1.5 bg-red-200 rounded-full"><div class="h-full bg-[#DC2626] rounded-full" style="width: 96%;"></div></div>
+                    <span class="col-span-3 text-right font-bold text-[#DC2626]">85,7</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pt-2.5 border-t border-[#E2E8F0] text-[11px] text-[#475569]">
+                Umbrales diferenciados para <strong class="text-[#0F172A] font-medium">rumiante vs. porcino</strong>: no se trata igual a todas las especies.
+              </div>
+            </article>
+
+            <!-- PILAR 03: Simulación Determinista -->
+            <article class="p-6 sm:p-7 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2.5">
+                  <span class="font-mono-tech text-2xl font-bold text-[#0F172A]">03</span>
+                  <span class="font-mono-tech text-[10px] font-bold uppercase tracking-wider text-[#475569] bg-slate-100 px-2 py-0.5 rounded">
+                    Simulación Determinista
+                  </span>
+                </div>
+                <h3 class="font-display text-lg font-extrabold text-[#0F172A] mb-2">
+                  Proyección diaria antes de intervenir
+                </h3>
+
+                <!-- Chips de escenarios -->
+                <div class="flex flex-wrap gap-1.5 font-mono-tech text-[10px] font-medium mb-3.5">
+                  <span class="px-2 py-0.5 rounded bg-[#F8FAFC] border border-[#CBD5E1] text-[#0F172A]">Sequía</span>
+                  <span class="px-2 py-0.5 rounded bg-[#F8FAFC] border border-[#CBD5E1] text-[#0F172A]">Ola de calor</span>
+                  <span class="px-2 py-0.5 rounded bg-[#F8FAFC] border border-[#CBD5E1] text-[#0F172A]">Restricción de alimento</span>
+                  <span class="px-2 py-0.5 rounded bg-emerald-50 border border-emerald-300 text-[#059669] font-semibold">Mejora de instalaciones</span>
+                </div>
+
+                <!-- Métricas de salida -->
+                <div class="grid grid-cols-3 gap-2 font-mono-tech mb-3.5">
+                  <div class="p-2 rounded bg-[#F8FAFC] border border-[#E2E8F0] text-center">
+                    <div class="text-xs font-bold text-[#0F172A]">125 kg</div>
+                    <div class="text-[9.5px] text-[#64748B] mt-0.5">Peso final</div>
+                  </div>
+                  <div class="p-2 rounded bg-emerald-50/70 border border-emerald-200 text-center">
+                    <div class="text-xs font-bold text-[#059669]">68,2</div>
+                    <div class="text-[9.5px] text-[#065F46] mt-0.5">IBA proy</div>
+                  </div>
+                  <div class="p-2 rounded bg-[#F8FAFC] border border-[#E2E8F0] text-center">
+                    <div class="text-xs font-bold text-[#0284C7]">14 días</div>
+                    <div class="text-[9.5px] text-[#64748B] mt-0.5">Horizonte</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pt-2.5 border-t border-[#E2E8F0] text-[11px] text-[#475569] leading-relaxed">
+                <strong class="font-mono-tech text-[#0F172A]">Snapshot determinista por día:</strong> misma semilla, mismo resultado. Sirve para decidir, no para adivinar.
+              </div>
+            </article>
+
+          </section>
+
+          <!-- ================================================================
+               5. FILA INFERIOR: RESULTADO OBSERVADO + APORTE + PROBAR PROTOTIPO (QR)
+               ================================================================ -->
+          <section class="validation-grid grid grid-cols-1 lg:grid-cols-12 bg-[#F8FAFC] border-b border-[#E2E8F0]">
+
+            <!-- Resultado observado (4 cols) -->
+            <div class="lg:col-span-4 p-6 sm:p-7 border-b lg:border-b-0 lg:border-r border-[#E2E8F0] flex flex-col justify-between">
+              <div>
+                <span class="font-mono-tech text-[10px] font-bold uppercase tracking-[0.08em] text-[#059669]">
+                  INVENTARIO DE EVALUACIÓN
+                </span>
+                <h3 class="font-display text-lg font-extrabold text-[#0F172A] mb-3">
+                  Resultado observado
+                </h3>
+                <p class="text-xs text-[#475569] mb-3.5 leading-relaxed">
+                  Tres predios, seis animales y un ejemplar fuera de umbral que concentra la prioridad operativa.
+                </p>
+
+                <div class="grid grid-cols-2 gap-2.5">
+                  <div class="bg-white border border-[#E2E8F0] rounded-lg p-3">
+                    <div class="font-mono-tech text-2xl font-bold text-[#059669] leading-none">81,4</div>
+                    <div class="font-mono-tech text-[10.5px] text-[#475569] mt-1.5">IBA medio</div>
+                  </div>
+
+                  <div class="bg-white border border-[#E2E8F0] rounded-lg p-3">
+                    <div class="font-mono-tech text-2xl font-bold text-[#0F172A] leading-none">3</div>
+                    <div class="font-mono-tech text-[10.5px] text-[#475569] mt-1.5">predios</div>
+                  </div>
+
+                  <div class="bg-white border border-[#E2E8F0] rounded-lg p-3">
+                    <div class="font-mono-tech text-2xl font-bold text-[#0284C7] leading-none">6</div>
+                    <div class="font-mono-tech text-[10.5px] text-[#475569] mt-1.5">animales</div>
+                  </div>
+
+                  <div class="bg-white border border-red-200 rounded-lg p-3">
+                    <div class="font-mono-tech text-2xl font-bold text-[#DC2626] leading-none">45,5</div>
+                    <div class="font-mono-tech text-[10.5px] text-[#475569] mt-1.5">caso crítico</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Aporte (5 cols, 4 puntos clave) -->
+            <div class="lg:col-span-5 p-6 sm:p-7 border-b lg:border-b-0 lg:border-r border-[#E2E8F0] bg-white flex flex-col justify-between">
+              <div>
+                <span class="font-mono-tech text-[10px] font-bold uppercase tracking-[0.08em] text-[#0284C7]">
+                  VALOR TÉCNICO Y NORMATIVO
+                </span>
+                <h3 class="font-display text-lg font-extrabold text-[#0F172A] mb-3">
+                  Aporte
+                </h3>
+
+                <ul class="space-y-2.5 text-[12.5px] text-[#334155] leading-snug">
+                  <li class="flex items-start gap-2.5">
+                    <span class="font-mono-tech text-[10.5px] font-bold text-[#059669] bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded mt-0.5 shrink-0">01</span>
+                    <span>Une monitoreo normativo <strong class="text-[#0F172A]">ICA</strong> con proyección determinista antes de intervenir el lote.</span>
+                  </li>
+                  <li class="flex items-start gap-2.5">
+                    <span class="font-mono-tech text-[10.5px] font-bold text-[#059669] bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded mt-0.5 shrink-0">02</span>
+                    <span>Índice interpretable y auditable: se puede explicar con trazabilidad al productor y al jurado.</span>
+                  </li>
+                  <li class="flex items-start gap-2.5">
+                    <span class="font-mono-tech text-[10.5px] font-bold text-[#059669] bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded mt-0.5 shrink-0">03</span>
+                    <span>Integra a productor, veterinario y administrador en un mismo flujo operativo.</span>
+                  </li>
+                  <li class="flex items-start gap-2.5">
+                    <span class="font-mono-tech text-[10.5px] font-bold text-[#059669] bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded mt-0.5 shrink-0">04</span>
+                    <span>Cubre <strong class="text-[#0F172A]">bovino, caprino y porcino</strong> con reglas bioclimáticas y productivas por especie.</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Tarjeta Oscura: Probar el prototipo + QR SVG real (3 cols) -->
+            <div class="lg:col-span-3 p-6 sm:p-7 bg-[#0B1120] text-white flex flex-col items-center justify-between text-center">
+              <div class="w-full">
+                <span class="inline-block font-mono-tech text-[10px] font-bold uppercase tracking-[0.08em] text-emerald-400 mb-2.5">
+                  ACCESO INTERACTIVO
+                </span>
+
+                <div id="qr-svg-container" class="mx-auto w-[134px] h-[134px] bg-white p-2 rounded-lg border-2 border-emerald-400/90 flex items-center justify-center">
+                  <!-- SVG QR inline renderizado por qrcode-generator -->
+                </div>
+              </div>
+
+              <div class="mt-3 w-full">
+                <div class="font-display text-sm font-extrabold text-white tracking-tight">
+                  Probar el prototipo
+                </div>
+                <a
+                  href="https://animal-welfare-platform-vepq.vercel.app/#"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="block font-mono-tech text-[10px] text-sky-300 hover:text-sky-200 underline decoration-sky-500/60 break-all mt-1"
+                >
+                  https://animal-welfare-platform-vepq.vercel.app/#
+                </a>
+              </div>
+            </div>
+
+          </section>
+        </div>
+      </div>
+
+      <!-- ====================================================================
+           6. PIE DE PÁGINA
+           ==================================================================== -->
+      <footer class="bg-white px-6 sm:px-8 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <p class="text-xs sm:text-[12.5px] font-semibold text-[#0F172A]">
+          Autor: <span class="font-bold">David Ramírez Gutiérrez</span> · Ingeniería de Sistemas — UCC · Tech Fest · 20 nov, 2026
         </p>
-        <p style="text-align:right">
-          No es una caja negra de aprendizaje automático.<br />
-          Es índice ICA + simulación de eventos discretos.
-        </p>
+
+        <div class="sm:text-right border-t sm:border-t-0 pt-2 sm:pt-0 border-[#E2E8F0]">
+          <span class="inline-block font-mono-tech text-[10.5px] font-semibold text-[#0F172A] bg-[#F8FAFC] border border-[#CBD5E1] px-3 py-1.5 rounded">
+            Motor determinista de eventos discretos + lineamientos ICA (sin caja negra opaca)
+          </span>
+        </div>
       </footer>
+
     </div>
-  </article>
+  </main>
+
+  <!-- ========================================================================
+       SCRIPT DE EXPORTACIÓN REAL (PDF / PNG HD), QR SVG Y MODO DE PROPORCIÓN
+       ======================================================================== -->
+  <script>
+    const PROTOTYPE_URL = 'https://animal-welfare-platform-vepq.vercel.app/#';
+
+    /**
+     * Genera el código QR vectorial SVG inline puro sin imágenes externas (0 problemas CORS).
+     */
+    function renderVectorQR() {
+      const container = document.getElementById('qr-svg-container');
+      if (!container) return;
+
+      try {
+        if (typeof qrcode === 'function') {
+          const qr = qrcode(0, 'M');
+          qr.addData(PROTOTYPE_URL);
+          qr.make();
+
+          const moduleCount = qr.getModuleCount();
+          const cellSize = 4;
+          const size = moduleCount * cellSize;
+
+          let rects = '';
+          for (let row = 0; row < moduleCount; row++) {
+            for (let col = 0; col < moduleCount; col++) {
+              if (qr.isDark(row, col)) {
+                rects += `<rect x="${col * cellSize}" y="${row * cellSize}" width="${cellSize}" height="${cellSize}" fill="#0B1120"/>`;
+              }
+            }
+          }
+
+          container.innerHTML = `
+            <svg viewBox="0 0 ${size} ${size}" width="114" height="114" style="width: 100%; height: 100%; display: block;" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Código QR de acceso al prototipo Bienestar ICA">
+              <rect width="${size}" height="${size}" fill="#FFFFFF"/>
+              ${rects}
+            </svg>
+          `;
+        }
+      } catch (error) {
+        console.error('Error al renderizar QR SVG:', error);
+      }
+    }
+
+    /**
+     * Cambia entre formato Póster Vertical (A1 / 9:16) y Modo Proyección (16:9 Widescreen).
+     */
+    function setPosterMode(mode) {
+      const body = document.body;
+      const btnVertical = document.getElementById('btn-mode-vertical');
+      const btnWidescreen = document.getElementById('btn-mode-widescreen');
+      const pageOrientationStyle = document.getElementById('dynamic-page-orientation');
+
+      if (mode === 'widescreen') {
+        body.classList.remove('mode-vertical');
+        body.classList.add('mode-widescreen');
+
+        btnWidescreen.className = 'px-3 py-1.5 rounded-md text-xs font-medium transition-all bg-emerald-600 text-white shadow-sm flex items-center gap-1.5 cursor-pointer';
+        btnVertical.className = 'px-3 py-1.5 rounded-md text-xs font-medium transition-all text-slate-300 hover:text-white flex items-center gap-1.5 cursor-pointer';
+
+        if (pageOrientationStyle) {
+          pageOrientationStyle.textContent = '@page { size: landscape; margin: 0; }';
+        }
+        showStudioToast('Formato cambiado a Modo Proyección (16:9 Widescreen)');
+      } else {
+        body.classList.remove('mode-widescreen');
+        body.classList.add('mode-vertical');
+
+        btnVertical.className = 'px-3 py-1.5 rounded-md text-xs font-medium transition-all bg-emerald-600 text-white shadow-sm flex items-center gap-1.5 cursor-pointer';
+        btnWidescreen.className = 'px-3 py-1.5 rounded-md text-xs font-medium transition-all text-slate-300 hover:text-white flex items-center gap-1.5 cursor-pointer';
+
+        if (pageOrientationStyle) {
+          pageOrientationStyle.textContent = '@page { size: portrait; margin: 0; }';
+        }
+        showStudioToast('Formato cambiado a Póster Vertical (A1 / 9:16)');
+      }
+    }
+
+    /**
+     * Captura #poster-canvas asegurando dimensiones exactas de todos los SVG inline
+     * y carga completa de fuentes tipográficas.
+     */
+    async function capturePosterCanvas(scaleFactor) {
+      const posterElement = document.getElementById('poster-canvas');
+      if (!posterElement) throw new Error('Contenedor #poster-canvas no encontrado');
+
+      if (document.fonts && document.fonts.ready) {
+        await document.fonts.ready;
+      }
+
+      // Fijar dimensiones explícitas en los SVG antes de clonar para garantizar fidelidad 1:1 en html2canvas
+      const originalSvgs = Array.from(posterElement.querySelectorAll('svg'));
+      const computedSizes = originalSvgs.map((svg) => {
+        const rect = svg.getBoundingClientRect();
+        return { width: Math.round(rect.width), height: Math.round(rect.height) };
+      });
+
+      return await html2canvas(posterElement, {
+        scale: scaleFactor,
+        useCORS: true,
+        allowTaint: false,
+        backgroundColor: '#FFFFFF',
+        logging: false,
+        ignoreElements: (element) => element.classList && element.classList.contains('no-export'),
+        onclone: (clonedDoc) => {
+          const clonedPoster = clonedDoc.getElementById('poster-canvas');
+          if (clonedPoster) {
+            clonedPoster.style.boxShadow = 'none';
+            clonedPoster.style.margin = '0';
+            const clonedSvgs = clonedPoster.querySelectorAll('svg');
+            clonedSvgs.forEach((svg, idx) => {
+              if (computedSizes[idx] && computedSizes[idx].width > 0) {
+                svg.setAttribute('width', String(computedSizes[idx].width));
+                svg.setAttribute('height', String(computedSizes[idx].height));
+              }
+            });
+          }
+        }
+      });
+    }
+
+    /**
+     * Exportación real a PDF de página única proporcional (sin cortes ni márgenes blancos extra)
+     * utilizando html2canvas (scale: 2.5) y jsPDF v2.5.1.
+     */
+    async function downloadPosterPDF() {
+      const btnPdf = document.getElementById('btn-download-pdf');
+      const labelPdf = document.getElementById('label-download-pdf');
+
+      try {
+        btnPdf.disabled = true;
+        labelPdf.textContent = 'Generando PDF...';
+        showStudioToast('Renderizando póster en alta resolución para PDF...');
+
+        // Permitir repintado del estado 'Generando PDF...'
+        await new Promise((resolve) => setTimeout(resolve, 60));
+
+        const scale = 2.5;
+        const canvas = await capturePosterCanvas(scale);
+
+        const pdfWidth = canvas.width / scale;
+        const pdfHeight = canvas.height / scale;
+        const orientation = pdfWidth >= pdfHeight ? 'landscape' : 'portrait';
+
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({
+          orientation: orientation,
+          unit: 'px',
+          format: [pdfWidth, pdfHeight],
+          compress: true
+        });
+
+        const imgData = canvas.toDataURL('image/png', 1.0);
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
+        pdf.save('Poster_Bienestar_ICA_TechFest2026.pdf');
+
+        showStudioToast('PDF descargado: Poster_Bienestar_ICA_TechFest2026.pdf');
+      } catch (err) {
+        console.error('Error generando PDF:', err);
+        showStudioToast('Error al generar PDF. Intenta con Imprimir.');
+      } finally {
+        btnPdf.disabled = false;
+        labelPdf.textContent = 'Descargar PDF';
+      }
+    }
+
+    /**
+     * Exportación real a imagen PNG de ultra alta definición (scale: 3) mediante canvas.toBlob().
+     */
+    async function downloadPosterPNG() {
+      const btnPng = document.getElementById('btn-download-png');
+      const labelPng = document.getElementById('label-download-png');
+
+      try {
+        btnPng.disabled = true;
+        labelPng.textContent = 'Generando PNG...';
+        showStudioToast('Renderizando imagen PNG (HD 3x)...');
+
+        await new Promise((resolve) => setTimeout(resolve, 60));
+
+        const canvas = await capturePosterCanvas(3);
+
+        await new Promise((resolve, reject) => {
+          canvas.toBlob((blob) => {
+            if (!blob) {
+              reject(new Error('No se pudo generar el blob PNG'));
+              return;
+            }
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'Poster_Bienestar_ICA_TechFest2026.png';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            setTimeout(() => URL.revokeObjectURL(url), 1500);
+            resolve();
+          }, 'image/png', 1.0);
+        });
+
+        showStudioToast('PNG HD descargado: Poster_Bienestar_ICA_TechFest2026.png');
+      } catch (err) {
+        console.error('Error generando PNG:', err);
+        showStudioToast('Error al generar PNG HD.');
+      } finally {
+        btnPng.disabled = false;
+        labelPng.textContent = 'Descargar PNG (HD)';
+      }
+    }
+
+    /**
+     * Opción complementaria de impresión nativa.
+     */
+    function printPoster() {
+      window.print();
+    }
+
+    /**
+     * Toast informativo no intrusivo.
+     */
+    let toastTimer = null;
+    function showStudioToast(message) {
+      const toast = document.getElementById('studio-toast');
+      const text = document.getElementById('studio-toast-text');
+      if (!toast || !text) return;
+
+      text.textContent = message;
+      toast.classList.remove('opacity-0', 'translate-y-2');
+      toast.classList.add('opacity-100', 'translate-y-0');
+
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove('opacity-100', 'translate-y-0');
+        toast.classList.add('opacity-0', 'translate-y-2');
+      }, 3000);
+    }
+
+    window.addEventListener('DOMContentLoaded', renderVectorQR);
+  </script>
 </body>
 </html>
