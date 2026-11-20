@@ -43,7 +43,7 @@ import { EmptyStateComponent } from '../shared/empty-state.component';
                 <strong>{{ run.finalWeightKg }} kg</strong>
               </div>
               <div>
-                <span>IBA proyectado</span>
+                <span>IBA al final</span>
                 <strong>{{ run.finalWelfareIndex }}</strong>
               </div>
             </div>

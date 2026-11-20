@@ -115,7 +115,7 @@ test.describe('Authenticated navigation', () => {
     await existing.click();
     await expect(page).toHaveURL(/#\/app\/simulation\/[^/]+/);
     await expect(page.locator('.stat-pair')).toBeVisible({ timeout: 20_000 });
-    await expect(page.getByText('IBA proyectado')).toBeVisible();
+    await expect(page.getByText('IBA al final')).toBeVisible();
     await shot(page, '23-simulation-detail');
   });
 
