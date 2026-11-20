@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="es-CO">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Póster — Bienestar ICA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,800&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #14201a;
+      --forest: #1b3a2f;
+      --moss: #2f6b4f;
+      --paper: #f4efe6;
+      --card: #fffdf8;
+      --line: rgba(20, 32, 26, 0.12);
+      --muted: #5c6b63;
+      --amber: #c47a12;
+      --danger: #b42318;
+      --ok: #1f7a4c;
+      --sky: #1d6fd8;
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #d8d2c6;
+      color: var(--ink);
+      font-family: "IBM Plex Sans", system-ui, sans-serif;
+    }
+
+    .poster {
+      width: 1240px;
+      height: 1754px;
+      margin: 24px auto;
+      background:
+        radial-gradient(900px 420px at 100% 0%, rgba(196, 122, 18, 0.12), transparent 55%),
+        radial-gradient(700px 500px at 0% 18%, rgba(47, 107, 79, 0.10), transparent 50%),
+        var(--paper);
+      color: var(--ink);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.22);
+    }
+
+    .poster::before {
+      content: "";
+      position: absolute;
+      inset: 18px;
+      border: 1px solid rgba(20, 32, 26, 0.16);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .rail {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 18px;
+      background: linear-gradient(180deg, var(--forest), var(--moss));
+    }
+
+    .inner {
+      position: relative;
+      z-index: 1;
+      height: 100%;
+      padding: 42px 48px 36px 56px;
+      display: grid;
+      grid-template-rows: auto auto auto 1fr auto;
+      gap: 22px;
+    }
+
+    .top {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .brand {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .brand img {
+      width: 58px;
+      height: 58px;
+      border-radius: 14px;
+      box-shadow: 0 8px 20px rgba(0, 122, 255, 0.25);
+    }
+
+    .brand-copy strong {
+      display: block;
+      font-family: Fraunces, Georgia, serif;
+      font-size: 28px;
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+
+    .brand-copy span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .meta {
+      text-align: right;
+      font-size: 13px;
+      line-height: 1.45;
+      color: var(--muted);
+      max-width: 280px;
+    }
+
+    .meta b { color: var(--ink); font-weight: 600; }
+
+    .hero h1 {
+      margin: 0;
+      font-family: Fraunces, Georgia, serif;
+      font-weight: 800;
+      font-size: 46px;
+      line-height: 1.02;
+      letter-spacing: -0.035em;
+      max-width: 18ch;
+    }
+
+    .hero-lead {
+      margin: 14px 0 0;
+      max-width: 58ch;
+      font-size: 18px;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .hook {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .case {
+      background: var(--forest);
+      color: #f7f3ea;
+      border-radius: 22px;
+      padding: 26px 28px;
+      position: relative;
+      overflow: hidden;
+      min-height: 220px;
+    }
+
+    .case::after {
+      content: "";
+      position: absolute;
+      right: -40px;
+      bottom: -50px;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: rgba(196, 122, 18, 0.22);
+    }
+
+    .case .kicker {
+      margin: 0;
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(247, 243, 234, 0.72);
+      font-weight: 600;
+    }
+
+    .case .tag-id {
+      margin: 10px 0 0;
+      font-family: Fraunces, Georgia, serif;
+      font-size: 34px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .case .iba {
+      margin-top: 18px;
+      display: flex;
+      align-items: end;
+      gap: 14px;
+    }
+
+    .case .iba strong {
+      font-family: Fraunces, Georgia, serif;
+      font-size: 72px;
+      line-height: 0.85;
+      letter-spacing: -0.05em;
+      color: #f0b45a;
+    }
+
+    .case .iba span {
+      padding-bottom: 8px;
+      font-size: 15px;
+      line-height: 1.3;
+      max-width: 16ch;
+      color: rgba(247, 243, 234, 0.86);
+    }
+
+    .problem {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 24px 26px;
+      display: grid;
+      gap: 14px;
+      align-content: start;
+    }
+
+    .problem h2,
+    .block h2 {
+      margin: 0;
+      font-family: Fraunces, Georgia, serif;
+      font-size: 22px;
+      letter-spacing: -0.02em;
+    }
+
+    .problem p,
+    .block p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .contrast {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .contrast div {
+      border-radius: 14px;
+      padding: 12px 14px;
+      background: #efe8db;
+    }
+
+    .contrast strong {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 4px;
+      color: var(--ink);
+    }
+
+    .contrast span {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    .mid {
+      display: grid;
+      grid-template-columns: 1.25fr 0.75fr;
+      gap: 18px;
+      min-height: 0;
+    }
+
+    .shots {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .shot {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .shot img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      object-position: top center;
+      background: #e8e2d7;
+      display: block;
+    }
+
+    .shot figcaption {
+      padding: 12px 14px 14px;
+      font-size: 13px;
+      line-height: 1.35;
+      color: var(--muted);
+    }
+
+    .shot figcaption b {
+      display: block;
+      color: var(--ink);
+      font-size: 14px;
+      margin-bottom: 2px;
+    }
+
+    .method {
+      display: grid;
+      gap: 12px;
+    }
+
+    .pill {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px 18px;
+    }
+
+    .pill .num {
+      font-family: Fraunces, Georgia, serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--moss);
+      letter-spacing: -0.03em;
+    }
+
+    .pill h3 {
+      margin: 2px 0 6px;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .pill p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.4;
+      color: var(--muted);
+    }
+
+    .bottom {
+      display: grid;
+      grid-template-columns: 1.4fr 0.9fr 0.7fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .proof {
+      background: #efe8db;
+      border-radius: 18px;
+      padding: 18px 20px;
+    }
+
+    .proof-grid {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .stat {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 12px 10px;
+      text-align: center;
+    }
+
+    .stat strong {
+      display: block;
+      font-family: Fraunces, Georgia, serif;
+      font-size: 26px;
+      letter-spacing: -0.03em;
+      color: var(--forest);
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 2px;
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.25;
+    }
+
+    .diff {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px 20px;
+    }
+
+    .diff ul {
+      margin: 10px 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 8px;
+    }
+
+    .diff li {
+      position: relative;
+      padding-left: 16px;
+      font-size: 13.5px;
+      line-height: 1.35;
+      color: var(--muted);
+    }
+
+    .diff li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.45em;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--amber);
+    }
+
+    .qr-box {
+      background: var(--forest);
+      color: #f7f3ea;
+      border-radius: 18px;
+      padding: 16px;
+      display: grid;
+      justify-items: center;
+      align-content: center;
+      gap: 10px;
+      text-align: center;
+    }
+
+    .qr-box img {
+      width: 118px;
+      height: 118px;
+      border-radius: 10px;
+      background: #fff;
+      padding: 8px;
+    }
+
+    .qr-box strong {
+      font-size: 14px;
+      letter-spacing: -0.01em;
+    }
+
+    .qr-box span {
+      font-size: 11px;
+      line-height: 1.35;
+      color: rgba(247, 243, 234, 0.78);
+      word-break: break-all;
+      max-width: 18ch;
+    }
+
+    .foot {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: end;
+      padding-top: 4px;
+      border-top: 1px solid var(--line);
+      margin-top: 2px;
+    }
+
+    .foot p {
+      margin: 0;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .foot b { color: var(--ink); }
+  </style>
+</head>
+<body>
+  <article class="poster" aria-label="Póster Bienestar ICA">
+    <div class="rail" aria-hidden="true"></div>
+    <div class="inner">
+      <header class="top">
+        <div class="brand">
+          <img src="./mark.svg" alt="" />
+          <div class="brand-copy">
+            <strong>Bienestar ICA</strong>
+            <span>Monitoreo y simulación · UCC</span>
+          </div>
+        </div>
+        <div class="meta">
+          <b>David Ramírez Gutiérrez</b><br />
+          Ingeniería de Sistemas<br />
+          Universidad Cooperativa de Colombia<br />
+          TECH FEST · 20 nov, 2026
+        </div>
+      </header>
+
+      <section class="hero">
+        <h1>¿Qué pasa si cambio la dieta mañana… sin tocar todavía al animal?</h1>
+        <p class="hero-lead">
+          Prototipo publicado para monitorear bovinos y caprinos con el índice de bienestar ICA
+          y proyectar peso e IBA bajo estrés ambiental o nutricional — antes de intervenir el lote.
+        </p>
+      </section>
+
+      <section class="hook">
+        <div class="case">
+          <p class="kicker">Caso en producción</p>
+          <p class="tag-id">VACA-087 · El Recuerdo</p>
+          <div class="iba">
+            <strong>45,5</strong>
+            <span>IBA actual · No cumple · THI 85,7 · prioridad del tablero</span>
+          </div>
+        </div>
+        <div class="problem">
+          <h2>El hueco que cierra</h2>
+          <p>El cumplimiento ICA suele vivir en planillas o en criterio suelto. Falta un índice interpretable y una forma de ensayar decisiones.</p>
+          <div class="contrast">
+            <div>
+              <strong>Sin simular</strong>
+              <span>Se interviene a ciegas y se mide después.</span>
+            </div>
+            <div>
+              <strong>Con Bienestar ICA</strong>
+              <span>Se proyecta peso e IBA in silico y luego se decide.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="mid">
+        <div class="block">
+          <h2 style="margin-bottom:12px">Producto vivo, no mockup</h2>
+          <div class="shots">
+            <figure class="shot">
+              <img src="./dash.png" alt="Tablero Estado ICA" />
+              <figcaption><b>Tablero Estado ICA</b>IBA medio, cola de riesgo y semáforo de cumplimiento.</figcaption>
+            </figure>
+            <figure class="shot">
+              <img src="./detail.png" alt="Detalle animal" />
+              <figcaption><b>Detalle del animal</b>Cinco libertades, hallazgos y fechas en formato corporativo.</figcaption>
+            </figure>
+            <figure class="shot">
+              <img src="./sim.png" alt="Simulación" />
+              <figcaption><b>Simulación SED</b>Trayectoria de peso e IBA bajo dieta o sequía.</figcaption>
+            </figure>
+          </div>
+        </div>
+        <div class="method">
+          <div class="pill">
+            <div class="num">01</div>
+            <h3>Índice IBA</h3>
+            <p>Nutrición, entorno, salud, conducta y estado mental. Semáforo ≥80 / ≥60.</p>
+          </div>
+          <div class="pill">
+            <div class="num">02</div>
+            <h3>THI</h3>
+            <p>Estrés calórico por especie con el índice temperatura-humedad (Thom).</p>
+          </div>
+          <div class="pill">
+            <div class="num">03</div>
+            <h3>Eventos discretos</h3>
+            <p>Un snapshot por día. Determinista. Sequía vs mejora de instalaciones.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bottom">
+        <div class="proof">
+          <h2>Evidencia de la campaña</h2>
+          <p style="margin-top:6px">Suite automatizada contra el despliegue en Vercel. Defectos de logout, cabeceras y credenciales demo cerrados en código.</p>
+          <div class="proof-grid">
+            <div class="stat"><strong>7/7</strong><span>suites</span></div>
+            <div class="stat"><strong>17/17</strong><span>E2E</span></div>
+            <div class="stat"><strong>81,4</strong><span>IBA medio</span></div>
+            <div class="stat"><strong>A</strong><span>calidad</span></div>
+          </div>
+        </div>
+        <div class="diff">
+          <h2>Por qué destaca</h2>
+          <ul>
+            <li>No es solo inventario: proyecta el futuro del animal.</li>
+            <li>Reglas ICA auditables, no una caja negra de “IA”.</li>
+            <li>Roles, aislamiento por predio y app publicada.</li>
+            <li>Bovino / caprino / porcino en un mismo flujo operativo.</li>
+          </ul>
+        </div>
+        <div class="qr-box">
+          <img src="./qr.png" alt="Código QR al prototipo" />
+          <strong>Probar ahora</strong>
+          <span>animal-welfare-platform-vepq.vercel.app</span>
+        </div>
+      </section>
+
+      <footer class="foot">
+        <p>
+          <b>Stack real:</b> Ionic 8 · Angular 19 · Supabase (Auth, Postgres, RLS) · Vercel<br />
+          Director: Paola Valencia · Programa de Ingeniería de Sistemas
+        </p>
+        <p style="text-align:right">
+          <b>No es ML.</b> Es índice ICA + simulación de eventos discretos.<br />
+          Pregunta al jurado: ¿índice interpretable o modelo opaco?
+        </p>
+      </footer>
+    </div>
+  </article>
+</body>
+</html>
