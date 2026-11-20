@@ -273,7 +273,7 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 12px;
-      align-items: stretch;
+      align-items: start;
     }
     .pill {
       background: var(--card);
@@ -580,11 +580,11 @@
           </div>
           <p>Estrés calórico por temperatura y humedad. En VACA-087 el THI llega a 85,7.</p>
           <p class="formula">THI = (1,8·T + 32) − [(0,55 − 0,0055·HR)·(1,8·T − 26)]</p>
-          <div class="chip-row">
-            <span class="chip">T ambiente</span>
-            <span class="chip">Humedad %</span>
-            <span class="chip chip-warn">Alerta</span>
-            <span class="chip chip-bad">Peligro / emergencia</span>
+          <div class="mini-bars">
+            <div class="mini-bar"><span>Normal</span><i><span style="width:28%;background:#1f7a4c"></span></i><b>bajo</b></div>
+            <div class="mini-bar"><span>Alerta</span><i><span style="width:55%;background:#c47a12"></span></i><b>medio</b></div>
+            <div class="mini-bar"><span>Peligro</span><i><span style="width:78%;background:#b42318"></span></i><b>alto</b></div>
+            <div class="mini-bar"><span>VACA-087</span><i><span style="width:86%;background:#b42318"></span></i><b>85,7</b></div>
           </div>
           <p>Umbrales distintos para rumiante y porcino: no se trata igual a todas las especies.</p>
         </div>
@@ -600,10 +600,10 @@
             <span class="chip">Restricción de alimento</span>
             <span class="chip">Mejora de instalaciones</span>
           </div>
-          <div class="chip-row">
-            <span class="chip chip-ok">Peso final</span>
-            <span class="chip chip-warn">IBA proyectado</span>
-            <span class="chip">Fecha objetivo</span>
+          <div class="mini-bars">
+            <div class="mini-bar"><span>Peso final</span><i><span style="width:82%"></span></i><b>125 kg</b></div>
+            <div class="mini-bar"><span>IBA proy.</span><i><span style="width:68%;background:#c47a12"></span></i><b>68,2</b></div>
+            <div class="mini-bar"><span>Horizonte</span><i><span style="width:50%"></span></i><b>días</b></div>
           </div>
           <p>Un snapshot por día, determinista: misma semilla, mismo resultado. Sirve para decidir, no para adivinar.</p>
         </div>
