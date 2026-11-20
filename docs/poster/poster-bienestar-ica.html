@@ -63,8 +63,8 @@
       height: 100%;
       padding: 40px 46px 32px 54px;
       display: grid;
-      grid-template-rows: auto auto auto auto 1fr auto;
-      gap: 18px;
+      grid-template-rows: auto auto auto auto auto auto auto;
+      gap: 16px;
     }
 
     .top {
@@ -273,30 +273,100 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 12px;
+      align-items: stretch;
     }
     .pill {
       background: var(--card);
       border: 1px solid var(--line);
       border-radius: 16px;
-      padding: 14px 16px;
+      padding: 14px 16px 16px;
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+    .pill-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
     }
     .pill .num {
       font-family: Fraunces, Georgia, serif;
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 700;
       color: var(--moss);
       letter-spacing: -0.03em;
     }
     .pill h3 {
-      margin: 2px 0 6px;
-      font-size: 15px;
+      margin: 0;
+      font-size: 16px;
       font-weight: 700;
+      letter-spacing: -0.02em;
     }
     .pill p {
       margin: 0;
       font-size: 13px;
       line-height: 1.4;
       color: var(--muted);
+    }
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 5px 9px;
+      font-size: 11px;
+      font-weight: 600;
+      background: #efe8db;
+      color: var(--ink);
+    }
+    .chip-ok { background: rgba(31, 122, 76, 0.12); color: #1f7a4c; }
+    .chip-warn { background: rgba(196, 122, 18, 0.16); color: #8a5608; }
+    .chip-bad { background: rgba(180, 35, 24, 0.12); color: #9b1c1c; }
+    .formula {
+      margin: 0;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: #efe8db;
+      font-family: "IBM Plex Sans", system-ui, sans-serif;
+      font-size: 12px;
+      line-height: 1.35;
+      color: var(--ink);
+      font-weight: 500;
+    }
+    .mini-bars {
+      display: grid;
+      gap: 6px;
+    }
+    .mini-bar {
+      display: grid;
+      grid-template-columns: 72px 1fr 34px;
+      gap: 8px;
+      align-items: center;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .mini-bar i {
+      height: 7px;
+      border-radius: 99px;
+      background: #ddd5c6;
+      display: block;
+      overflow: hidden;
+    }
+    .mini-bar i span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--moss);
+    }
+    .mini-bar b {
+      text-align: right;
+      color: var(--ink);
+      font-weight: 600;
     }
 
     .bottom {
@@ -485,19 +555,57 @@
 
       <section class="method">
         <div class="pill">
-          <div class="num">01</div>
-          <h3>Índice IBA</h3>
-          <p>Nutrición, entorno, salud, conducta y estado mental. Semáforo ≥80 cumple / ≥60 atención.</p>
+          <div class="pill-head">
+            <div class="num">01</div>
+            <h3>Índice IBA</h3>
+          </div>
+          <p>Cinco libertades en un solo número. Ejemplo del caso VACA-087:</p>
+          <div class="mini-bars">
+            <div class="mini-bar"><span>Nutrición</span><i><span style="width:70%"></span></i><b>70</b></div>
+            <div class="mini-bar"><span>Entorno</span><i><span style="width:33%"></span></i><b>33</b></div>
+            <div class="mini-bar"><span>Salud</span><i><span style="width:32%"></span></i><b>32</b></div>
+            <div class="mini-bar"><span>Conducta</span><i><span style="width:70%"></span></i><b>70</b></div>
+            <div class="mini-bar"><span>Mental</span><i><span style="width:20%"></span></i><b>20</b></div>
+          </div>
+          <div class="chip-row">
+            <span class="chip chip-ok">≥ 80 cumple</span>
+            <span class="chip chip-warn">≥ 60 atención</span>
+            <span class="chip chip-bad">&lt; 60 no cumple</span>
+          </div>
         </div>
         <div class="pill">
-          <div class="num">02</div>
-          <h3>THI</h3>
-          <p>Estrés calórico por especie con el índice temperatura-humedad usado en zootecnia.</p>
+          <div class="pill-head">
+            <div class="num">02</div>
+            <h3>THI</h3>
+          </div>
+          <p>Estrés calórico por temperatura y humedad. En VACA-087 el THI llega a 85,7.</p>
+          <p class="formula">THI = (1,8·T + 32) − [(0,55 − 0,0055·HR)·(1,8·T − 26)]</p>
+          <div class="chip-row">
+            <span class="chip">T ambiente</span>
+            <span class="chip">Humedad %</span>
+            <span class="chip chip-warn">Alerta</span>
+            <span class="chip chip-bad">Peligro / emergencia</span>
+          </div>
+          <p>Umbrales distintos para rumiante y porcino: no se trata igual a todas las especies.</p>
         </div>
         <div class="pill">
-          <div class="num">03</div>
-          <h3>Simulación</h3>
-          <p>Eventos discretos día a día: sequía, calor o mejora de instalaciones antes de actuar.</p>
+          <div class="pill-head">
+            <div class="num">03</div>
+            <h3>Simulación</h3>
+          </div>
+          <p>Antes de cambiar dieta o manejo, se proyecta el lote día a día.</p>
+          <div class="chip-row">
+            <span class="chip">Sequía</span>
+            <span class="chip">Ola de calor</span>
+            <span class="chip">Restricción de alimento</span>
+            <span class="chip">Mejora de instalaciones</span>
+          </div>
+          <div class="chip-row">
+            <span class="chip chip-ok">Peso final</span>
+            <span class="chip chip-warn">IBA proyectado</span>
+            <span class="chip">Fecha objetivo</span>
+          </div>
+          <p>Un snapshot por día, determinista: misma semilla, mismo resultado. Sirve para decidir, no para adivinar.</p>
         </div>
       </section>
 
