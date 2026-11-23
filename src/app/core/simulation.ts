@@ -1,5 +1,5 @@
 import { AlertRow, Animal, Farm, Profile, SimulationEvent, SimulationRun, SimulationSnapshot, WelfarePhoto, WelfareRecord } from './models';
-import { baseDailyGainKg, environmentModifier, productionStage, scenarioWelfareShift, targetWeightKg } from './welfare-scoring';
+import { ATTENTION_IBA_MIN, COMPLIANT_IBA_MIN, baseDailyGainKg, environmentModifier, productionStage, scenarioWelfareShift, targetWeightKg } from './welfare-scoring';
 
 export interface SimulationDraft {
   name: string;
@@ -28,7 +28,7 @@ export function runDiscreteEventSimulation(
   const targetWeight = targetWeightKg(animal.species, animal.purpose);
   let stage = productionStage(animal.species, weight, animal.swineStage);
   let targetDate: string | null = null;
-  let complianceDate: string | null = latestIndex >= 80 ? draft.startDate : null;
+  let complianceDate: string | null = latestIndex >= COMPLIANT_IBA_MIN ? draft.startDate : null;
   const snapshots: SimulationResult['snapshots'] = [];
   const events: SimulationResult['events'] = [];
   const random = mulberry32(hashSeed(animal.id + draft.horizonDays));
@@ -66,10 +66,10 @@ export function runDiscreteEventSimulation(
       events.push({ dayIndex: day, eventDate: date, eventType: 'WEIGHT_TARGET', fromStage: stage, toStage: stage, relatedValue: round(weight) });
     }
     const recentDrop = events.some((event) => event.eventType === 'WELFARE_DROP' && day - event.dayIndex < 14);
-    if (welfareIndex < 60 && !recentDrop) {
+    if (welfareIndex < ATTENTION_IBA_MIN && !recentDrop) {
       events.push({ dayIndex: day, eventDate: date, eventType: 'WELFARE_DROP', fromStage: stage, toStage: stage, relatedValue: round(welfareIndex) });
     }
-    if (!complianceDate && welfareIndex >= 80) {
+    if (!complianceDate && welfareIndex >= COMPLIANT_IBA_MIN) {
       complianceDate = date;
       events.push({ dayIndex: day, eventDate: date, eventType: 'ICA_CHECKPOINT', fromStage: stage, toStage: stage, relatedValue: round(welfareIndex) });
     }

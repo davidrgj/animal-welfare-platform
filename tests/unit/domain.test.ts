@@ -54,19 +54,27 @@ describe('ICA scoring', () => {
     assert.equal(heatStressLevel('SWINE', 85), 'EMERGENCY');
   });
 
-  it('classifies IBA 82 as compliant', () => {
-    assert.equal(complianceLevel(82), 'COMPLIANT');
+  it('classifies IBA 75 as compliant (Alto ICA)', () => {
+    assert.equal(complianceLevel(75), 'COMPLIANT');
+    assert.equal(complianceLevel(74.9), 'ATTENTION');
+    assert.equal(complianceLevel(49.9), 'NON_COMPLIANT');
   });
 
   it('uses 0.85 m2 for fattening swine', () => {
     assert.equal(minimumSpaceM2('SWINE', 'FATTENING'), 0.85);
   });
 
-  it('scores a healthy animal above the ICA green threshold', () => {
+  it('scores a healthy animal above the ICA Alto threshold', () => {
     const result = scoreWelfare(animal(), record());
-    assert.ok(result.welfareIndex >= 80);
+    assert.ok(result.welfareIndex >= 75);
     assert.equal(result.complianceLevel, 'COMPLIANT');
     assert.equal(result.findings.length, 0);
+  });
+
+  it('applies goat freedom weights distinct from cattle MEBA weights', () => {
+    const cattle = scoreWelfare(animal({ species: 'CATTLE' }), record({ beddingStatus: 'POOR', shadePercentage: 20 }));
+    const goat = scoreWelfare(animal({ species: 'GOAT', currentWeightKg: 30 }), record({ beddingStatus: 'POOR', shadePercentage: 20, spacePerAnimalM2: 2 }));
+    assert.notEqual(cattle.welfareIndex, goat.welfareIndex);
   });
 
   it('flags heat stress, lameness and overdue vaccine as findings', () => {

@@ -9,6 +9,18 @@ ComplianceLevel = Literal["COMPLIANT", "ATTENTION", "NON_COMPLIANT"]
 FeedType = Literal["GRAZING", "SUPPLEMENTED_GRAZING", "CONCENTRATE", "MIXED_RATION", "MILK"]
 EnvironmentScenario = Literal["NORMAL", "DROUGHT", "HEAT_WAVE", "IMPROVED_HOUSING", "FEED_RESTRICTION"]
 
+COMPLIANT_IBA_MIN = 75
+ATTENTION_IBA_MIN = 50
+
+IBA_WEIGHTS_BY_SPECIES = {
+    # MEBA bovine: animal 55% / resources 35% / management 10%
+    "CATTLE": {"nutrition": 0.15, "environment": 0.35, "health": 0.25, "behavior": 0.15, "mental": 0.10},
+    # EBA goat freedoms: 20 / 20 / 35 / 10 / 15
+    "GOAT": {"nutrition": 0.20, "environment": 0.20, "health": 0.35, "behavior": 0.15, "mental": 0.10},
+    # MEBA swine: animal 50% / resources 35% / management 15%
+    "SWINE": {"nutrition": 0.10, "environment": 0.25, "health": 0.40, "behavior": 0.15, "mental": 0.10},
+}
+
 
 def round1(value: float) -> float:
     return round(value * 10) / 10
@@ -37,9 +49,9 @@ def heat_stress_level(species: Species, index: float) -> HeatStressLevel:
 
 
 def compliance_level(welfare_index: float) -> ComplianceLevel:
-    if welfare_index >= 80:
+    if welfare_index >= COMPLIANT_IBA_MIN:
         return "COMPLIANT"
-    if welfare_index >= 60:
+    if welfare_index >= ATTENTION_IBA_MIN:
         return "ATTENTION"
     return "NON_COMPLIANT"
 
@@ -145,5 +157,19 @@ def mental_score(handling_quality: str) -> float:
     return {"CALM": 100, "ADEQUATE": 70, "STRESSFUL": 20}[handling_quality]
 
 
-def welfare_index(nutrition: float, environment: float, health: float, behavior: float, mental: float) -> float:
-    return round1(0.25 * nutrition + 0.2 * environment + 0.25 * health + 0.15 * behavior + 0.15 * mental)
+def welfare_index(
+    nutrition: float,
+    environment: float,
+    health: float,
+    behavior: float,
+    mental: float,
+    species: Species = "CATTLE",
+) -> float:
+    weights = IBA_WEIGHTS_BY_SPECIES[species]
+    return round1(
+        weights["nutrition"] * nutrition
+        + weights["environment"] * environment
+        + weights["health"] * health
+        + weights["behavior"] * behavior
+        + weights["mental"] * mental
+    )

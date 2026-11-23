@@ -158,7 +158,7 @@ export const ALERT_HINT: Record<string, string> = {
   HEAT_STRESS: 'El índice temperatura-humedad supera el umbral de la especie.',
   VACCINATION_OVERDUE: 'El protocolo de vacunación no está al día.',
   SPACE_BELOW_MINIMUM: 'La densidad de alojamiento incumple el manual ICA.',
-  LOW_WELFARE_INDEX: 'El índice compuesto quedó por debajo de 60.'
+  LOW_WELFARE_INDEX: 'El índice compuesto quedó por debajo de 50 (bajo ICA).'
 };
 
 export function speciesMark(species: Species): string {

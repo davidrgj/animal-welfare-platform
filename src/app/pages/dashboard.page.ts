@@ -182,8 +182,8 @@ export class DashboardPage implements OnInit, AfterViewChecked, OnDestroy {
 
   get averageLevel(): ComplianceLevel | null {
     if (!this.data || !this.data.evaluatedCount) return null;
-    if (this.data.averageWelfareIndex >= 80) return 'COMPLIANT';
-    if (this.data.averageWelfareIndex >= 60) return 'ATTENTION';
+    if (this.data.averageWelfareIndex >= 75) return 'COMPLIANT';
+    if (this.data.averageWelfareIndex >= 50) return 'ATTENTION';
     return 'NON_COMPLIANT';
   }
 

@@ -19,6 +19,34 @@ export interface ScoreResult {
   findings: FindingDraft[];
 }
 
+export interface DomainWeights {
+  nutrition: number;
+  environment: number;
+  health: number;
+  behavior: number;
+  mental: number;
+}
+
+/** ICA Alto (≥75%) and Medio (≥50%) cutoffs used by the operational semaphore. */
+export const COMPLIANT_IBA_MIN = 75;
+export const ATTENTION_IBA_MIN = 50;
+
+/**
+ * ICA-aligned domain weights by species, mapped onto the five operational domains.
+ * CATTLE — MEBA Res. 0253: animal 55% / resources 35% / management 10%.
+ * GOAT — EBA Res. 0136 freedoms: 20 / 20 / 35 / 10 / 15.
+ * SWINE — MEBA Res. 0136: animal 50% / resources 35% / management 15% (management folded into health via vaccination proxy).
+ */
+export const IBA_WEIGHTS_BY_SPECIES: Record<Species, DomainWeights> = {
+  CATTLE: { nutrition: 0.15, environment: 0.35, health: 0.25, behavior: 0.15, mental: 0.1 },
+  GOAT: { nutrition: 0.2, environment: 0.2, health: 0.35, behavior: 0.15, mental: 0.1 },
+  SWINE: { nutrition: 0.1, environment: 0.25, health: 0.4, behavior: 0.15, mental: 0.1 }
+};
+
+export function ibaWeightsFor(species: Species): DomainWeights {
+  return IBA_WEIGHTS_BY_SPECIES[species];
+}
+
 export function temperatureHumidityIndex(temperatureC: number, relativeHumidity: number): number {
   return (1.8 * temperatureC + 32) - ((0.55 - 0.0055 * relativeHumidity) * (1.8 * temperatureC - 26));
 }
@@ -37,9 +65,14 @@ export function heatStressLevel(species: Species, index: number): HeatStressLeve
 }
 
 export function complianceLevel(welfareIndex: number): ComplianceLevel {
-  if (welfareIndex >= 80) return 'COMPLIANT';
-  if (welfareIndex >= 60) return 'ATTENTION';
+  if (welfareIndex >= COMPLIANT_IBA_MIN) return 'COMPLIANT';
+  if (welfareIndex >= ATTENTION_IBA_MIN) return 'ATTENTION';
   return 'NON_COMPLIANT';
+}
+
+export function weightedWelfareIndex(species: Species, nutrition: number, environment: number, health: number, behavior: number, mental: number): number {
+  const weights = ibaWeightsFor(species);
+  return round(weights.nutrition * nutrition + weights.environment * environment + weights.health * health + weights.behavior * behavior + weights.mental * mental);
 }
 
 export function minimumSpaceM2(species: Species, swineStage: SwineStage | null): number {
@@ -101,7 +134,7 @@ export function scoreWelfare(animal: Animal, record: Pick<WelfareRecord, 'bodyCo
   const health = healthScore(record.lameness, record.skinLesions, record.vaccinationUpToDate);
   const behavior = behaviorScore(animal, record.spacePerAnimalM2, record.socialInteraction);
   const mental = mentalScore(record.handlingQuality);
-  const welfareIndex = round(0.25 * nutrition + 0.2 * environment + 0.25 * health + 0.15 * behavior + 0.15 * mental);
+  const welfareIndex = weightedWelfareIndex(animal.species, nutrition, environment, health, behavior, mental);
   const thi = round(temperatureHumidityIndex(record.ambientTemperatureC, record.relativeHumidity));
   const heat = heatStressLevel(animal.species, thi);
   return {
@@ -177,11 +210,11 @@ function findings(
   if (record.spacePerAnimalM2 < minimumSpaceM2(animal.species, animal.swineStage)) items.push({ code: 'SPACE_BELOW_MINIMUM', domain: 'BEHAVIOR', severity: 'HIGH' });
   if (animal.species === 'SWINE' && animal.environmentalEnrichment === false) items.push({ code: 'MISSING_ENRICHMENT', domain: 'BEHAVIOR', severity: 'MEDIUM' });
   if (record.handlingQuality === 'STRESSFUL') items.push({ code: 'STRESSFUL_HANDLING', domain: 'MENTAL', severity: 'HIGH' });
-  if (nutrition < 60) items.push({ code: 'NUTRITION_DOMAIN_RISK', domain: 'NUTRITION', severity: 'MEDIUM' });
-  if (environment < 60) items.push({ code: 'ENVIRONMENT_DOMAIN_RISK', domain: 'ENVIRONMENT', severity: 'MEDIUM' });
-  if (health < 60) items.push({ code: 'HEALTH_DOMAIN_RISK', domain: 'HEALTH', severity: 'HIGH' });
-  if (behavior < 60) items.push({ code: 'BEHAVIOR_DOMAIN_RISK', domain: 'BEHAVIOR', severity: 'MEDIUM' });
-  if (mental < 60) items.push({ code: 'MENTAL_DOMAIN_RISK', domain: 'MENTAL', severity: 'MEDIUM' });
+  if (nutrition < ATTENTION_IBA_MIN) items.push({ code: 'NUTRITION_DOMAIN_RISK', domain: 'NUTRITION', severity: 'MEDIUM' });
+  if (environment < ATTENTION_IBA_MIN) items.push({ code: 'ENVIRONMENT_DOMAIN_RISK', domain: 'ENVIRONMENT', severity: 'MEDIUM' });
+  if (health < ATTENTION_IBA_MIN) items.push({ code: 'HEALTH_DOMAIN_RISK', domain: 'HEALTH', severity: 'HIGH' });
+  if (behavior < ATTENTION_IBA_MIN) items.push({ code: 'BEHAVIOR_DOMAIN_RISK', domain: 'BEHAVIOR', severity: 'MEDIUM' });
+  if (mental < ATTENTION_IBA_MIN) items.push({ code: 'MENTAL_DOMAIN_RISK', domain: 'MENTAL', severity: 'MEDIUM' });
   return items;
 }
 

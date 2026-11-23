@@ -7,7 +7,7 @@ Característica: Evaluación de las cinco libertades
   Escenario: Animal saludable queda en umbral de cumplimiento
     Dado un bovino con condición corporal 3, hidratación 3, cama excelente y manejo calmo
     Cuando se calcula el índice de bienestar
-    Entonces el IBA debe ser mayor o igual a 80
+    Entonces el IBA debe ser mayor o igual a 75
     Y el nivel de cumplimiento debe ser "COMPLIANT"
 
   Escenario: Estrés calórico porcino en emergencia

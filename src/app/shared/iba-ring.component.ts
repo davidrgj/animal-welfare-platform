@@ -95,8 +95,8 @@ export class IbaRingComponent {
     if (this.level === 'COMPLIANT') return 'ok';
     if (this.level === 'ATTENTION') return 'warn';
     if (this.level === 'NON_COMPLIANT') return 'bad';
-    if (this.value >= 80) return 'ok';
-    if (this.value >= 60) return 'warn';
+    if (this.value >= 75) return 'ok';
+    if (this.value >= 50) return 'warn';
     if (this.value > 0) return 'bad';
     return '';
   }

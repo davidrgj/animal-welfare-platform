@@ -47,10 +47,10 @@ def test_ruminant_heat_thresholds():
 
 
 def test_ica_compliance_semaphore():
-    assert compliance_level(80) == "COMPLIANT"
-    assert compliance_level(79.9) == "ATTENTION"
-    assert compliance_level(60) == "ATTENTION"
-    assert compliance_level(59.9) == "NON_COMPLIANT"
+    assert compliance_level(75) == "COMPLIANT"
+    assert compliance_level(74.9) == "ATTENTION"
+    assert compliance_level(50) == "ATTENTION"
+    assert compliance_level(49.9) == "NON_COMPLIANT"
 
 
 def test_minimum_space_by_species_and_swine_stage():
@@ -109,12 +109,16 @@ def test_mental_score_maps_handling_quality():
     assert mental_score("STRESSFUL") == 20
 
 
-def test_welfare_index_weights_five_freedoms():
-    index = welfare_index(100, 100, 100, 100, 100)
-    assert index == 100
-    mixed = welfare_index(80, 60, 40, 100, 20)
-    expected = round1(0.25 * 80 + 0.2 * 60 + 0.25 * 40 + 0.15 * 100 + 0.15 * 20)
-    assert mixed == expected
+def test_welfare_index_weights_follow_ica_by_species():
+    assert welfare_index(100, 100, 100, 100, 100, "CATTLE") == 100
+    assert welfare_index(100, 100, 100, 100, 100, "GOAT") == 100
+    cattle = welfare_index(80, 60, 40, 100, 20, "CATTLE")
+    goat = welfare_index(80, 60, 40, 100, 20, "GOAT")
+    swine = welfare_index(80, 60, 40, 100, 20, "SWINE")
+    assert cattle == round1(0.15 * 80 + 0.35 * 60 + 0.25 * 40 + 0.15 * 100 + 0.10 * 20)
+    assert goat == round1(0.20 * 80 + 0.20 * 60 + 0.35 * 40 + 0.15 * 100 + 0.10 * 20)
+    assert swine == round1(0.10 * 80 + 0.25 * 60 + 0.40 * 40 + 0.15 * 100 + 0.10 * 20)
+    assert cattle != goat
 
 
 def test_drought_cuts_gain_and_welfare():

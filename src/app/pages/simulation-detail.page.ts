@@ -48,7 +48,7 @@ import { EmptyStateComponent } from '../shared/empty-state.component';
               </div>
             </div>
             <p class="muted">Peso objetivo: {{ run.estimatedTargetWeightDate ? (run.estimatedTargetWeightDate | date:'d MMM, y') : 'No alcanzado en el horizonte' }}</p>
-            <p class="muted">Cumplimiento IBA ≥ 80: {{ run.estimatedComplianceDate ? (run.estimatedComplianceDate | date:'d MMM, y') : 'No alcanzado' }}</p>
+            <p class="muted">Cumplimiento IBA ≥ 75: {{ run.estimatedComplianceDate ? (run.estimatedComplianceDate | date:'d MMM, y') : 'No alcanzado' }}</p>
           </section>
           <section class="panel">
             <h2 class="panel-title">Trayectoria</h2>
