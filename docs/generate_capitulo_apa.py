@@ -150,7 +150,7 @@ def main() -> None:
     p(doc, "UNIVERSIDAD COOPERATIVA DE COLOMBIA", bold=True, size=14, align="center", first=False, after=4)
     p(doc, "FACULTAD DE INGENIERÍA", bold=True, size=13, align="center", first=False, after=4)
     p(doc, "PROGRAMA DE INGENIERÍA DE SISTEMAS", bold=True, size=13, align="center", first=False, after=28)
-    p(doc, "IMPLEMENTACIÓN DE UN PROTOTIPO DE PLATAFORMA INTELIGENTE PARA EL MONITOREO Y SIMULACIÓN DEL BIENESTAR ANIMAL EN SISTEMAS PRODUCTIVOS BOVINOS Y CAPRINOS CONFORME A LINEAMIENTOS ICA", bold=True, size=14, align="center", first=False, after=18)
+    p(doc, "IMPLEMENTACIÓN DE UN PROTOTIPO DE PLATAFORMA DIGITAL PARA EL MONITOREO Y LA SIMULACIÓN DEL BIENESTAR ANIMAL EN SISTEMAS PRODUCTIVOS BOVINOS, CAPRINOS Y PORCINOS CONFORME A LINEAMIENTOS ADOPTADOS MEDIANTE LAS RESOLUCIONES 0136 Y 0253 DE 2020 DEL MINISTERIO DE AGRICULTURA Y DESARROLLO RURAL, CON OPERACIONALIZACIÓN DE INDICADORES BAJO FUNCIONES DEL INSTITUTO COLOMBIANO AGROPECUARIO (ICA)", bold=True, size=12, align="center", first=False, after=18)
     p(doc, "Capítulos 12 a 16", size=13, align="center", first=False, after=4)
     p(doc, "Pruebas del sistema, resultados, discusión, conclusiones y recomendaciones", italic=True, size=12, align="center", first=False, after=28)
     p(doc, "DAVID RAMIREZ GUTIERREZ", bold=True, size=12, align="center", first=False, after=4)
@@ -204,6 +204,8 @@ def main() -> None:
         "Tabla 9. Métricas estáticas de calidad",
         "Tabla 10. Defectos de la campaña y estado",
         "Tabla 11. Cumplimiento de los objetivos específicos",
+        "Tabla 12. Especificación del sistema de eventos discretos (SED)",
+        "Tabla 13. Alcance por especie y fuente normativa",
     ]:
         p(doc, line, first=False, after=3, align="left")
 
@@ -279,15 +281,23 @@ def main() -> None:
             ["Inventario observado", "Tres predios (El Recuerdo, La Esperanza, Prueba), seis animales, cuatro perfiles"],
             ["Navegador E2E", "Playwright Chromium, viewport 1280 × 800; exploración adicional 390 × 844"],
             ["Fecha", "28 de octubre de 2026, zona America/Bogota"],
-            ["Fuera de alcance", "Apps nativas iOS/Android, carga destructiva sobre Postgres, fuzzing, WCAG formal, persistencia offline de Ionic Storage"],
+            ["Fuera de alcance", "Apps nativas iOS/Android, carga destructiva sobre Postgres, fuzzing, WCAG formal, sincronización offline diferida hacia la nube, evaluación de campo con productores"],
         ],
         2,
         "Ambiente de ejecución de la campaña",
-        "Elaboración propia (2026). La contraseña de evaluación no se versiona; se inyecta por variables de entorno.",
+        "Elaboración propia (2026). La contraseña de evaluación no se versiona; se inyecta por variables de entorno. No se publican credenciales de demostración en la interfaz ni en este fascículo.",
     )
     p(
         doc,
-        "No se ejecutaron altas ni borrados masivos contra el inventario de producción, para no contaminar la semilla académica. Los formularios de predio y animal se abrieron y se validó el copy, los campos condicionales por especie y las etiquetas en sentence case, sin pulsar Guardar. Esta decisión es coherente con la ética de un prototipo compartido (Hernández-Sampieri y Mendoza, 2018).",
+        "No se ejecutaron altas ni borrados masivos contra el inventario de demostración, para no contaminar la semilla académica. Los formularios de predio y animal se abrieron y se validó el copy, los campos condicionales por especie y las etiquetas en sentence case, sin pulsar Guardar. Esta decisión es coherente con la ética de un prototipo compartido (Hernández-Sampieri y Mendoza, 2018).",
+    )
+    p(
+        doc,
+        "Limitación estructural de validación empírica. Los resultados de IBA, alertas y simulación se sustentan en datos de demostración (semilla académica: predios y animales de prueba). No se documentó una evaluación sistemática con productores o veterinarios en condiciones reales de producción. En consecuencia, no se afirma que la plataforma haya mejorado el bienestar animal, reducido costos ni incrementado la eficiencia productiva en el sector: esos beneficios se presentan únicamente como potenciales. El alcance demostrado se limita a operacionalizar reglas e indicadores alineados a la norma en un prototipo verificable, calcular IBA/THI sobre datos de semilla y simular escenarios in silico. Cumplir una regla del prototipo no equivale a certificación oficial de cumplimiento ICA.",
+    )
+    p(
+        doc,
+        "Modo sin nube. Cuando Supabase no está configurado, la aplicación opera solo con IndexedDB local (semilla en el dispositivo). El prototipo actual no implementa cola de sincronización diferida hacia la nube. En modo nube (producción) se requiere conectividad; no hay offline con re-sincronización demostrada.",
     )
     p(
         doc,
@@ -330,7 +340,7 @@ def main() -> None:
     p(doc, "THI = (1,8·T + 32) − [(0,55 − 0,0055·HR) · (1,8·T − 26)]", first=False, align="center", italic=True)
     p(
         doc,
-        "donde T es la temperatura ambiente en grados Celsius y HR la humedad relativa en porcentaje. Para T = 30 °C y HR = 80 %, el valor es 82,92. Un smoke check previo esperaba 81,3; ese oráculo se corrigió para no dejar un falso positivo. El semáforo del IBA queda en cumple si el índice es ≥ 80, atención si es ≥ 60 y no cumple por debajo de 60. El estrés calórico del porcino entra en emergencia con THI ≥ 84; el de rumiantes, con THI ≥ 90. El espacio mínimo ICA modelado es 4,5 m² (bovino), 1,5 m² (caprino) y 0,85 m² (ceba porcina). La simulación emite un snapshot por día de horizonte, es determinista para la misma semilla y degrada peso e IBA bajo sequía o restricción de alimento frente a la mejora de instalaciones.",
+        "donde T es la temperatura ambiente en grados Celsius y HR la humedad relativa en porcentaje. Para T = 30 °C y HR = 80 %, el valor es 82,92. Un smoke check previo esperaba 81,3; ese oráculo se corrigió para no dejar un falso positivo. El semáforo operativo del IBA, alineado a bandas Alto/Medio/Bajo de las metodologías MEBA/EBA del ICA, queda en cumple si el índice es ≥ 75, atención si es ≥ 50 y no cumple por debajo de 50. Los pesos de las cinco libertades son diferenciados por especie (bovino 15/35/25/15/10; caprino 20/20/35/15/10; porcino 10/25/40/15/10 en nutrición/entorno/salud/conducta/estado mental). El estrés calórico del porcino entra en emergencia con THI ≥ 84; el de rumiantes, con THI ≥ 90. El espacio mínimo modelado es 4,5 m² (bovino), 1,5 m² (caprino) y 0,85 m² (ceba porcina). La simulación emite un snapshot por día de horizonte, es determinista para la misma semilla y degrada peso e IBA bajo sequía o restricción de alimento frente a la mejora de instalaciones.",
     )
     add_table(
         doc,
@@ -348,7 +358,7 @@ def main() -> None:
     heading(doc, "12.6 Pruebas de aceptación", 2)
     p(
         doc,
-        "Las pruebas de aceptación se escribieron en Gherkin (lenguaje natural orientado al negocio), según la práctica de desarrollo guiado por comportamiento (North, 2006; ISTQB, 2023). Los escenarios cubren: (a) animal saludable con IBA ≥ 80 y nivel COMPLIANT; (b) THI porcino 85 clasificado como EMERGENCY; (c) existencia de las features como especificación viva. Los tres escenarios pasaron. Complementan, no sustituyen, la tabla EP del prototipo desplegado.",
+        "Las pruebas de aceptación se escribieron en Gherkin (lenguaje natural orientado al negocio), según la práctica de desarrollo guiado por comportamiento (North, 2006; ISTQB, 2023). Los escenarios cubren: (a) animal saludable con IBA ≥ 75 y nivel COMPLIANT; (b) THI porcino 85 clasificado como EMERGENCY; (c) existencia de las features como especificación viva. Los tres escenarios pasaron. Complementan, no sustituyen, la tabla EP del prototipo desplegado.",
     )
 
     heading(doc, "12.7 Pruebas funcionales y de extremo a extremo", 2)
@@ -527,12 +537,13 @@ def main() -> None:
         [
             ["A02 fallos criptográficos: HTTPS y TLS", "Satisfactorio. Certificado Google Trust Services, HSTS max-age=63072000"],
             ["A01 control de acceso: RLS anónimo", "Satisfactorio. farms y profiles vacíos; insert anónimo denegado"],
+            ["Aislamiento entre productores (RLS)", "Satisfactorio en políticas schema.sql + pruebas ACL de navegación; se recomienda caso JWT productor A ≠ lectura de predios de B en PostgREST"],
             ["API de administración de Auth con clave anónima", "Satisfactorio. HTTP 403"],
             ["Secretos en el bundle del cliente", "Satisfactorio. No hay service_role ni claves privadas"],
             ["A07 identificación: login inválido", "Satisfactorio. API 400; UI en español"],
             ["Cabeceras X-Frame-Options, nosniff, Referrer-Policy, Permissions-Policy", "Satisfactorio. DENY, nosniff, Referrer-Policy y Permissions-Policy en vercel.json; CSP omitido porque script-src 'self' bloquea manejadores inline de Ionic"],
             ["Bucket de evidencias fotográficas", "Satisfactorio. Bucket privado; el cliente usa URLs firmadas (createSignedUrl)"],
-            ["Credenciales demo en login", "Satisfactorio. La UI no publica ni prellena contraseñas de demostración"],
+            ["Credenciales demo aisladas", "Satisfactorio. La UI no publica ni prellena contraseñas; seed académico separado de datos reales"],
         ],
         8,
         "Controles de seguridad evaluados según OWASP Top 10",
@@ -597,19 +608,19 @@ def main() -> None:
     heading(doc, "13. Resultados", 1)
     p(
         doc,
-        "El resultado principal del trabajo es un prototipo funcional, publicado y verificable, que materializa el objetivo general: monitorear, modelar y simular variables de bienestar animal alineadas con el ICA. A diferencia de un mockup, el artefacto calcula el IBA en el cliente, persiste evaluaciones, hallazgos, alertas, fotos y corridas de simulación en PostgreSQL, y aísla al productor mediante políticas RLS.",
+        "El resultado principal del trabajo es un prototipo funcional, publicado y verificable, que materializa el objetivo general ajustado: monitorear, modelar y simular variables de bienestar animal en bovinos, caprinos y porcinos, alineadas a lineamientos MADR/ICA mediante reglas e índices, sin aprendizaje automático. A diferencia de un mockup, el artefacto calcula el IBA en el cliente, persiste evaluaciones, hallazgos, alertas, fotos y corridas de simulación en PostgreSQL, y aísla al productor mediante políticas RLS.",
     )
     p(
         doc,
-        "En el ambiente de evaluación se observó un IBA medio de 81,4 (umbral de cumplimiento), con un ejemplar bovino (VACA-087) en 45,5 y alerta de espacio por debajo del mínimo. El tablero prioriza ese animal y expone cuatro alertas activas. El inventario comprende tres predios georreferenciados y seis animales de las especies bovina, caprina y porcina. El módulo de usuarios lista cuatro perfiles (productor, veterinario y dos administradores). La simulación de un escenario de restricción alimentaria proyectó 125,3 kg y un IBA de 68,2, con gráfica de trayectoria y eventos discretos (hito ICA, peso objetivo, incidente sanitario).",
+        "En el ambiente de evaluación (datos de semilla académica, no predios productivos reales) se observó un IBA medio de 81,4, con un ejemplar bovino (VACA-087) en 45,5 y alerta de espacio por debajo del mínimo. El tablero prioriza ese animal y expone cuatro alertas activas. El inventario de demostración comprende tres predios georreferenciados y seis animales de las especies bovina, caprina y porcina (incluido CERDO-218, dentro del alcance ampliado y documentado). El módulo de usuarios lista cuatro perfiles. La simulación de un escenario de restricción alimentaria proyectó 125,3 kg y un IBA de 68,2, con gráfica de trayectoria y eventos discretos.",
     )
     p(
         doc,
-        "Las pruebas unitarias confirmaron que las ponderaciones de las cinco libertades (25 % nutrición, 20 % entorno, 25 % salud, 15 % conducta y 15 % estado mental), los umbrales 80/60 y el THI coinciden entre el código de producción y el oráculo independiente. Las pruebas de API confirmaron que un cliente anónimo no lee predios ni perfiles. El frontend estático soportó 60 peticiones concurrentes sin error. El prototipo se comporta como PWA usable en viewport de 390 × 844.",
+        "Las pruebas unitarias confirmaron que las ponderaciones diferenciadas por especie, los umbrales 75/50 y el THI coinciden entre el código de producción y el oráculo independiente. Las pruebas de API confirmaron que un cliente anónimo no lee predios ni perfiles. El frontend estático soportó 60 peticiones concurrentes sin error. El prototipo se comporta como PWA usable en viewport de 390 × 844.",
     )
     p(
         doc,
-        "Queda explícito lo que el prototipo no es, para no inflar los resultados: no hay red neuronal ni clasificador de machine learning; el IBA es un índice ponderado interpretable; la simulación es un sistema de eventos discretos determinista in silico, no un gemelo digital con sensores IoT; no hay Spring Boot, Firebase ni Cloudinary. Estas precisiones ya constaban en la sección de limitaciones y se reiteran como resultado negativo deliberado, no como incumplimiento accidental.",
+        "Queda explícito lo que el prototipo no es: no hay red neuronal ni clasificador de machine learning; el IBA es un índice ponderado interpretable; la simulación es un sistema de eventos discretos determinista in silico, no un gemelo digital con sensores IoT; no hay Spring Boot, Firebase ni Cloudinary. Tampoco se midió impacto en bienestar, costos ni eficiencia productiva en campo: esos beneficios se reportan solo como potenciales (véase 12.3).",
     )
 
     heading(doc, "14. Discusión", 1)
@@ -619,76 +630,78 @@ def main() -> None:
     )
     p(
         doc,
-        "En el plano normativo, el prototipo operacionaliza las cinco libertades y los manuales adoptados por las Resoluciones 0136 y 0253 de 2020 (Ministerio de Agricultura y Desarrollo Rural, 2020) y la noción de bienestar del ICA (2020). El semáforo 80/60 no sustituye una inspección oficial, pero convierte el criterio cualitativo en un índice auditable. El THI, con umbrales distintos para porcino y rumiante, responde al estrés calórico como riesgo tropical, en línea con la literatura de zootecnia de precisión (Bayona Sarmiento et al., 2024; Lascano-Rivera et al., 2025). La alerta de espacio mínimo sobre VACA-087 muestra que el sistema no solo registra, sino que interpreta incumplimiento.",
+        "En el plano normativo, el prototipo operacionaliza las cinco libertades y los manuales adoptados por las Resoluciones 0136 y 0253 de 2020 del Ministerio de Agricultura y Desarrollo Rural (2020); el ICA aporta metodologías de evaluación (MEBA/EBA) y funciones de vigilancia, que no se confunden con la expedición de esas resoluciones. El semáforo 75/50 no sustituye una inspección oficial ni una certificación ASI, pero convierte el criterio cualitativo en un índice auditable. El THI, con umbrales distintos para porcino y rumiante, responde al estrés calórico como riesgo tropical (Thom, 1959; Lascano-Rivera et al., 2025, como estado del arte). La alerta de espacio mínimo sobre VACA-087 muestra que el sistema interpreta incumplimiento de regla configurada, no certificación oficial.",
     )
     p(
         doc,
-        "En el plano ingenieril, la arquitectura de cliente enriquecido más Backend as a Service se aparta del diseño inicial (microservicios, Spring Boot, Firebase, Cloudinary). La desviación no es un defecto oculto: reduce superficies de ataque (la service_role no viaja al navegador), concentra las reglas ICA en un solo módulo testeable y aprovecha RLS para el aislamiento del productor. El costo es que la “analítica predictiva con IA” del objetivo específico se materializa como un motor de reglas y un SED, no como aprendizaje supervisado. Discutir esa brecha es más honesto —y más evaluable— que atribuir al prototipo una red neuronal inexistente. El SED sí cumple el tercer objetivo específico: permite evaluar in silico dieta y clima antes de intervenir el animal (UNAD, 2025; Plataforma Tierra, 2025).",
+        "En el plano ingenieril, la arquitectura de cliente enriquecido más Backend as a Service se aparta del diseño inicial (microservicios, Spring Boot, Firebase, Cloudinary). La desviación reduce superficies de ataque, concentra las reglas en un módulo testeable y aprovecha RLS. El segundo objetivo específico, una vez reformulado, se cumple como analítica basada en reglas e índices, no como aprendizaje supervisado: atribuir al prototipo una red neuronal inexistente sería incorrecto. El SED cumple el tercer objetivo: permite evaluar in silico dieta y clima antes de intervenir el animal, con variables de estado y eventos documentados (Banks et al.; anexo SED).",
     )
     p(
         doc,
-        "En el plano metodológico, la campaña confirma que una tabla de 14 escenarios marcada como satisfactoria sin automatizar el cierre de sesión en la nube es insuficiente (Pressman y Maxim, 2015). El DEF-01 solo apareció cuando Playwright esperó la URL /login después de Cerrar sesión; con la corrección desplegada, EP-14 es satisfactorio en producción y la suite E2E completa está en verde. La lección para la Fábrica de Software es incorporar E2E del camino infeliz (logout, guarda, RLS anónimo) en la definición de terminado de cada sprint Scrum. Al mismo tiempo, la pirámide evitó que un error de THI (81,3 versus 82,92) llegara disfrazado de prueba verde.",
+        "En el plano metodológico, Scrum es el proceso de desarrollo, no el diseño de investigación. La campaña de pruebas verifica el artefacto; no sustituye una encuesta ni una observación de campo no ejecutadas. El DEF-01 solo apareció cuando Playwright esperó /login tras Cerrar sesión; con la corrección, EP-14 es satisfactorio. La lección para la Fábrica de Software es incorporar E2E del camino infeliz (logout, guarda, RLS) en la definición de terminado de cada sprint.",
     )
     p(
         doc,
-        "Respecto a los RNF, HTTPS y HSTS se cumplen; el aislamiento del productor se verifica en unitarias y en RLS; la persistencia offline declarada en el análisis de requerimientos no se implementó ni se probó, y debe retirarse como compromiso del prototipo actual. Una Content-Security-Policy estricta (script-src 'self') se evaluó y se retiró del despliegue porque bloqueaba manejadores inline de Ionic y dejaba la interfaz sin estilos; el riesgo residual de XSS se mitiga con X-Frame-Options DENY, nosniff, Referrer-Policy y Permissions-Policy.",
+        "Respecto a los RNF, HTTPS y HSTS se cumplen; el aislamiento del productor se verifica en unitarias, navegación y RLS anónimo. El modo sin Supabase opera solo con IndexedDB local, sin cola de sincronización diferida: cualquier RNF de “offline con sync” se retira del alcance vigente. Una CSP estricta se evaluó y se retiró porque rompía Ionic; el riesgo residual se mitiga con cabeceras DENY, nosniff, Referrer-Policy y Permissions-Policy.",
     )
 
     heading(doc, "15. Conclusiones", 1)
     p(
         doc,
-        "Se concluye que es posible implementar un prototipo de plataforma digital, alineado con lineamientos ICA, que centralice inventario, calcule un índice de bienestar interpretable y simule escenarios productivos mediante eventos discretos. La pregunta de investigación se responde de forma afirmativa, con matices de alcance: la analítica es de reglas y proyección, no de aprendizaje automático, y aun así reduce la brecha entre el registro manual y un tablero de decisión.",
+        "Se concluye que es posible implementar un prototipo de plataforma digital, alineado a lineamientos MADR/ICA, que centralice inventario bovino, caprino y porcino, calcule un índice de bienestar interpretable y simule escenarios mediante eventos discretos. La pregunta de investigación se responde de forma afirmativa, con matices de alcance: la analítica es de reglas y proyección, no de aprendizaje automático; la evidencia empírica es de verificación de software sobre datos de semilla, no de impacto productivo en campo.",
     )
     add_table(
         doc,
-        ["Objetivo específico", "Cumplimiento"],
+        ["Objetivo específico (ajustado)", "Cumplimiento"],
         [
-            ["Modelar variables críticas de bienestar (sanidad, nutrición, comportamiento, trazabilidad) bajo estándares ICA", "Cumplido. Cinco libertades, IBA ponderado, THI, espacio mínimo, hallazgos y alertas"],
-            ["Diseñar un módulo de analítica predictiva de riesgos mediante técnicas de IA", "Cumplido parcialmente. Hay detección de riesgo (semáforo, alertas, prioridad) sin modelo de machine learning. Debe enunciarse como analítica basada en reglas"],
-            ["Implementar un entorno de simulación de intervención técnica", "Cumplido. SED con dieta, clima, horizonte, trayectoria de peso/IBA y eventos discretos"],
+            ["Modelar variables críticas de bienestar bajo reglas trazables a Res. 0136/0253 y MEBA/EBA", "Cumplido. Cinco libertades, IBA por especie, THI, espacio mínimo, hallazgos y alertas"],
+            ["Diseñar un módulo de analítica basada en reglas e índices (IBA, THI, semáforo ≥75 / ≥50)", "Cumplido. Detección de riesgo sin modelo de machine learning"],
+            ["Implementar un entorno SED de intervención técnica con estado, eventos y transiciones", "Cumplido. Dieta, clima, horizonte, trayectoria peso/IBA y eventos discretos"],
         ],
         11,
         "Cumplimiento de los objetivos específicos a la luz de la implementación y de las pruebas",
-        "Elaboración propia (2026).",
+        "Elaboración propia (2026). Objetivos reformulados tras observaciones de la directora (noviembre 2026).",
     )
     p(
         doc,
-        "Las pruebas —unitarias, de aceptación, E2E, de API, de carga y de seguridad— aportan evidencia reproducible de que el prototipo publicado es usable por un administrador, que el anónimo no lee datos y que el cierre de sesión (CU-11 / EP-14) permanece en login tras invalidar el JWT. Esa transparencia fortalece, no debilita, la validez del trabajo de grado.",
+        "Las pruebas aportan evidencia reproducible de que el prototipo publicado es usable por un administrador, que el anónimo no lee datos y que el cierre de sesión permanece en login tras invalidar el JWT. Esa transparencia fortalece la validez del trabajo de grado como prototipo verificable, no como ensayo de campo.",
     )
 
     heading(doc, "16. Recomendaciones", 1)
     p(doc, "Se recomienda, en este orden:", first=True)
-    p(doc, "1. Ajustar el enunciado del segundo objetivo específico en la versión final del documento marco, para que hable de analítica de reglas e índices ICA y no de “técnicas de IA” si no se entrena un modelo.", first=False)
-    p(doc, "2. Retirar del alcance vigente el RNF de persistencia offline, o implementarlo con una prueba de sincronización, pero no dejarlo como requisito no verificado.", first=False)
-    p(doc, "3. Valorar un Content-Security-Policy explícito cuando pueda ensayarse sin romper Ionic, y restringir el bucket de fotos si el prototipo escala a datos reales de predios.", first=False)
-    p(doc, "4. Retirar el hint de credenciales demo en un entorno que deje de ser académico.", first=False)
-    p(doc, "5. Como trabajo futuro —no como deuda de este prototipo—, integrar sensores IoT o wearables (Marketintelo, 2025) y, si hay corpus etiquetado, un clasificador de estrés térmico (Lascano-Rivera et al., 2025), manteniendo el IBA actual como línea base interpretable.", first=False)
-    p(doc, "6. Registrar E2E_EMAIL y E2E_PASSWORD como secretos de GitHub Actions para que el E2E deje de ser solo local/manual.", first=False)
+    p(doc, "1. Incorporar en el documento marco (caps. 1–11) el título, la pregunta y los objetivos reformulados (sin IA no implementada; especies bovino, caprino y porcino).", first=False)
+    p(doc, "2. Unificar el diseño metodológico (constructivo-tecnológico) y retirar encuesta/observación no ejecutadas; mantener Scrum solo como proceso de desarrollo.", first=False)
+    p(doc, "3. Anexar la matriz Excel de trazabilidad normativa y declarar explícitamente que el cumplimiento de reglas del prototipo no es certificación ICA.", first=False)
+    p(doc, "4. Retirar del alcance vigente el RNF de offline con sincronización, o implementarlo con prueba de sync; documentar el modo IndexedDB solo-local.", first=False)
+    p(doc, "5. Añadir caso de prueba RLS con JWT de productor A frente a predios de productor B; mantener credenciales demo aisladas de datos reales.", first=False)
+    p(doc, "6. Realizar evaluación sistemática con productores y veterinarios en condiciones reales antes de afirmar impacto en bienestar, costos o eficiencia.", first=False)
+    p(doc, "7. Como trabajo futuro —no deuda de este prototipo—, sensores IoT y, si hay corpus etiquetado, aprendizaje supervisado, manteniendo el IBA como línea base interpretable.", first=False)
+    p(doc, "8. Registrar E2E_EMAIL y E2E_PASSWORD como secretos de GitHub Actions para automatizar el E2E en CI.", first=False)
 
     page_break(doc)
     heading(doc, "Referencias", 1)
     refs = [
+        "Banks, J., Carson, J. S., Nelson, B. L. y Nicol, D. M. (2010). Discrete-event system simulation (5.ª ed.). Pearson.",
         "Bayona Sarmiento, J. S., Serrano Carrascal, M. K., Navarro Vivas, A. Y., Sarabia Duran, J. J., Ramírez Abril, J. D. y Galvis, J. J. (2024). IA aplicado en ganadería: Sostenibilidad y eficiencia. ResearchGate. https://www.researchgate.net/publication/381227428_IA_APLICADO_EN_GANADERIA",
         "Cohn, M. (2009). Succeeding with Agile: Software development using Scrum. Addison-Wesley.",
         "Fowler, M. y Foemmel, M. (2006). Continuous integration. https://martinfowler.com/articles/continuousIntegration.html",
+        "Fraser, D., Weary, D. M., Pajor, E. A. y Milligan, B. N. (1997). A scientific conception of animal welfare that reflects ethical concerns. Animal Welfare, 6(3), 187–205.",
         "Hernández-Sampieri, R. y Mendoza, C. (2018). Metodología de la investigación: Las rutas cuantitativa, cualitativa y mixta. McGraw-Hill.",
         "IEEE Computer Society. (2014). IEEE standard for software and system test documentation (IEEE Std 829-2008). https://doi.org/10.1109/IEEESTD.2008.4578383",
         "Instituto Colombiano Agropecuario. (2020). ¿Cuál es la definición de bienestar animal? https://www.ica.gov.co/preguntas-frecuentes/subgerencia-de-proteccion-animal/cual-es-la-definicion-de-bienestar-animal",
         "International Software Testing Qualifications Board. (2023). Certified tester foundation level syllabus (v4.0). ISTQB.",
         "ISO/IEC/IEEE. (2022). ISO/IEC/IEEE 29119-1:2022. Software and systems engineering — Software testing — Part 1: General concepts. ISO.",
         "Lascano-Rivera, S. B., Rivera-Escriba, L. A., Balarezo-Urresta, L. R. y Castañeda-Albán, J. E. (2025). Sensores inteligentes y técnicas de machine learning para la detección del estrés en ganado bovino. Innova Science Journal.",
-        "Marketintelo. (2025). Livestock wearables market research report 2033. https://marketintelo.com/report/livestock-wearables-market",
-        "Ministerio de Agricultura y Desarrollo Rural. (2020a). Resolución 000136 de 2020: Por la cual se adopta el Manual de Condiciones de Bienestar Animal para las especies équidas, porcinas, ovinas y caprinas. Instituto Colombiano Agropecuario.",
-        "Ministerio de Agricultura y Desarrollo Rural. (2020b). Resolución 000253 de 2020: Por la cual se adopta el Manual de Condiciones de Bienestar Animal para las especies bovina, bufalina, aves de corral y animales acuáticos. Instituto Colombiano Agropecuario.",
+        "Mellor, D. J. (2017). Operational details of the five domains model and its key applications to the assessment and management of animal welfare. Animals, 7(8), 60. https://doi.org/10.3390/ani7080060",
+        "Ministerio de Agricultura y Desarrollo Rural. (2020a). Resolución 000136 de 2020: Por la cual se adopta el Manual de Condiciones de Bienestar Animal para las especies équidas, porcinas, ovinas y caprinas.",
+        "Ministerio de Agricultura y Desarrollo Rural. (2020b). Resolución 000253 de 2020: Por la cual se adopta el Manual de Condiciones de Bienestar Animal para las especies bovina, bufalina, aves de corral y animales acuáticos.",
         "Molyneaux, I. (2014). The art of application performance testing (2.ª ed.). O’Reilly.",
         "Myers, G. J., Sandler, C. y Badgett, T. (2012). The art of software testing (3.ª ed.). John Wiley & Sons.",
         "North, D. (2006). Introducing BDD. https://dannorth.net/introducing-bdd/",
         "OWASP Foundation. (2021). OWASP Top 10:2021. https://owasp.org/Top10/",
-        "Plataforma Tierra. (2025). Gemelos digitales y simulación in silico: Aplicaciones prácticas en el sector agropecuario. Cajamar. https://www.plataformatierra.es/innovacion/gemelos-digitales-agricultura-ganaderia",
         "Pressman, R. S. y Maxim, B. R. (2015). Software engineering: A practitioner’s approach (8.ª ed.). McGraw-Hill.",
         "Sommerville, I. (2016). Software engineering (10.ª ed.). Pearson.",
         "Thom, E. C. (1959). The discomfort index. Weatherwise, 12(2), 57–61. https://doi.org/10.1080/00431672.1959.9926960",
-        "Universidad Nacional Abierta y a Distancia. (2025, 10 de julio). Simuladores: Tecnología e innovación para el bienestar animal [Video]. YouTube. https://www.youtube.com/watch?v=whin9A51uE8",
     ]
     for ref in refs:
         hanging(doc, ref)
@@ -702,13 +715,45 @@ def main() -> None:
     p(doc, "python3 tests/quality/analyze_quality.py", first=False, align="left")
     p(
         doc,
-        "El repositorio es https://github.com/davidrgj/animal-welfare-platform. El IBA está en src/app/core/welfare-scoring.ts y el SED en src/app/core/simulation.ts. Las políticas de administrador están en supabase/admin-policies.sql.",
+        "El repositorio es https://github.com/davidrgj/animal-welfare-platform. El IBA está en src/app/core/welfare-scoring.ts y el SED en src/app/core/simulation.ts. Las políticas de administrador están en supabase/admin-policies.sql. La matriz normativa está en docs/Matriz_Indicadores_ICA_vs_Software_Bienestar_ICA.xlsx.",
         first=True,
     )
-    heading(doc, "Anexo B. Nota sobre el uso de este fascículo", 2)
+
+    heading(doc, "Anexo B. Especificación del sistema de eventos discretos (SED)", 2)
+    add_table(
+        doc,
+        ["Elemento", "Definición"],
+        [
+            ["Variables de estado", "Peso (kg), IBA simulado, etapa productiva, día de horizonte, fechas estimadas de cumplimiento IBA y peso objetivo"],
+            ["Eventos", "ICA_CHECKPOINT, STAGE_TRANSITION, WEIGHT_TARGET, HEALTH_INCIDENT, WELFARE_DROP"],
+            ["Condiciones", "Etapa por umbrales de peso; IBA ≥75 → checkpoint; IBA <50 → caída; incidente sanitario acotado por semilla"],
+            ["Reglas", "Ganancia diaria por especie/dieta × escenario; desplazamiento de IBA; determinismo mulberry32"],
+            ["Secuencia", "Inicialización → bucle día 1…N → cierre con peso/IBA finales"],
+            ["Diferencia vs proyección simple", "No es una sola fórmula lineal: hay calendario de eventos, transiciones de etapa y snapshots diarios"],
+        ],
+        12,
+        "Especificación formal del SED implementado",
+        "Elaboración propia (2026) a partir de src/app/core/simulation.ts. No es aprendizaje automático ni gemelo digital con IoT.",
+    )
+
+    heading(doc, "Anexo C. Alcance por especie y fuente normativa", 2)
+    add_table(
+        doc,
+        ["Especie", "Norma MADR", "Metodología ICA", "Código / pesos IBA"],
+        [
+            ["Bovino", "Res. 0253 de 2020", "MEBA bovinos/búfalos", "CATTLE · 15/35/25/15/10"],
+            ["Caprino", "Res. 0136 de 2020", "EBA ovinos y caprinos", "GOAT · 20/20/35/15/10"],
+            ["Porcino", "Res. 0136 de 2020", "MEBA porcinos", "SWINE · 10/25/40/15/10"],
+        ],
+        13,
+        "Coherencia título–datos–resultados por especie",
+        "Elaboración propia (2026). CERDO-218 pertenece a este alcance. Cumplir regla del prototipo ≠ certificación oficial ICA.",
+    )
+
+    heading(doc, "Anexo D. Nota sobre el uso de este fascículo", 2)
     p(
         doc,
-        "Este documento está redactado para insertarse como capítulos 12 a 16 del trabajo de grado, sustituyendo la tabla EP preliminar y llenando las secciones de resultados, discusión, conclusiones y recomendaciones que aún no tenían desarrollo. Las referencias deben fusionarse con el capítulo 17 general, eliminando duplicados y conservando un único orden alfabético APA.",
+        "Este documento está redactado para insertarse como capítulos 12 a 16 del trabajo de grado, tras los ajustes solicitados por la directora (noviembre 2026). Las referencias deben fusionarse con el capítulo 17 general, eliminando duplicados y conservando un único orden alfabético APA. El texto listo para sustituir en título, objetivos, metodología y limitaciones del documento marco está en docs/Ajustes_trabajo_grado_observaciones_tutora.docx.",
     )
 
     doc.save(OUT)

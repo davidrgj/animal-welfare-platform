@@ -109,7 +109,7 @@ def main() -> None:
 
     heading(doc, "2. Objetivos", 1)
     for item in [
-        "Verificar las fórmulas ICA (THI, semáforo 80/60, espacio mínimo, estrés calórico por especie) contra un oráculo independiente.",
+        "Verificar las fórmulas ICA (THI, semáforo 75/50, espacio mínimo, estrés calórico por especie) contra un oráculo independiente.",
         "Ejercitar el flujo completo en Vercel: login, tablero, predios, animales, detalle, evaluación, simulación, reportes, usuarios y cierre de sesión.",
         "Comprobar el contrato REST de Supabase (JWT, RLS, códigos HTTP) al estilo Postman.",
         "Medir la capacidad del frontend bajo 20 usuarios concurrentes (equivalente a un plan JMeter).",
@@ -177,10 +177,10 @@ def main() -> None:
 
     heading(doc, "8. Pruebas unitarias", 1)
     para(doc, "11 casos TypeScript (node:test) y 20 casos pytest sobre el oráculo Python. Todos satisfactorios.")
-    para(doc, "THI(30 °C, 80 % RH) = 82,92 (NRC/Thom). Semáforo IBA ≥80 cumple, ≥60 atención, <60 no cumple. Porcino entra en emergencia con THI ≥84. Espacio mínimo 4,5 / 1,5 / 0,85 m². La simulación emite un snapshot por día y es determinista.")
+    para(doc, "THI(30 °C, 80 % RH) = 82,92 (NRC/Thom). Semáforo IBA ≥75 cumple, ≥50 atención, <50 no cumple. Porcino entra en emergencia con THI ≥84. Espacio mínimo 4,5 / 1,5 / 0,85 m². La simulación emite un snapshot por día y es determinista.")
 
     heading(doc, "9. Pruebas de aceptación (Cucumber / Gherkin)", 1)
-    para(doc, "Features en tests/acceptance/features/: login.feature, welfare.feature y simulation.feature. 3/3 pasaron: animal saludable con IBA ≥ 80 y COMPLIANT; THI porcino 85 → EMERGENCY; archivos Gherkin presentes como especificación viva.")
+    para(doc, "Features en tests/acceptance/features/: login.feature, welfare.feature y simulation.feature. 3/3 pasaron: animal saludable con IBA ≥ 75 y COMPLIANT; THI porcino 85 → EMERGENCY; archivos Gherkin presentes como especificación viva.")
 
     heading(doc, "10. Pruebas funcionales / E2E con evidencias", 1)
     para(

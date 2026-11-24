@@ -108,6 +108,41 @@ def test_authenticated_farms_and_animals_use_json_arrays():
     assert isinstance(animals.json(), list)
 
 
+def test_rls_producer_only_sees_own_farms_via_postgrest():
+    """Isolation between producers is enforced by Postgres RLS, not only by UI navigation."""
+    session = sign_in()
+    user_id = session["user"]["id"]
+    profile = requests.get(
+        f"{SUPABASE_URL}/rest/v1/profiles?id=eq.{user_id}&select=id,role",
+        headers=auth_headers(session["access_token"]),
+        timeout=30,
+    )
+    assert profile.status_code == 200
+    rows = profile.json()
+    assert len(rows) == 1
+    role = rows[0]["role"]
+    if role != "PRODUCER":
+        pytest.skip("RLS producer isolation requires a PRODUCER JWT (set E2E_* to a producer account)")
+
+    farms = requests.get(
+        f"{SUPABASE_URL}/rest/v1/farms?select=id,owner_id",
+        headers=auth_headers(session["access_token"]),
+        timeout=30,
+    )
+    assert farms.status_code == 200
+    farm_rows = farms.json()
+    assert isinstance(farm_rows, list)
+    assert all(farm["owner_id"] == user_id for farm in farm_rows), "producer JWT must not read foreign farms via RLS"
+
+    foreign_probe = requests.get(
+        f"{SUPABASE_URL}/rest/v1/farms?select=id,owner_id&owner_id=neq.{user_id}",
+        headers=auth_headers(session["access_token"]),
+        timeout=30,
+    )
+    assert foreign_probe.status_code == 200
+    assert foreign_probe.json() == []
+
+
 def test_welfare_records_payload_includes_iba_fields():
     session = sign_in()
     response = requests.get(
