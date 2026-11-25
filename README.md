@@ -19,7 +19,7 @@ La pantalla de login no publica credenciales. Para el modo local (IndexedDB) o u
 
 Hay dos tipos, y no son una base remota por defecto:
 
-1. **Datos de demostración.** Predios El Recuerdo y La Esperanza, animales BOV-087, BOV-102, CAP-014, POR-218 y POR-331, evaluaciones y alertas. En local se insertan una vez en IndexedDB (`src/app/core/database.ts`). En Supabase se cargan con `supabase/seed.sql`.
+1. **Datos de demostración.** Predios El Recuerdo y La Esperanza, animales VACA-087, VACA-102, CABRA-014, CERDO-218 y CERDO-331, evaluaciones y alertas. En local se insertan una vez en IndexedDB (`src/app/core/database.ts`). En Supabase se cargan con `supabase/seed.sql`.
 2. **Catálogos fijos.** Especie, fuente de agua, rol, etc. viven en `src/app/core/labels.ts`. Son listas de la interfaz, no tablas para editar.
 
 Alta, edición y borrado de predios y animales, nuevas evaluaciones con foto, alertas y simulaciones ya están en la interfaz. Con Supabase esas mismas pantallas persisten en la nube.

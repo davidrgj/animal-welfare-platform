@@ -8,7 +8,7 @@ function animal(overrides: Partial<Animal> = {}): Animal {
   return {
     id: 'animal-1',
     farmId: 'farm-1',
-    tagId: 'BOV-QA',
+    tagId: 'VACA-QA',
     species: 'CATTLE',
     breed: 'Brahman',
     birthDate: '2023-01-15',

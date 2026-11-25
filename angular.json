@@ -20,7 +20,8 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               { "glob": "**/*", "input": "src/assets", "output": "assets" },
-              { "glob": "**/*.svg", "input": "node_modules/ionicons/dist/ionicons/svg", "output": "svg" }
+              { "glob": "**/*.svg", "input": "node_modules/ionicons/dist/ionicons/svg", "output": "svg" },
+              { "glob": "manifest.webmanifest", "input": "src", "output": "/" }
             ],
             "styles": ["src/theme/variables.scss", "src/theme/glassmorphism.scss", "src/styles.scss"],
             "scripts": []
@@ -36,7 +37,8 @@
               "budgets": [
                 { "type": "initial", "maximumWarning": "2mb", "maximumError": "4mb" }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "serviceWorker": "ngsw-config.json"
             },
             "development": {
               "optimization": false,

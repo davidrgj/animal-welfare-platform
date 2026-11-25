@@ -1,27 +1,43 @@
-# Ajuste ICA — pesos y semáforo (tutoría)
+# Alineación IBA ↔ metodologías ICA / resoluciones MADR
 
-Cambios aplicados tras la revisión de la matriz con la investigadora.
+## Distinción institucional
 
-## Semáforo (antes → ahora)
+| Actor | Rol |
+|---|---|
+| **MADR** (Ministerio de Agricultura y Desarrollo Rural) | Expide las Resoluciones **0136** y **0253** de 2020 que adoptan los manuales de condiciones de bienestar animal. |
+| **ICA** | Autoridad sanitaria: metodologías de evaluación (**MEBA** / **EBA**), vigilancia y verificación en predio (p. ej. ASI). |
 
-| Nivel UI | Antes | Ahora (ICA) |
+El prototipo **operacionaliza indicadores** inspirados en esos instrumentos. **No certifica** cumplimiento oficial ni sustituye una visita ICA.
+
+## Semáforo operativo (prototipo)
+
+| Nivel | Antes (genérico) | Ahora (alineado a bandas Alto / Medio / Bajo) |
 |---|---|---|
 | Cumple (`COMPLIANT`) | IBA ≥ 80 | IBA ≥ **75** (Alto ICA) |
 | Atención (`ATTENTION`) | IBA ≥ 60 | IBA ≥ **50** (Medio ICA) |
 | No cumple (`NON_COMPLIANT`) | IBA &lt; 60 | IBA &lt; **50** (Bajo ICA) |
 
-Excelente oficial (≥90% + RSPP/ASI) sigue fuera del MVP: el semáforo operativo marca “Cumple” desde Alto (≥75).
+## Pesos IBA por especie (nutrición / entorno / salud / conducta / mental)
 
-## Pesos IBA por especie
-
-| Dominio | Bovino (MEBA 55/35/10) | Caprino (libertades 20/20/35/10/15) | Porcino (MEBA 50/35/15) |
+| Especie | Norma MADR | Código | Pesos |
 |---|---|---|---|
-| Nutrición | 15% | **20%** | 10% |
-| Entorno | **35%** | **20%** | **25%** |
-| Salud | 25% | **35%** | **40%** (*) |
-| Conducta | 15% | **15%** | 15% |
-| Mental | 10% | **10%** | 10% |
+| Bovino | Res. 0253/2020 | `CATTLE` | 15 / 35 / 25 / 15 / 10 |
+| Caprino | Res. 0136/2020 | `GOAT` | 20 / 20 / 35 / 15 / 10 |
+| Porcino | Res. 0136/2020 | `SWINE` | 10 / 25 / 40 / 15 / 10 |
 
-(*) En porcino, el 15% de gestión oficial se incorpora en Salud (proxy: vacunación / plan sanitario del formulario).
+La especie porcina forma parte del **alcance documentado** del prototipo (no es un accidente del diccionario de datos).
 
-Código: `src/app/core/welfare-scoring.ts` → `IBA_WEIGHTS_BY_SPECIES`, `COMPLIANT_IBA_MIN`, `ATTENTION_IBA_MIN`.
+## Matriz de trazabilidad
+
+Archivo: `docs/Matriz_Indicadores_ICA_vs_Software_Bienestar_ICA.xlsx`
+
+Relaciona: especie, resolución, dominio, variable de entrada, regla de cálculo, umbral, hallazgo y resultado operativo.
+
+## Código
+
+`src/app/core/welfare-scoring.ts` → `IBA_WEIGHTS_BY_SPECIES`, `COMPLIANT_IBA_MIN`, `ATTENTION_IBA_MIN`.
+
+## Offline
+
+- Sin Supabase: IndexedDB local (semilla). **Sin** cola de sync a la nube.
+- Con Supabase (producción): requiere conectividad.

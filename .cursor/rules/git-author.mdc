@@ -1,23 +1,39 @@
 ---
-description: Commits must be authored only by David Ramirez, never Cursor
+description: No Cursor/bot in git identity, commits, co-authors, or branch names
 alwaysApply: true
 ---
 
-# Git authorship
+# Git identity and naming
 
-Mandatory. Every commit in this repository must be **David Ramirez** only.
+Mandatory. Present and future.
 
 ## Identity
+
+Every commit must be authored and committed only by:
 
 - Name: `David Ramirez`
 - Email: `rxgdavid@gmail.com`
 
 Set `user.name` and `user.email` to those values before committing. Pass the same identity as `GIT_AUTHOR_*` and `GIT_COMMITTER_*` if the environment defaults to something else.
 
+## Forbidden references
+
+Nothing in git metadata or naming may refer to Cursor, bots, or agent tooling:
+
+| Surface | Forbidden |
+|---|---|
+| Author name / email | `Cursor`, `Cursor Agent`, `cursoragent@…`, any `*bot*` |
+| Committer name / email | Same as author |
+| Commit message body or subject | Words or trailers that cite Cursor, bot, agent, or AI tooling as author |
+| `Co-authored-by` / other trailers | `Co-authored-by: Cursor`, bot accounts, or agent identities |
+| Branch names | `cursor/…`, `*bot*`, `*agent*` as product/author branding in the name |
+
 ## Never
 
 - Author or committer `Cursor`, `Cursor Agent`, or `cursoragent@cursor.com`
-- `Co-authored-by: Cursor` or any Cursor co-author trailer
+- `Co-authored-by: Cursor` (or any Cursor / bot co-author)
 - A Cursor author with the user as co-author (or the reverse)
+- Commit messages that credit Cursor, a bot, or an agent
+- Branch names that advertise Cursor or a bot
 
-If a hook or wrapper injects a Cursor trailer, strip it before the commit is created (or amend immediately so HEAD has no Cursor attribution).
+If a hook or wrapper injects a Cursor trailer or wrong author, strip it before the commit is created (or amend immediately so HEAD has no Cursor / bot attribution).

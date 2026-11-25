@@ -64,11 +64,11 @@ begin
 
   insert into animals (id, farm_id, tag_id, species, breed, birth_date, sex, initial_weight_kg, current_weight_kg, reproductive_status, purpose, horn_type, electric_fence_associated, swine_stage, environmental_enrichment)
   values
-    (lucero_id, highland_id, 'BOV-102', 'CATTLE', 'Brahman', current_date - 540, 'FEMALE', 280, 318, 'OPEN', 'DUAL_PURPOSE', null, true, null, null),
-    (nimbus_id, highland_id, 'BOV-087', 'CATTLE', 'Holstein', current_date - 900, 'FEMALE', 390, 412, 'LACTATING', 'MILK', null, true, null, null),
-    (luna_id, highland_id, 'CAP-014', 'GOAT', 'Saanen', current_date - 420, 'FEMALE', 28, 34, 'PREGNANT', 'MILK', 'POLLED', null, null, null),
-    (ceiba_id, valley_id, 'POR-331', 'SWINE', 'Landrace', current_date - 150, 'MALE', 42, 78, 'CASTRATED', 'MEAT', null, null, 'FATTENING', true),
-    (bruma_id, valley_id, 'POR-218', 'SWINE', 'Pietrain', current_date - 240, 'FEMALE', 55, 96, 'PREGNANT', 'MEAT', null, null, 'GESTATION', false);
+    (lucero_id, highland_id, 'VACA-102', 'CATTLE', 'Brahman', current_date - 540, 'FEMALE', 280, 318, 'OPEN', 'DUAL_PURPOSE', null, true, null, null),
+    (nimbus_id, highland_id, 'VACA-087', 'CATTLE', 'Holstein', current_date - 900, 'FEMALE', 390, 412, 'LACTATING', 'MILK', null, true, null, null),
+    (luna_id, highland_id, 'CABRA-014', 'GOAT', 'Saanen', current_date - 420, 'FEMALE', 28, 34, 'PREGNANT', 'MILK', 'POLLED', null, null, null),
+    (ceiba_id, valley_id, 'CERDO-331', 'SWINE', 'Landrace', current_date - 150, 'MALE', 42, 78, 'CASTRATED', 'MEAT', null, null, 'FATTENING', true),
+    (bruma_id, valley_id, 'CERDO-218', 'SWINE', 'Pietrain', current_date - 240, 'FEMALE', 55, 96, 'PREGNANT', 'MEAT', null, null, 'GESTATION', false);
 
   insert into welfare_records (
     id, animal_id, evaluator_id, recorded_at, body_condition_score, hydration_times_per_day, bedding_status,
