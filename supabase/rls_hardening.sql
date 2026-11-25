@@ -2,6 +2,22 @@
 -- Closes the two privilege escalations found by rls_isolation_tests.sql (cases 12 and 13).
 -- It does not touch existing users, passwords or rows.
 
+-- The role guard below calls is_admin(); projects created before admin-policies.sql do not have it yet.
+create or replace function public.is_admin()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.profiles
+    where id = auth.uid() and role = 'ADMINISTRATOR'
+  );
+$$;
+
+grant execute on function public.is_admin() to authenticated;
+
 -- Sign-up metadata is written by the client, so it can never grant the administrator role.
 create or replace function public.handle_new_user()
 returns trigger
