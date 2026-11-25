@@ -18,6 +18,7 @@
     "@angular/platform-browser": "^19.2.4",
     "@angular/platform-browser-dynamic": "^19.2.4",
     "@angular/router": "^19.2.4",
+    "@angular/service-worker": "^19.2.25",
     "@capacitor/core": "^8.6.2",
     "@capacitor/geolocation": "^8.2.5",
     "@ionic/angular": "^8.5.2",

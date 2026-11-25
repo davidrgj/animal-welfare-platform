@@ -1,8 +1,9 @@
 import { registerLocaleData } from '@angular/common';
 import localeEsCo from '@angular/common/locales/es-CO';
+import { isDevMode, LOCALE_ID } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideRouter, withHashLocation } from '@angular/router';
-import { LOCALE_ID } from '@angular/core';
+import { provideServiceWorker } from '@angular/service-worker';
 import { provideIonicAngular } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { addOutline, alertCircleOutline, analyticsOutline, calendarOutline, cameraOutline, checkmarkCircleOutline, chevronDownOutline, clipboardOutline, cloudOfflineOutline, documentTextOutline, flaskOutline, homeOutline, imagesOutline, leafOutline, locationOutline, logOutOutline, pawOutline, peopleOutline, personOutline, pulseOutline, saveOutline, sunnyOutline, thermometerOutline, warningOutline, waterOutline } from 'ionicons/icons';
@@ -16,6 +17,10 @@ bootstrapApplication(AppComponent, {
   providers: [
     { provide: LOCALE_ID, useValue: 'es-CO' },
     provideIonicAngular({ mode: 'ios' }),
-    provideRouter(routes, withHashLocation())
+    provideRouter(routes, withHashLocation()),
+    provideServiceWorker('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      registrationStrategy: 'registerWhenStable:30000'
+    })
   ]
 }).catch((error) => console.error(error));
