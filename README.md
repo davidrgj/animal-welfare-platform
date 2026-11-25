@@ -13,7 +13,7 @@ npm start
 
 Abre http://localhost:4200
 
-La pantalla de login no publica credenciales. Para el modo local (IndexedDB) o una base sembrada, usa las cuentas definidas solo en `src/app/core/database.ts` / `supabase/seed.sql` — no las pegues en la interfaz ni en Vercel.
+La pantalla de login no publica credenciales y el repositorio no guarda contraseñas de las cuentas en la nube. Las de demostración en Supabase las define quien ejecuta `supabase/seed.sql` (variables `*_password` al inicio del archivo) y se entregan por un canal privado. El modo local (IndexedDB, solo cuando no hay proyecto Supabase configurado) usa una clave de demostración propia, definida en `src/app/core/database.ts`, que solo abre los datos guardados en ese navegador.
 
 ## Qué datos hay
 
@@ -35,6 +35,21 @@ Falta crear tablas y datos de demo en el [SQL editor](https://supabase.com/dashb
 3. `supabase/harden-storage.sql` (si el bucket `welfare-photos` ya existía como público)
 
 Si el esquema ya estaba aplicado antes del CRUD de usuarios, ejecuta también `supabase/admin-policies.sql`.
+
+Si el esquema ya estaba aplicado antes del endurecimiento de roles, ejecuta `supabase/rls_hardening.sql`: impide que un usuario cambie su propio rol y que un registro público obtenga el rol administrador. No modifica usuarios, contraseñas ni datos existentes.
+
+### Pruebas de aislamiento RLS
+
+`supabase/rls_isolation_tests.sql` ejecuta 13 casos directamente sobre las políticas (lectura, modificación, borrado e inserción entre productores, visibilidad del veterinario, acceso anónimo y escalada de privilegios). Pégalo completo en el SQL editor: crea usuarios y datos ficticios, los revierte al terminar y devuelve una fila por caso con `PASS` o `FAIL`.
+
+Para ejecutarlo sin tocar Supabase, sobre un PostgreSQL local vacío:
+
+```bash
+psql -d rls_lab -c "create extension if not exists pgcrypto"
+psql -d rls_lab -f tests/security/local_supabase_shim.sql
+psql -d rls_lab -f supabase/schema.sql
+psql -d rls_lab -f supabase/rls_isolation_tests.sql
+```
 
 Para que el registro entre de inmediato (sin correo de verificación):
 

@@ -12,6 +12,15 @@ export function credentials(): { email: string; password: string } {
   return { email, password };
 }
 
+export type RoleAccount = { email: string; password: string } | null;
+
+/** Reads E2E_PRODUCER_* or E2E_VETERINARIAN_*; null when the variables are not set. */
+export function roleAccount(role: 'PRODUCER' | 'VETERINARIAN'): RoleAccount {
+  const email = process.env[`E2E_${role}_EMAIL`] ?? '';
+  const password = process.env[`E2E_${role}_PASSWORD`] ?? '';
+  return email && password ? { email, password } : null;
+}
+
 export async function fillIonInput(page: Page, name: string, value: string): Promise<void> {
   const host = page.locator(`ion-input[name="${name}"]`);
   await host.waitFor({ state: 'visible' });
