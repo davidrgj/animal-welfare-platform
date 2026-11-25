@@ -1,10 +1,15 @@
 -- Run after schema.sql in the SQL editor.
+-- Demo passwords are not stored in the repository: fill the three *_password variables below before running.
+-- Running this file again deletes and recreates the three demo accounts with the passwords you set here.
 -- Authentication > Providers > Email: disable "Confirm email" so demo users can sign in without mail.
 
 create extension if not exists pgcrypto;
 
 do $$
 declare
+  producer_password text := '';
+  veterinarian_password text := '';
+  administrator_password text := '';
   producer_id uuid := '11111111-1111-4111-a111-111111111111';
   vet_id uuid := '22222222-2222-4222-a222-222222222222';
   admin_id uuid := '33333333-3333-4333-a333-333333333333';
@@ -21,6 +26,10 @@ declare
   ceiba_rec uuid := '77777777-7777-4777-a777-444444444444';
   bruma_rec uuid := '77777777-7777-4777-a777-555555555555';
 begin
+  if '' in (producer_password, veterinarian_password, administrator_password) then
+    raise exception 'Set producer_password, veterinarian_password and administrator_password at the top of seed.sql before running it';
+  end if;
+
   delete from auth.identities where user_id in (producer_id, vet_id, admin_id);
   delete from auth.users where id in (producer_id, vet_id, admin_id);
 
@@ -31,21 +40,21 @@ begin
   ) values
   (
     '00000000-0000-0000-0000-000000000000', producer_id, 'authenticated', 'authenticated',
-    'producer@farm.local', crypt('Producer123!', gen_salt('bf')), now(),
+    'producer@farm.local', crypt(producer_password, gen_salt('bf')), now(),
     '{"provider":"email","providers":["email"]}',
     '{"full_name":"Camila Restrepo","document_id":"1029384756","phone":"3001234567","role":"PRODUCER"}',
     now(), now(), '', '', '', ''
   ),
   (
     '00000000-0000-0000-0000-000000000000', vet_id, 'authenticated', 'authenticated',
-    'vet@farm.local', crypt('Vet123!', gen_salt('bf')), now(),
+    'vet@farm.local', crypt(veterinarian_password, gen_salt('bf')), now(),
     '{"provider":"email","providers":["email"]}',
     '{"full_name":"Andres Molina","document_id":"TP-44120","phone":"3109876543","role":"VETERINARIAN"}',
     now(), now(), '', '', '', ''
   ),
   (
     '00000000-0000-0000-0000-000000000000', admin_id, 'authenticated', 'authenticated',
-    'admin@farm.local', crypt('Admin123!', gen_salt('bf')), now(),
+    'admin@farm.local', crypt(administrator_password, gen_salt('bf')), now(),
     '{"provider":"email","providers":["email"]}',
     '{"full_name":"David Ramirez","document_id":"79800112","phone":"3205558899","role":"ADMINISTRATOR"}',
     now(), now(), '', '', '', ''
@@ -56,6 +65,9 @@ begin
     (gen_random_uuid(), producer_id, jsonb_build_object('sub', producer_id::text, 'email', 'producer@farm.local'), 'email', producer_id::text, now(), now(), now()),
     (gen_random_uuid(), vet_id, jsonb_build_object('sub', vet_id::text, 'email', 'vet@farm.local'), 'email', vet_id::text, now(), now(), now()),
     (gen_random_uuid(), admin_id, jsonb_build_object('sub', admin_id::text, 'email', 'admin@farm.local'), 'email', admin_id::text, now(), now(), now());
+
+  -- The sign-up trigger never grants the administrator role from metadata.
+  update profiles set role = 'ADMINISTRATOR' where id = admin_id;
 
   insert into farms (id, owner_id, name, vaccination_registry, hectares, latitude, longitude, water_source, soil_type, department, municipality)
   values

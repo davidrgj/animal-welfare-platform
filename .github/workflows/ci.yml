@@ -43,4 +43,8 @@ jobs:
           E2E_BASE_URL: ${{ secrets.E2E_BASE_URL }}
           E2E_EMAIL: ${{ secrets.E2E_EMAIL }}
           E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
+          E2E_PRODUCER_EMAIL: ${{ secrets.E2E_PRODUCER_EMAIL }}
+          E2E_PRODUCER_PASSWORD: ${{ secrets.E2E_PRODUCER_PASSWORD }}
+          E2E_VETERINARIAN_EMAIL: ${{ secrets.E2E_VETERINARIAN_EMAIL }}
+          E2E_VETERINARIAN_PASSWORD: ${{ secrets.E2E_VETERINARIAN_PASSWORD }}
         run: npx playwright test --config tests/e2e/playwright.config.ts

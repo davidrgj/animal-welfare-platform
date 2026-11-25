@@ -35,6 +35,10 @@ export class AnimalWelfareDatabase extends Dexie {
 
 export const database = new AnimalWelfareDatabase();
 
+// Only unlocks the demo accounts stored in this browser's IndexedDB when no Supabase project is configured.
+// Cloud accounts never use it.
+const LOCAL_DEMO_PASSWORD = 'local-demo';
+
 export async function ensureSeed(): Promise<void> {
   if (isCloud()) return;
   if (await database.profiles.count()) return;
@@ -45,11 +49,12 @@ export async function ensureSeed(): Promise<void> {
   const highlandId = newId();
   const valleyId = newId();
   const createdAt = nowIso();
+  const localDemoPasswordHash = await hashSecret(LOCAL_DEMO_PASSWORD);
 
   await database.profiles.bulkAdd([
-    { id: producerId, fullName: 'Camila Restrepo', email: 'producer@farm.local', passwordHash: await hashSecret('Producer123!'), documentId: '1029384756', phone: '3001234567', role: 'PRODUCER', createdAt },
-    { id: vetId, fullName: 'Andres Molina', email: 'vet@farm.local', passwordHash: await hashSecret('Vet123!'), documentId: 'TP-44120', phone: '3109876543', role: 'VETERINARIAN', createdAt },
-    { id: adminId, fullName: 'David Ramirez', email: 'admin@farm.local', passwordHash: await hashSecret('Admin123!'), documentId: '79800112', phone: '3205558899', role: 'ADMINISTRATOR', createdAt }
+    { id: producerId, fullName: 'Camila Restrepo', email: 'producer@farm.local', passwordHash: localDemoPasswordHash, documentId: '1029384756', phone: '3001234567', role: 'PRODUCER', createdAt },
+    { id: vetId, fullName: 'Andres Molina', email: 'vet@farm.local', passwordHash: localDemoPasswordHash, documentId: 'TP-44120', phone: '3109876543', role: 'VETERINARIAN', createdAt },
+    { id: adminId, fullName: 'David Ramirez', email: 'admin@farm.local', passwordHash: localDemoPasswordHash, documentId: '79800112', phone: '3205558899', role: 'ADMINISTRATOR', createdAt }
   ]);
 
   await database.farms.bulkAdd([

@@ -1,22 +1,23 @@
 import { expect, test } from '@playwright/test';
-import { login, shot } from '../helpers';
+import { login, roleAccount, RoleAccount, shot } from '../helpers';
 
 type RoleCase = {
   key: 'producer' | 'vet';
-  email: string;
-  password: string;
+  account: RoleAccount;
   roleLabel: string;
 };
 
 const roles: RoleCase[] = [
-  { key: 'producer', email: 'producer@farm.local', password: 'Producer123!', roleLabel: 'Productor' },
-  { key: 'vet', email: 'vet@farm.local', password: 'Vet123!', roleLabel: 'Veterinario' }
+  { key: 'producer', account: roleAccount('PRODUCER'), roleLabel: 'Productor' },
+  { key: 'vet', account: roleAccount('VETERINARIAN'), roleLabel: 'Veterinario' }
 ];
 
 for (const role of roles) {
   test.describe(`Walkthrough ${role.roleLabel}`, () => {
+    test.skip(!role.account, 'Set E2E_PRODUCER_* and E2E_VETERINARIAN_* to run the role walkthroughs');
+
     test.beforeEach(async ({ page }) => {
-      await login(page, role.email, role.password);
+      await login(page, role.account?.email, role.account?.password);
     });
 
     test(`dashboard farms animals simulation reports profile and users block`, async ({ page }) => {
