@@ -203,7 +203,7 @@ def main() -> None:
             ["EP-10", "Simulación SED", "Listado o detalle con peso, IBA y eventos", "Satisfactorio", "10-simulation / 23-simulation-detail"],
             ["EP-11", "Reporte de predio", "IBA medio e inventario", "Satisfactorio", "14-reports"],
             ["EP-12", "CRUD usuarios", "Listado de perfiles y roles", "Satisfactorio (4)", "15-users-admin"],
-            ["EP-13", "Bloqueo /app/users", "adminGuard si no es administrador", "Satisfactorio (cuenta sí es admin)", "15-users-admin"],
+            ["EP-13", "Bloqueo /app/users", "adminGuard si no es administrador", "Satisfactorio (admin, productor y veterinario)", "15-users-admin / 24-ep13-producer / 25-ep13-vet"],
             ["EP-14", "Cerrar sesión", "Vuelve a login; /app exige auth", "Satisfactorio", "06-logout / 04-guard-redirect"],
         ],
     )
@@ -302,10 +302,12 @@ def main() -> None:
     scenario(
         doc,
         "10.12 EP-12 / EP-13 · Usuarios y adminGuard",
-        "La cuenta administrador lista 4 usuarios y roles. El adminGuard protege /app/users para no administradores (verificado por código y por la presencia del módulo solo con rol admin).",
+        "La cuenta administrador lista 4 usuarios y roles. El adminGuard protege /app/users: productor y veterinario son redirigidos a /#/app/profile (Cuenta) y no ven el botón Usuarios y roles.",
         "15-users-admin.png",
         "Figura 15. EP-12 — administración de usuarios y roles.",
     )
+    picture(doc, "24-ep13-producer-users-blocked.png", "Figura 15b. EP-13 — productor redirigido a Cuenta tras intentar /app/users.")
+    picture(doc, "25-ep13-vet-users-blocked.png", "Figura 15c. EP-13 — veterinario redirigido a Cuenta tras intentar /app/users.")
 
     scenario(
         doc,
