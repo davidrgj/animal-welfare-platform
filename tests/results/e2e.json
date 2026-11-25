@@ -2,13 +2,14 @@
   "config": {
     "argv": [
       "/exec-daemon/node",
-      "/workspace/node_modules/.bin/playwright",
+      "/agent/repos/animal-welfare-platform/node_modules/.bin/playwright",
       "test",
       "--config",
-      "tests/e2e/playwright.config.ts"
+      "tests/e2e/playwright.config.ts",
+      "tests/e2e/specs/role-walkthrough.spec.ts"
     ],
-    "configFile": "/workspace/tests/e2e/playwright.config.ts",
-    "rootDir": "/workspace/tests/e2e/specs",
+    "configFile": "/agent/repos/animal-welfare-platform/tests/e2e/playwright.config.ts",
+    "rootDir": "/agent/repos/animal-welfare-platform/tests/e2e/specs",
     "failOnFlakyTests": false,
     "forbidOnly": false,
     "fullyParallel": false,
@@ -24,7 +25,7 @@
     "preserveOutput": "always",
     "projects": [
       {
-        "outputDir": "/workspace/docs/evidence/playwright-failures",
+        "outputDir": "/agent/repos/animal-welfare-platform/docs/evidence/playwright-failures",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
@@ -32,7 +33,7 @@
         },
         "id": "chromium",
         "name": "chromium",
-        "testDir": "/workspace/tests/e2e/specs",
+        "testDir": "/agent/repos/animal-welfare-platform/tests/e2e/specs",
         "testIgnore": [],
         "testMatch": [
           "**/*.@(spec|test).?(c|m)[jt]s?(x)"
@@ -44,15 +45,15 @@
       {
         "grep": {},
         "grepInvert": null,
-        "outputDir": "/workspace/docs/evidence/playwright-failures",
+        "outputDir": "/agent/repos/animal-welfare-platform/docs/evidence/playwright-failures",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
           "actualWorkers": 1
         },
         "name": "chromium",
-        "testDir": "/workspace/tests/e2e/specs",
-        "snapshotDir": "/workspace/tests/e2e/specs",
+        "testDir": "/agent/repos/animal-welfare-platform/tests/e2e/specs",
+        "snapshotDir": "/agent/repos/animal-welfare-platform/tests/e2e/specs",
         "testIgnore": [],
         "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
         "timeout": 180000,
@@ -107,20 +108,20 @@
   },
   "suites": [
     {
-      "title": "auth.spec.ts",
-      "file": "auth.spec.ts",
+      "title": "role-walkthrough.spec.ts",
+      "file": "role-walkthrough.spec.ts",
       "column": 0,
       "line": 0,
       "specs": [],
       "suites": [
         {
-          "title": "Authentication",
-          "file": "auth.spec.ts",
-          "line": 4,
-          "column": 6,
+          "title": "Walkthrough Productor",
+          "file": "role-walkthrough.spec.ts",
+          "line": 17,
+          "column": 8,
           "specs": [
             {
-              "title": "login page shows ICA branding and sentence-case labels",
+              "title": "dashboard farms animals simulation reports profile and users block",
               "ok": true,
               "tags": [],
               "tests": [
@@ -135,12 +136,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 8804,
+                      "duration": 76251,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-29T03:12:42.591Z",
+                      "startTime": "2026-11-25T01:09:16.969Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -148,234 +149,21 @@
                   "status": "expected"
                 }
               ],
-              "id": "d748ac400d08b85935ef-d9047726b5a11e5b7375",
-              "file": "auth.spec.ts",
-              "line": 5,
-              "column": 7
-            },
-            {
-              "title": "invalid password shows a Spanish error and stays on login",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 180000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 8939,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-10-29T03:12:51.456Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "d748ac400d08b85935ef-bf41dea8d66939ec2265",
-              "file": "auth.spec.ts",
-              "line": 17,
-              "column": 7
-            },
-            {
-              "title": "valid credentials open the dashboard",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 180000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 9638,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-10-29T03:13:00.406Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "d748ac400d08b85935ef-cdd699b7846bb6990413",
-              "file": "auth.spec.ts",
-              "line": 27,
-              "column": 7
-            },
-            {
-              "title": "protected dashboard redirects guests to login",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 180000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 8759,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-10-29T03:13:10.050Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "d748ac400d08b85935ef-c36b6d00619d4db0c59f",
-              "file": "auth.spec.ts",
-              "line": 33,
-              "column": 7
-            },
-            {
-              "title": "logout returns to login",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 180000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 17326,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-10-29T03:13:18.816Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "d748ac400d08b85935ef-e29b5f07efbb8adfe3ed",
-              "file": "auth.spec.ts",
-              "line": 40,
-              "column": 7
-            },
-            {
-              "title": "register page lists producer and veterinarian but not administrator",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 180000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 8795,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-10-29T03:13:36.149Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "d748ac400d08b85935ef-92d9c9f8fa7ff500a1fe",
-              "file": "auth.spec.ts",
-              "line": 51,
-              "column": 7
-            },
-            {
-              "title": "guest with a session is sent away from login",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 180000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 549,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-10-29T03:13:44.951Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "d748ac400d08b85935ef-1cc9c99596b8e033e7f8",
-              "file": "auth.spec.ts",
-              "line": 62,
-              "column": 7
+              "id": "b5f44fef878d576b82ec-7da78ed86a34bad7dbd4",
+              "file": "role-walkthrough.spec.ts",
+              "line": 22,
+              "column": 9
             }
           ]
-        }
-      ]
-    },
-    {
-      "title": "navigation.spec.ts",
-      "file": "navigation.spec.ts",
-      "column": 0,
-      "line": 0,
-      "specs": [],
-      "suites": [
+        },
         {
-          "title": "Authenticated navigation",
-          "file": "navigation.spec.ts",
-          "line": 4,
-          "column": 6,
+          "title": "Walkthrough Veterinario",
+          "file": "role-walkthrough.spec.ts",
+          "line": 17,
+          "column": 8,
           "specs": [
             {
-              "title": "farm inventory is consistent with the dashboard count",
+              "title": "dashboard farms animals simulation reports profile and users block",
               "ok": true,
               "tags": [],
               "tests": [
@@ -390,12 +178,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 17599,
+                      "duration": 76628,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-10-29T03:13:45.510Z",
+                      "startTime": "2026-11-25T01:10:33.297Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -403,316 +191,10 @@
                   "status": "expected"
                 }
               ],
-              "id": "5d2868f7d23420c27cca-03ce40d8adae3db3d38a",
-              "file": "navigation.spec.ts",
-              "line": 9,
-              "column": 7
-            },
-            {
-              "title": "tab bar reaches farms, animals, simulation and profile",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 180000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 35323,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-10-29T03:14:03.119Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "5d2868f7d23420c27cca-fe61447c83b873ba3192",
-              "file": "navigation.spec.ts",
-              "line": 23,
-              "column": 7
-            },
-            {
-              "title": "new farm form uses sentence-case title and required identity fields",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 180000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 9659,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-10-29T03:14:38.449Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "5d2868f7d23420c27cca-32343bdc1373e40bb219",
-              "file": "navigation.spec.ts",
-              "line": 39,
-              "column": 7
-            },
-            {
-              "title": "new animal form reveals species-specific controls",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 180000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 9392,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-10-29T03:14:48.116Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "5d2868f7d23420c27cca-970a70744006caf0ef0d",
-              "file": "navigation.spec.ts",
-              "line": 48,
-              "column": 7
-            },
-            {
-              "title": "reports page is reachable from the account screen",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 180000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 10461,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-10-29T03:14:57.515Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "5d2868f7d23420c27cca-4bd39fb4754c383ef515",
-              "file": "navigation.spec.ts",
-              "line": 58,
-              "column": 7
-            },
-            {
-              "title": "users administration is hidden from non-admin or redirected",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 180000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 10158,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-10-29T03:15:07.984Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "5d2868f7d23420c27cca-1479bffbd05a65e669f4",
-              "file": "navigation.spec.ts",
-              "line": 66,
-              "column": 7
-            },
-            {
-              "title": "dashboard uses the corporate date format on alerts when present",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 180000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 9838,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-10-29T03:15:18.149Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "5d2868f7d23420c27cca-ad369c35fd3b5703a2d2",
-              "file": "navigation.spec.ts",
-              "line": 76,
-              "column": 7
-            },
-            {
-              "title": "animal detail shows IBA ring and opens the welfare form",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 180000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 18159,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-10-29T03:15:27.997Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "5d2868f7d23420c27cca-f6b69b7542d74dee6854",
-              "file": "navigation.spec.ts",
-              "line": 88,
-              "column": 7
-            },
-            {
-              "title": "simulation detail opens from an existing run when available",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 180000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 18310,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-10-29T03:15:46.163Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "5d2868f7d23420c27cca-c5090d7c6dd5180d21b4",
-              "file": "navigation.spec.ts",
-              "line": 108,
-              "column": 7
-            },
-            {
-              "title": "mobile viewport keeps login and dashboard usable",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 180000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 18076,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-10-29T03:16:04.481Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "5d2868f7d23420c27cca-5148a1edb23d6e14d7d3",
-              "file": "navigation.spec.ts",
-              "line": 122,
-              "column": 7
+              "id": "b5f44fef878d576b82ec-c4ad70fd81bc99cc45bd",
+              "file": "role-walkthrough.spec.ts",
+              "line": 22,
+              "column": 9
             }
           ]
         }
@@ -721,9 +203,9 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-10-29T03:12:42.239Z",
-    "duration": 220349.138,
-    "expected": 17,
+    "startTime": "2026-11-25T01:09:16.596Z",
+    "duration": 153390.233,
+    "expected": 2,
     "skipped": 0,
     "unexpected": 0,
     "flaky": 0

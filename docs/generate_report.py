@@ -203,7 +203,7 @@ def main() -> None:
             ["EP-10", "Simulación SED", "Listado o detalle con peso, IBA y eventos", "Satisfactorio", "10-simulation / 23-simulation-detail"],
             ["EP-11", "Reporte de predio", "IBA medio e inventario", "Satisfactorio", "14-reports"],
             ["EP-12", "CRUD usuarios", "Listado de perfiles y roles", "Satisfactorio (4)", "15-users-admin"],
-            ["EP-13", "Bloqueo /app/users", "adminGuard si no es administrador", "Satisfactorio (admin, productor y veterinario)", "15-users-admin / 24-ep13-producer / 25-ep13-vet"],
+            ["EP-13", "Bloqueo /app/users y recorrido por rol", "Productor y veterinario usan módulos operativos; /users bloqueado", "Satisfactorio", "role-producer-* / role-vet-*"],
             ["EP-14", "Cerrar sesión", "Vuelve a login; /app exige auth", "Satisfactorio", "06-logout / 04-guard-redirect"],
         ],
     )
@@ -302,12 +302,38 @@ def main() -> None:
     scenario(
         doc,
         "10.12 EP-12 / EP-13 · Usuarios y adminGuard",
-        "La cuenta administrador lista 4 usuarios y roles. El adminGuard protege /app/users: productor y veterinario son redirigidos a /#/app/profile (Cuenta) y no ven el botón Usuarios y roles.",
+        "La cuenta administrador lista 4 usuarios y roles. A continuación se documenta el recorrido operativo de productor y veterinario (módulos visibles, menú de cuenta y bloqueo de /app/users).",
         "15-users-admin.png",
-        "Figura 15. EP-12 — administración de usuarios y roles.",
+        "Figura 15. EP-12 — administración de usuarios y roles (solo administrador).",
     )
-    picture(doc, "24-ep13-producer-users-blocked.png", "Figura 15b. EP-13 — productor redirigido a Cuenta tras intentar /app/users.")
-    picture(doc, "25-ep13-vet-users-blocked.png", "Figura 15c. EP-13 — veterinario redirigido a Cuenta tras intentar /app/users.")
+
+    heading(doc, "10.12.1 Recorrido con rol productor", 3)
+    para(
+        doc,
+        "Sesión producer@farm.local (Camila Restrepo). El tablero muestra IBA filtrado a sus predios (2 predios, 5 evaluados). Accede a Predios, Animales, detalle animal, Simulación y Reportes. El menú de cuenta ofrece Mi cuenta y Reportes de predio; no ofrece Usuarios y roles. Al abrir /#/app/users el adminGuard redirige a Cuenta.",
+    )
+    picture(doc, "role-producer-01-dashboard.png", "Figura 15a. EP-13 — productor: tablero Estado ICA (2 predios propios).")
+    picture(doc, "role-producer-02-farms.png", "Figura 15b. EP-13 — productor: inventario de predios.")
+    picture(doc, "role-producer-03-animals.png", "Figura 15c. EP-13 — productor: inventario de animales.")
+    picture(doc, "role-producer-04-animal-detail.png", "Figura 15d. EP-13 — productor: detalle e IBA de un animal.")
+    picture(doc, "role-producer-05-simulation.png", "Figura 15e. EP-13 — productor: módulo de simulación.")
+    picture(doc, "role-producer-06-reports.png", "Figura 15f. EP-13 — productor: reportes de predio.")
+    picture(doc, "role-producer-08-account-menu.png", "Figura 15g. EP-13 — productor: menú de cuenta sin Usuarios y roles.")
+    picture(doc, "role-producer-09-users-blocked.png", "Figura 15h. EP-13 — productor: /app/users redirige a Cuenta.")
+
+    heading(doc, "10.12.2 Recorrido con rol veterinario", 3)
+    para(
+        doc,
+        "Sesión vet@farm.local (Andres Molina). El veterinario ve el inventario completo (6 ejemplares; staff). Accede a Predios, Animales, Simulación y Reportes. El menú de cuenta tampoco ofrece Usuarios y roles. /#/app/users redirige a Cuenta.",
+    )
+    picture(doc, "role-vet-01-dashboard.png", "Figura 15i. EP-13 — veterinario: tablero Estado ICA.")
+    picture(doc, "role-vet-02-farms.png", "Figura 15j. EP-13 — veterinario: predios visibles.")
+    picture(doc, "role-vet-03-animals.png", "Figura 15k. EP-13 — veterinario: inventario vivo (6 ejemplares).")
+    picture(doc, "role-vet-04-animal-detail.png", "Figura 15l. EP-13 — veterinario: detalle animal.")
+    picture(doc, "role-vet-05-simulation.png", "Figura 15m. EP-13 — veterinario: simulación.")
+    picture(doc, "role-vet-06-reports.png", "Figura 15n. EP-13 — veterinario: reportes.")
+    picture(doc, "role-vet-08-account-menu.png", "Figura 15o. EP-13 — veterinario: menú de cuenta sin Usuarios y roles.")
+    picture(doc, "role-vet-09-users-blocked.png", "Figura 15p. EP-13 — veterinario: /app/users redirige a Cuenta.")
 
     scenario(
         doc,
