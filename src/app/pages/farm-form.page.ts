@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonInput, IonItem, IonList, IonSelect, IonSelectOption, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { Geolocation } from '@capacitor/geolocation';
+import { IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonInput, IonItem, IonList, IonSelect, IonSelectOption, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { OPTIONS } from '../core/labels';
 import { WaterSource } from '../core/models';
 import { StoreService } from '../core/store.service';
@@ -9,7 +10,7 @@ import { StoreService } from '../core/store.service';
 @Component({
   selector: 'app-farm-form',
   standalone: true,
-  imports: [FormsModule, IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonInput, IonItem, IonList, IonSelect, IonSelectOption, IonTitle, IonToolbar],
+  imports: [FormsModule, IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonInput, IonItem, IonList, IonSelect, IonSelectOption, IonTitle, IonToolbar],
   template: `
     <ion-header>
       <ion-toolbar>
@@ -29,6 +30,13 @@ import { StoreService } from '../core/store.service';
           <ion-item><ion-input label="Extensión (ha)" labelPlacement="stacked" type="number" [(ngModel)]="hectares" name="hectares" required></ion-input></ion-item>
           <ion-item><ion-input label="Latitud" labelPlacement="stacked" type="number" [(ngModel)]="latitude" name="lat" required></ion-input></ion-item>
           <ion-item><ion-input label="Longitud" labelPlacement="stacked" type="number" [(ngModel)]="longitude" name="lng" required></ion-input></ion-item>
+          <div class="geo-actions">
+            <ion-button type="button" expand="block" fill="outline" [disabled]="locating" (click)="captureCurrentLocation()">
+              <ion-icon slot="start" name="location-outline" aria-hidden="true"></ion-icon>
+              {{ locating ? 'Obteniendo ubicación…' : 'Usar ubicación actual' }}
+            </ion-button>
+            <p class="geo-hint">Usa el plugin de geolocalización (Capacitor) para completar latitud y longitud. También puedes digitarlas a mano.</p>
+          </div>
           <ion-item>
             <ion-select cancelText="Cancelar" okText="Aceptar" label="Fuente de agua" labelPlacement="stacked" [(ngModel)]="waterSource" name="water">
               @for (option of water; track option[0]) { <ion-select-option [value]="option[0]">{{ option[1] }}</ion-select-option> }
@@ -47,7 +55,18 @@ import { StoreService } from '../core/store.service';
         </div>
       </form>
     </ion-content>
-  `
+  `,
+  styles: [`
+    .geo-actions {
+      padding: 0.35rem 1rem 0.85rem;
+    }
+    .geo-hint {
+      margin: 0.45rem 0 0;
+      font-size: 0.85rem;
+      color: var(--ion-color-medium, #6b7280);
+      line-height: 1.35;
+    }
+  `]
 })
 export class FarmFormPage implements OnInit {
   farmId = '';
@@ -61,6 +80,7 @@ export class FarmFormPage implements OnInit {
   department = '';
   municipality = '';
   error = '';
+  locating = false;
   readonly water = OPTIONS.water;
 
   constructor(private readonly store: StoreService, private readonly route: ActivatedRoute, private readonly router: Router) {}
@@ -78,6 +98,29 @@ export class FarmFormPage implements OnInit {
     this.soilType = farm.soilType;
     this.department = farm.department;
     this.municipality = farm.municipality;
+  }
+
+  async captureCurrentLocation(): Promise<void> {
+    this.error = '';
+    this.locating = true;
+    try {
+      const permission = await Geolocation.requestPermissions();
+      if (permission.location === 'denied') {
+        this.error = 'Permiso de ubicación denegado. Actívalo en el navegador o digita las coordenadas.';
+        return;
+      }
+      const position = await Geolocation.getCurrentPosition({
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 0
+      });
+      this.latitude = Number(position.coords.latitude.toFixed(6));
+      this.longitude = Number(position.coords.longitude.toFixed(6));
+    } catch {
+      this.error = 'No se pudo obtener la ubicación. Revisa el permiso de GPS o digita latitud y longitud.';
+    } finally {
+      this.locating = false;
+    }
   }
 
   async save(): Promise<void> {

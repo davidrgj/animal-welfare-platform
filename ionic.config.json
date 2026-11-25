@@ -1,7 +1,7 @@
 {
   "name": "animal-welfare",
   "integrations": {
-    "capacitor": false
+    "capacitor": true
   },
   "type": "angular"
 }
