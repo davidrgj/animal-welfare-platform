@@ -57,6 +57,9 @@ begin
     (gen_random_uuid(), vet_id, jsonb_build_object('sub', vet_id::text, 'email', 'vet@farm.local'), 'email', vet_id::text, now(), now(), now()),
     (gen_random_uuid(), admin_id, jsonb_build_object('sub', admin_id::text, 'email', 'admin@farm.local'), 'email', admin_id::text, now(), now(), now());
 
+  -- The sign-up trigger never grants the administrator role from metadata.
+  update profiles set role = 'ADMINISTRATOR' where id = admin_id;
+
   insert into farms (id, owner_id, name, vaccination_registry, hectares, latitude, longitude, water_source, soil_type, department, municipality)
   values
     (highland_id, producer_id, 'El Recuerdo', 'RUV-CUN-2045', 42.5, 4.711, -74.0721, 'SPRING', 'Andisol', 'Cundinamarca', 'Zipaquira'),
