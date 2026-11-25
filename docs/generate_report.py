@@ -13,26 +13,50 @@ EVIDENCE = ROOT / "evidence"
 OUT = ROOT / "Informe_pruebas_software_Bienestar_ICA.docx"
 
 
-def set_run(run, *, size=11, bold=False, color=None):
-    run.font.name = "Calibri"
-    run._element.rPr.rFonts.set(qn("w:eastAsia"), "Calibri")
+FONT = "Times New Roman"
+
+
+def set_run(run, *, size=12, bold=False, italic=False, color=None):
+    run.font.name = FONT
+    run._element.rPr.rFonts.set(qn("w:eastAsia"), FONT)
     run.font.size = Pt(size)
     run.bold = bold
+    run.italic = italic
     if color:
         run.font.color.rgb = RGBColor(*color)
+    else:
+        run.font.color.rgb = RGBColor(0, 0, 0)
 
 
 def heading(doc, text, level=1):
     para = doc.add_heading(text, level=level)
     for run in para.runs:
-        run.font.color.rgb = RGBColor(0x1A, 0x1A, 0x1A)
+        run.font.name = FONT
+        run._element.rPr.rFonts.set(qn("w:eastAsia"), FONT)
+        run.font.color.rgb = RGBColor(0, 0, 0)
+        run.bold = True
+        if level == 1:
+            run.font.size = Pt(14)
+        elif level == 2:
+            run.font.size = Pt(13)
+        else:
+            run.font.size = Pt(12)
+    para.paragraph_format.space_before = Pt(14)
+    para.paragraph_format.space_after = Pt(8)
+    para.paragraph_format.first_line_indent = Cm(0)
+    para.alignment = WD_ALIGN_PARAGRAPH.LEFT
     return para
 
 
-def para(doc, text, *, bold=False, size=11, center=False, space_after=8):
+def para(doc, text, *, bold=False, size=12, center=False, space_after=8, first_indent=True):
     item = doc.add_paragraph()
     if center:
         item.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        item.paragraph_format.first_line_indent = Cm(0)
+    else:
+        item.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+        item.paragraph_format.first_line_indent = Cm(1.25) if first_indent else Cm(0)
+    item.paragraph_format.line_spacing = 1.5
     run = item.add_run(text)
     set_run(run, size=size, bold=bold)
     item.paragraph_format.space_after = Pt(space_after)
@@ -57,18 +81,22 @@ def add_table(doc, headers, rows):
     return table
 
 
-def picture(doc, name, caption, width=6.0):
+def picture(doc, name, caption, width=5.8):
     path = EVIDENCE / name
     if not path.exists():
-        para(doc, f"[Evidencia no disponible: {name}]", size=9)
+        para(doc, f"[Evidencia no disponible: {name}]", size=10, first_indent=False)
         return
     doc.add_picture(str(path), width=Inches(width))
+    last = doc.paragraphs[-1]
+    last.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    last.paragraph_format.first_line_indent = Cm(0)
     cap = doc.add_paragraph()
-    cap.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    cap.alignment = WD_ALIGN_PARAGRAPH.LEFT
+    cap.paragraph_format.first_line_indent = Cm(0)
+    cap.paragraph_format.space_after = Pt(12)
+    cap.paragraph_format.line_spacing = 1.15
     run = cap.add_run(caption)
-    set_run(run, size=9)
-    run.italic = True
-    cap.paragraph_format.space_after = Pt(14)
+    set_run(run, size=11, bold=True)
 
 
 def scenario(doc, title, body, image, caption):
@@ -85,15 +113,15 @@ def main() -> None:
     section.left_margin = Cm(2.2)
     section.right_margin = Cm(2.2)
 
-    para(doc, "PRUEBAS DE SOFTWARE Y MÉTRICAS DE CALIDAD", bold=True, size=14, center=True, space_after=4)
-    para(doc, "Informe de ejecución de pruebas", bold=True, size=22, center=True, space_after=6)
-    para(doc, "Plataforma de bienestar animal — Bienestar ICA", size=14, center=True, space_after=12)
-    para(doc, "Aplicación bajo prueba: https://animal-welfare-platform-vepq.vercel.app", center=True, space_after=2)
-    para(doc, "Fecha de ejecución: 28 oct, 2026 (America/Bogota)", center=True, space_after=2)
-    para(doc, "Autor: David Ramirez  ·  Cuenta de evaluación: rxgdavid@gmail.com (administrador)", center=True, space_after=18)
+    para(doc, "PRUEBAS DE SOFTWARE Y MÉTRICAS DE CALIDAD", bold=True, size=14, center=True, space_after=4, first_indent=False)
+    para(doc, "Informe de ejecución de pruebas", bold=True, size=16, center=True, space_after=6, first_indent=False)
+    para(doc, "Plataforma de bienestar animal — Bienestar ICA", size=12, center=True, space_after=12, first_indent=False)
+    para(doc, "Aplicación bajo prueba: https://animal-welfare-platform-vepq.vercel.app", center=True, space_after=2, first_indent=False)
+    para(doc, "Fechas de ejecución: 28 oct, 2026 (campaña base) y 25 nov, 2026 (recorrido por roles; America/Bogota)", center=True, space_after=2, first_indent=False)
+    para(doc, "Autor: David Ramirez  ·  Cuentas: administrador, productor y veterinario de semilla", center=True, space_after=18, first_indent=False)
     para(
         doc,
-        "Resultado global de la campaña: 7/7 suites automatizadas satisfactorias; 17/17 casos E2E Playwright satisfactorios; 0 fallos de producto en el build publicado. Cada escenario EP incluye captura de pantalla tomada sobre el despliegue de Vercel.",
+        "Resultado global de la campaña: 7/7 suites automatizadas satisfactorias; 17/17 casos E2E Playwright satisfactorios; 0 fallos de producto en el build publicado. Cada escenario EP incluye captura de pantalla tomada sobre el despliegue de Vercel. El semáforo operativo del IBA es ≥75 cumple, ≥50 atención y <50 no cumple.",
         space_after=18,
     )
 
@@ -110,7 +138,7 @@ def main() -> None:
     heading(doc, "2. Objetivos", 1)
     for item in [
         "Verificar las fórmulas ICA (THI, semáforo 75/50, espacio mínimo, estrés calórico por especie) contra un oráculo independiente.",
-        "Ejercitar el flujo completo en Vercel: login, tablero, predios, animales, detalle, evaluación, simulación, reportes, usuarios y cierre de sesión.",
+        "Ejercitar el flujo completo en Vercel con administrador, productor y veterinario: login, tablero, predios, animales, detalle, evaluación, simulación, reportes, usuarios (solo admin) y cierre de sesión.",
         "Comprobar el contrato REST de Supabase (JWT, RLS, códigos HTTP) al estilo Postman.",
         "Medir la capacidad del frontend bajo 20 usuarios concurrentes (equivalente a un plan JMeter).",
         "Revisar controles OWASP (TLS, cabeceras, filtrado anónimo, ausencia de service_role en el bundle).",
@@ -130,7 +158,7 @@ def main() -> None:
         doc,
         ["Tipo (documento de clase)", "Herramienta del curso", "Qué se usó aquí", "Estado"],
         [
-            ["Unitarias Java", "JUnit", "node:test sobre TypeScript real (welfare-scoring.ts, simulation.ts)", "11/11 OK"],
+            ["Unitarias", "JUnit", "node:test sobre TypeScript real (welfare-scoring.ts, simulation.ts)", "11/11 OK"],
             ["Unitarias Python", "pytest", "pytest con oráculo independiente de las fórmulas ICA", "20/20 OK"],
             ["Funcionales / E2E", "Selenium / Playwright / Cypress", "Playwright Chromium contra Vercel", "17/17 OK"],
             ["API", "Postman", "Colección Postman + pytest/requests sobre Auth y REST", "10/10 OK"],
@@ -150,16 +178,16 @@ def main() -> None:
         [
             ["Frontend producción", "https://animal-welfare-platform-vepq.vercel.app"],
             ["Backend", "https://gkomojjjyydbdajpxyqw.supabase.co"],
-            ["Usuario de evaluación", "rxgdavid@gmail.com (rol ADMINISTRATOR)"],
-            ["Datos visibles", "3 predios, 6 animales, 4 usuarios; IBA medio 81,4"],
+            ["Cuentas de evaluación", "Administrador (rxgdavid@gmail.com / admin@farm.local); productor (producer@farm.local); veterinario (vet@farm.local)"],
+            ["Datos visibles", "3 predios, 6 animales, 4 usuarios; IBA medio 81,4 (vista staff); productor ve 2 predios"],
             ["Navegador E2E", "Playwright Chromium, viewport 1280×800 y 390×844"],
-            ["Python / Node", "Python 3.12, Node 22, pytest 8.3, Playwright 1.64"],
-            ["Fecha", "28 oct, 2026, zona America/Bogota"],
+            ["Python / Node", "Python 3.12, Node 22, pytest 8.3, Playwright 1.64, node:test"],
+            ["Fechas", "28 oct, 2026 (campaña base) y 25 nov, 2026 (recorrido EP-13 por roles), America/Bogota"],
         ],
     )
 
     heading(doc, "6. Estrategia", 1)
-    para(doc, "Pirámide clásica: mucho oráculo unitario de las cinco libertades, aceptación Gherkin sobre esas reglas, E2E de los caminos de un administrador, API para el contrato con Postgres, y una pasada corta de carga + seguridad sobre el despliegue real.")
+    para(doc, "Pirámide clásica: oráculo unitario de las cinco libertades, aceptación Gherkin sobre esas reglas, E2E de los caminos del administrador, el productor y el veterinario, API para el contrato con Postgres, y una pasada corta de carga + seguridad sobre el despliegue real.")
 
     heading(doc, "7. Catálogo de casos (TestRail)", 1)
     para(doc, "Inventario vivo en tests/catalog/testrail_cases.json.")
@@ -185,7 +213,7 @@ def main() -> None:
     heading(doc, "10. Pruebas funcionales / E2E con evidencias", 1)
     para(
         doc,
-        "17 casos Playwright contra la URL de Vercel con la cuenta administrador. 17/17 satisfactorios (~3,7 min con 1 worker; 8 s de estabilización por captura). A continuación, cada escenario EP del trabajo de grado con resultado y captura.",
+        "17 casos Playwright contra la URL de Vercel con la cuenta administrador, más el recorrido operativo de productor y veterinario (EP-13). 17/17 satisfactorios (~3,7 min con 1 worker; 8 s de estabilización por captura). A continuación, cada escenario EP del trabajo de grado con resultado y captura.",
     )
     add_table(
         doc,
@@ -285,11 +313,11 @@ def main() -> None:
     scenario(
         doc,
         "10.10 EP-10 · Simulación SED",
-        "Módulo de proyección con escenario, animal, dieta, ambiente y horizonte. El detalle de una corrida existente muestra peso final 125,3 kg, IBA proyectado 68,2, trayectoria y eventos.",
+        "Módulo de proyección con escenario, animal, dieta, ambiente y horizonte. El detalle de la corrida «Sequía 90 días» (alineada a la Ilustración 30 del trabajo de grado) muestra peso final 93,5 kg, IBA al final 78,3, cumplimiento IBA ≥ 75 y trayectoria; el peso objetivo no se alcanzó en el horizonte.",
         "10-simulation.png",
         "Figura 12. EP-10 — formulario Nuevo escenario.",
     )
-    picture(doc, "23-simulation-detail.png", "Figura 13. EP-10 — detalle de simulación (peso, IBA, trayectoria).")
+    picture(doc, "23-simulation-detail.png", "Figura 13. EP-10 — detalle «Sequía 90 días» (93,5 kg; IBA 78,3; Cumplimiento IBA ≥ 75).")
 
     scenario(
         doc,
@@ -302,7 +330,7 @@ def main() -> None:
     scenario(
         doc,
         "10.12 EP-12 / EP-13 · Usuarios y adminGuard",
-        "La cuenta administrador lista 4 usuarios y roles. A continuación se documenta el recorrido operativo de productor y veterinario (módulos visibles, menú de cuenta y bloqueo de /app/users).",
+        "La cuenta administrador lista 4 usuarios y roles. El adminGuard protege /app/users. Las subsecciones 10.12.1 y 10.12.2 documentan el recorrido operativo de productor y veterinario (módulos visibles, menú de cuenta y bloqueo de /app/users).",
         "15-users-admin.png",
         "Figura 15. EP-12 — administración de usuarios y roles (solo administrador).",
     )
@@ -310,7 +338,7 @@ def main() -> None:
     heading(doc, "10.12.1 Recorrido con rol productor", 3)
     para(
         doc,
-        "Sesión producer@farm.local (Camila Restrepo). El tablero muestra IBA filtrado a sus predios (2 predios, 5 evaluados). Accede a Predios, Animales, detalle animal, Simulación y Reportes. El menú de cuenta ofrece Mi cuenta y Reportes de predio; no ofrece Usuarios y roles. Al abrir /#/app/users el adminGuard redirige a Cuenta.",
+        "Sesión producer@farm.local (Camila Restrepo), 25 nov, 2026. El tablero muestra IBA filtrado a sus predios (2 predios, 5 evaluados). Accede a Predios, Animales, detalle animal, Simulación y Reportes. El menú de cuenta ofrece Mi cuenta y Reportes de predio; no ofrece Usuarios y roles. Al abrir /#/app/users el adminGuard redirige a Cuenta.",
     )
     picture(doc, "role-producer-01-dashboard.png", "Figura 15a. EP-13 — productor: tablero Estado ICA (2 predios propios).")
     picture(doc, "role-producer-02-farms.png", "Figura 15b. EP-13 — productor: inventario de predios.")
@@ -324,7 +352,7 @@ def main() -> None:
     heading(doc, "10.12.2 Recorrido con rol veterinario", 3)
     para(
         doc,
-        "Sesión vet@farm.local (Andres Molina). El veterinario ve el inventario completo (6 ejemplares; staff). Accede a Predios, Animales, Simulación y Reportes. El menú de cuenta tampoco ofrece Usuarios y roles. /#/app/users redirige a Cuenta.",
+        "Sesión vet@farm.local (Andres Molina), 25 nov, 2026. El veterinario ve el inventario completo (6 ejemplares; staff). Accede a Predios, Animales, Simulación y Reportes. El menú de cuenta tampoco ofrece Usuarios y roles. /#/app/users redirige a Cuenta.",
     )
     picture(doc, "role-vet-01-dashboard.png", "Figura 15i. EP-13 — veterinario: tablero Estado ICA.")
     picture(doc, "role-vet-02-farms.png", "Figura 15j. EP-13 — veterinario: predios visibles.")
@@ -458,7 +486,7 @@ def main() -> None:
     heading(doc, "18. Conclusiones y recomendaciones", 1)
     para(
         doc,
-        "La plataforma es usable en producción para un administrador: el IBA, el inventario y las reglas de las cinco libertades coinciden entre el código, el oráculo Python y Vercel. RLS no filtra datos al anónimo. El cierre de sesión (EP-14) permanece en login. Los 14 escenarios EP del trabajo de grado están satisfactorios con evidencia fotográfica.",
+        "La plataforma es usable en producción para administrador, productor y veterinario: el IBA (umbrales 75/50), el inventario y las reglas de las cinco libertades coinciden entre el código, el oráculo Python y Vercel. RLS no filtra datos al anónimo. El cierre de sesión (EP-14) permanece en login. Los 14 escenarios EP del trabajo de grado quedan satisfactorios con evidencia fotográfica, incluido el recorrido por rol (Figuras 15a–15p).",
     )
     para(
         doc,
@@ -466,13 +494,24 @@ def main() -> None:
     )
 
     heading(doc, "19. Cómo reproducir", 1)
-    para(doc, "npm install && pip install -r tests/requirements.txt")
-    para(doc, "npx tsx --test tests/unit/domain.test.ts && pytest tests/unit tests/acceptance tests/api tests/security tests/performance -q")
-    para(doc, "E2E_EMAIL=… E2E_PASSWORD=… E2E_BASE_URL=https://animal-welfare-platform-vepq.vercel.app npx playwright test --config tests/e2e/playwright.config.ts")
-    para(doc, "python3 tests/quality/analyze_quality.py && python3 tests/run_suite.py")
-    para(doc, "python3 docs/generate_report.py && python3 docs/generate_capitulo_apa.py")
+    para(doc, "npm install && pip install -r tests/requirements.txt", first_indent=False)
+    para(doc, "npx tsx --test tests/unit/domain.test.ts && pytest tests/unit tests/acceptance tests/api tests/security tests/performance -q", first_indent=False)
+    para(doc, "E2E_EMAIL=… E2E_PASSWORD=… E2E_BASE_URL=https://animal-welfare-platform-vepq.vercel.app npx playwright test --config tests/e2e/playwright.config.ts", first_indent=False)
+    para(doc, "python3 tests/quality/analyze_quality.py && python3 tests/run_suite.py", first_indent=False)
+    para(doc, "python3 docs/generate_report.py && python3 docs/generate_capitulo_apa.py", first_indent=False)
 
-    para(doc, "Fin del informe.", bold=True, center=True, space_after=0)
+    heading(doc, "20. Referencias", 1)
+    for ref in [
+        "International Organization for Standardization & International Electrotechnical Commission. (2011). ISO/IEC 25010:2011 Systems and software engineering — Systems and software Quality Requirements and Evaluation (SQuaRE).",
+        "Myers, G. J., Sandler, C., & Badgett, T. (2011). The art of software testing (3.ª ed.). John Wiley & Sons.",
+        "OWASP Foundation. (2021). OWASP Top 10:2021. https://owasp.org/Top10/",
+        "OWASP Foundation. (s. f.). OWASP Zed Attack Proxy (ZAP). https://owasp.org/www-project-zap/",
+        "SonarSource. (s. f.). SonarQube documentation. https://docs.sonarsource.com/sonarqube/",
+        "Thom, E. C. (1959). The discomfort index. Weatherwise, 12(2), 57–61.",
+    ]:
+        para(doc, ref, first_indent=False, space_after=6)
+
+    para(doc, "Fin del informe.", bold=True, center=True, space_after=0, first_indent=False)
     doc.save(OUT)
     print(f"Wrote {OUT}")
 

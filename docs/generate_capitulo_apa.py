@@ -239,7 +239,7 @@ def main() -> None:
     )
     p(
         doc,
-        "La campaña se ejecutó el 28 de octubre de 2026 (America/Bogota) contra el prototipo publicado en https://animal-welfare-platform-vepq.vercel.app/ y contra el código fuente versionado. El criterio de éxito no es la ausencia total de defectos —impropia de un prototipo académico—, sino la cobertura de los casos de uso CU-01 a CU-11, la corroboración de las fórmulas del índice de bienestar animal (IBA) y del índice temperatura-humedad (THI), y la documentación honesta de no conformidades, con su corrección cuando aplica (Myers et al., 2012). Las capturas de pantalla del E2E se tomaron tras una espera de estabilización de ocho segundos por vista, para evitar fotogramas blancos o transitorios de Ionic.",
+        "La campaña base se ejecutó el 28 de octubre de 2026 (America/Bogota) y el recorrido por roles (productor y veterinario) el 25 de noviembre de 2026, contra el prototipo publicado en https://animal-welfare-platform-vepq.vercel.app/ y contra el código fuente versionado. El criterio de éxito no es la ausencia total de defectos —impropia de un prototipo académico—, sino la cobertura de los casos de uso CU-01 a CU-11, la corroboración de las fórmulas del índice de bienestar animal (IBA) y del índice temperatura-humedad (THI), y la documentación honesta de no conformidades, con su corrección cuando aplica (Myers et al., 2012). Las capturas de pantalla del E2E se tomaron tras una espera de estabilización de ocho segundos por vista, para evitar fotogramas blancos o transitorios de Ionic.",
     )
 
     heading(doc, "12.2 Estrategia y pirámide de pruebas", 2)
@@ -277,10 +277,10 @@ def main() -> None:
         [
             ["Frontend publicado", "https://animal-welfare-platform-vepq.vercel.app/"],
             ["Backend as a Service", "https://gkomojjjyydbdajpxyqw.supabase.co (Auth, Postgres, Storage, RLS)"],
-            ["Cuenta de evaluación", "Administrador de prueba del investigador (rol ADMINISTRATOR)"],
-            ["Inventario observado", "Tres predios (El Recuerdo, La Esperanza, Prueba), seis animales, cuatro perfiles"],
+            ["Cuentas de evaluación", "Administrador, productor (producer@farm.local) y veterinario (vet@farm.local) de semilla académica"],
+            ["Inventario observado", "Tres predios (El Recuerdo, La Esperanza, Prueba), seis animales, cuatro perfiles; productor ve dos predios"],
             ["Navegador E2E", "Playwright Chromium, viewport 1280 × 800; exploración adicional 390 × 844"],
-            ["Fecha", "28 de octubre de 2026, zona America/Bogota"],
+            ["Fechas", "28 de octubre de 2026 (campaña base) y 25 de noviembre de 2026 (recorrido por roles), America/Bogota"],
             ["Fuera de alcance", "Apps nativas iOS/Android, carga destructiva sobre Postgres, fuzzing, WCAG formal, sincronización offline diferida hacia la nube, evaluación de campo con productores"],
         ],
         2,
@@ -293,7 +293,7 @@ def main() -> None:
     )
     p(
         doc,
-        "Limitación estructural de validación empírica. Los resultados de IBA, alertas y simulación se sustentan en datos de demostración (semilla académica: predios y animales de prueba). No se documentó una evaluación sistemática con productores o veterinarios en condiciones reales de producción. En consecuencia, no se afirma que la plataforma haya mejorado el bienestar animal, reducido costos ni incrementado la eficiencia productiva en el sector: esos beneficios se presentan únicamente como potenciales. El alcance demostrado se limita a operacionalizar reglas e indicadores alineados a la norma en un prototipo verificable, calcular IBA/THI sobre datos de semilla y simular escenarios in silico. Cumplir una regla del prototipo no equivale a certificación oficial de cumplimiento ICA.",
+        "Limitación estructural de validación empírica. Los resultados de IBA, alertas y simulación se sustentan en datos de demostración (semilla académica: predios y animales de prueba). No hubo usuarios finales reales en la campaña: no se documentó una evaluación sistemática con productores o veterinarios en condiciones reales de producción. En consecuencia, no se afirma que la plataforma haya mejorado el bienestar animal, reducido costos ni incrementado la eficiencia productiva en el sector: esos beneficios se presentan únicamente como potenciales. El alcance demostrado se limita a operacionalizar reglas e indicadores alineados a la norma en un prototipo verificable, calcular IBA/THI sobre datos de semilla y simular escenarios in silico. Cumplir una regla del prototipo no equivale a certificación oficial de cumplimiento ICA.",
     )
     p(
         doc,
@@ -379,10 +379,10 @@ def main() -> None:
             ["EP-07", "Inventario animal", "Listado con chapa, especie e IBA", "Satisfactorio (6 ejemplares)"],
             ["EP-08", "Detalle e IBA", "Anillo, dominios e historial", "Satisfactorio (VACA-087, IBA 45,5)"],
             ["EP-09", "Evaluación ICA", "Cinco libertades; IBA al guardar", "Satisfactorio (formulario; alta no ejecutada en prod)"],
-            ["EP-10", "Simulación SED", "Listado o detalle con peso, IBA y eventos", "Satisfactorio (125,3 kg; IBA 68,2)"],
+            ["EP-10", "Simulación SED", "Listado o detalle con peso, IBA y eventos", "Satisfactorio (Sequía 90 días: 93,5 kg; IBA 78,3)"],
             ["EP-11", "Reporte de predio", "IBA medio e inventario", "Satisfactorio"],
             ["EP-12", "CRUD usuarios", "Listado de perfiles y roles", "Satisfactorio (4 usuarios)"],
-            ["EP-13", "Bloqueo de /app/users", "adminGuard redirige si no es administrador", "Satisfactorio (la cuenta de evaluación sí es admin)"],
+            ["EP-13", "Bloqueo /app/users y recorrido por rol", "Productor y veterinario: módulos operativos; /users bloqueado", "Satisfactorio (Figuras 15a–15p del informe)"],
             ["EP-14", "Cerrar sesión", "Vuelve a login; /app exige autenticación", "Satisfactorio"],
         ],
         5,
@@ -424,6 +424,47 @@ def main() -> None:
         "Administración de usuarios y roles",
         "Elaboración propia (2026). El encabezado informa 4 usuarios; el rol Administrador no se ofrece en el registro público.",
     )
+
+    heading(doc, "12.7.1 Recorrido con rol productor", 3)
+    p(
+        doc,
+        "Con la sesión producer@farm.local (Camila Restrepo) se verificó el tablero filtrado a dos predios, el inventario de animales, el detalle e IBA, la simulación, los reportes y el menú de cuenta sin Usuarios y roles. Al forzar /#/app/users, el adminGuard redirige a Cuenta. Las evidencias corresponden a las Figuras 15a–15h del informe de pruebas.",
+        first=True,
+    )
+    picture(
+        doc,
+        "role-producer-01-dashboard.png",
+        "15a",
+        "Productor: tablero Estado ICA (2 predios propios)",
+        "Elaboración propia a partir del despliegue en Vercel (2026).",
+    )
+    picture(
+        doc,
+        "role-producer-09-users-blocked.png",
+        "15h",
+        "Productor: /app/users redirige a Cuenta",
+        "Elaboración propia a partir del despliegue en Vercel (2026).",
+    )
+    heading(doc, "12.7.2 Recorrido con rol veterinario", 3)
+    p(
+        doc,
+        "Con la sesión vet@farm.local (Andres Molina) se verificó el inventario completo (seis ejemplares), predios, simulación, reportes y el mismo bloqueo de administración de usuarios (Figuras 15i–15p del informe).",
+        first=True,
+    )
+    picture(
+        doc,
+        "role-vet-03-animals.png",
+        "15k",
+        "Veterinario: inventario vivo (6 ejemplares)",
+        "Elaboración propia a partir del despliegue en Vercel (2026).",
+    )
+    picture(
+        doc,
+        "role-vet-09-users-blocked.png",
+        "15p",
+        "Veterinario: /app/users redirige a Cuenta",
+        "Elaboración propia a partir del despliegue en Vercel (2026).",
+    )
     picture(
         doc,
         "06-logout.png",
@@ -464,7 +505,7 @@ def main() -> None:
         "23-simulation-detail.png",
         11,
         "Detalle de simulación con trayectoria de peso e IBA",
-        "Elaboración propia (2026). Peso final 125,3 kg e IBA proyectado 68,2 bajo restricción de alimento.",
+        "Elaboración propia (2026). Corrida «Sequía 90 días»: peso final 93,5 kg e IBA al final 78,3; Cumplimiento IBA ≥ 75.",
     )
     picture(
         doc,
@@ -612,7 +653,7 @@ def main() -> None:
     )
     p(
         doc,
-        "En el ambiente de evaluación (datos de semilla académica, no predios productivos reales) se observó un IBA medio de 81,4, con un ejemplar bovino (VACA-087) en 45,5 y alerta de espacio por debajo del mínimo. El tablero prioriza ese animal y expone cuatro alertas activas. El inventario de demostración comprende tres predios georreferenciados y seis animales de las especies bovina, caprina y porcina (incluido CERDO-218, dentro del alcance ampliado y documentado). El módulo de usuarios lista cuatro perfiles. La simulación de un escenario de restricción alimentaria proyectó 125,3 kg y un IBA de 68,2, con gráfica de trayectoria y eventos discretos.",
+        "En el ambiente de evaluación (datos de semilla académica, no predios productivos reales ni usuarios finales de campo) se observó un IBA medio de 81,4, con un ejemplar bovino (VACA-087) en 45,5 y alerta de espacio por debajo del mínimo. El tablero prioriza ese animal y expone cuatro alertas activas. El inventario de demostración comprende tres predios georreferenciados y seis animales de las especies bovina, caprina y porcina (incluido CERDO-218, dentro del alcance ampliado y documentado). El módulo de usuarios lista cuatro perfiles. La corrida «Sequía 90 días» (Ilustración 30 / Figura 13 del informe) proyectó 93,5 kg y un IBA de 78,3, con gráfica de trayectoria y eventos discretos.",
     )
     p(
         doc,
